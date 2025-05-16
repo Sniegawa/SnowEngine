@@ -1,9 +1,9 @@
 ﻿# CMakeList.txt : CMake project for VisualEffects, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.28)
+cmake_minimum_required (VERSION 3.8)
 
-set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -13,17 +13,15 @@ endif()
 
 project ("VisualEffects")
 
-include(FetchContent)
-
-FetchContent_Declare(
-	range-v3
-	GIT_REPOSITORY
-)
-
-
-
 # Add source to this project's executable.
 add_executable (VisualEffects "main.cpp" )
+
+add_subdirectory(glew)
+add_subdirectory(glfw)
+
+target_include_directories(VisualEffects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glfw/include)
+target_include_directories(VisualEffects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glew/include)
+
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET VisualEffects PROPERTY CXX_STANDARD 20)
