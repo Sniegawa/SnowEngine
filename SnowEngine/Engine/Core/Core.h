@@ -14,6 +14,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "../SnowEngineAPI.h"
+#include "Log.h"
 
 namespace SnowEngine
 {
@@ -24,7 +25,11 @@ namespace SnowEngine
 		~Application();
 		void innit();
 		void test();
+
+		const bool& ShouldClose() const { return m_appShouldClose; }
+
 	private:
 		void cleanup();
+		bool m_appShouldClose = false;
 	};
 }

@@ -4,7 +4,6 @@ using namespace SnowEngine;
 
 Application::Application()
 {
-	std::cout << "Application Created" << std::endl;
 }
 
 Application::~Application()
@@ -15,8 +14,7 @@ Application::~Application()
 
 void Application::innit()
 {
-	std::cout << "Application initialized" << std::endl;
-	
+	Log::Init();
 }
 
 void Application::cleanup()
@@ -26,6 +24,6 @@ void Application::cleanup()
 
 void Application::test()
 {
-	std::cout << "Test function called" << std::endl;
+
 }
 

@@ -9,8 +9,8 @@ target_link_libraries(SnowEngineApp
 	SnowEngine
 )
 
-add_custom_command(TARGET SnowEngineApp POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    $<TARGET_FILE:SnowEngine>
-    $<TARGET_FILE_DIR:SnowEngineApp>
-)
+#add_custom_command(TARGET SnowEngineApp POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#    $<TARGET_FILE:SnowEngine>
+#    $<TARGET_FILE_DIR:SnowEngineApp>
+#)
