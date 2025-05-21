@@ -1,7 +1,9 @@
-#include <SnowEngine/Core.h>
+#include <SnowEngine/Engine/Core/Core.h>
 
 int main(int argc, char* argv[])
 {
 	SnowEngine::Application* app = new SnowEngine::Application();
-	return app->run(); //Dunno if this is correct
+	app->innit();
+	app->test();
+	return 0;
 }

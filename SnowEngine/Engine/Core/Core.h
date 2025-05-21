@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-
+#include <memory>
 
 #include "GL/glew.h"
 
@@ -13,18 +13,18 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "../SnowEngineAPI.h"
+
 namespace SnowEngine
 {
-	class Application
+	class SNOW_API Application
 	{
 	public:
 		Application();
 		~Application();
-		int run();
+		void innit();
+		void test();
 	private:
-		void initWindow();
-		void initOpenGL();
 		void cleanup();
-		GLFWwindow* window;
 	};
 }

@@ -15,7 +15,15 @@ set(IMGUI_SOURCES
 
 )
 
-add_library(SnowEngine "Core.cpp" "Core.h" ${IMGUI_SOURCES})
+add_library(SnowEngine SHARED "Engine/Core/Core.cpp" "Engine/Core/Core.h" ${IMGUI_SOURCES}    "Engine/SnowEngineAPI.h" )
+
+#Export as dll if on Windows
+if (WIN32)
+    target_compile_definitions(SnowEngine PUBLIC SNOW_WINDOWS SNOW_BUILD_DLL)
+else()
+    target_compile_definitions(SnowEngine PUBLIC SNOW_LINUX)
+endif()
+
 
 target_include_directories(SnowEngine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/..)
