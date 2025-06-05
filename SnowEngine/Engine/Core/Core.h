@@ -17,6 +17,8 @@
 #include "Logging/Log.h"
 #include "Events/ApplicationEvent.h"
 
+#include "IWindow.h"
+
 namespace SnowEngine
 {
 	class SNOW_API Application
@@ -26,11 +28,9 @@ namespace SnowEngine
 		~Application();
 		void innit();
 		void test();
-
-		const bool& ShouldClose() const { return m_appShouldClose; }
+		void Run();
 
 	private:
-		void cleanup();
-		bool m_appShouldClose = false;
+		IWindow* m_window;
 	};
 }

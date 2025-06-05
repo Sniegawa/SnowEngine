@@ -20,7 +20,7 @@ namespace SnowEngine
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_KEYBOARD | EVENT_CATEGORY_INPUT);
 
 	};
-
+	
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:

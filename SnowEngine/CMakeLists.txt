@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.8)
 
 project("SnowEngine")
 
@@ -15,21 +15,22 @@ set(IMGUI_SOURCES
 
 )
 
-target_precompile_headers(<CONFIG>_OUTPUT_NAME
-	PRIVATE
-		"Engine/Core/Core.h"
-		"Engine/SnowEngineAPI.h"
-		"SnowEngine.h"
-		"Engine/Core/Logging/Log.h"
-		"Engine/Core/Events/Event.h"
-		"Engine/Core/Events/KeyEvent.h"
-		"Engine/Core/KeyCode.h"
-		"Engine/Core/Events/MouseEvent.h"
-		"Engine/Core/MouseCode.h"
-		"Engine/Core/Events/ApplicationEvent.h"
-)
-
-add_library(SnowEngine SHARED "Engine/Core/Core.cpp" "Engine/Core/Core.h" ${IMGUI_SOURCES}    "Engine/SnowEngineAPI.h"  "SnowEngine.h" "Engine/Core/Logging/Log.h" "Engine/Core/Logging/Log.cpp" "Engine/Core/Events/Event.h" "Engine/Core/Events/KeyEvent.h" "Engine/Core/KeyCode.h" "Engine/Core/Events/MouseEvent.h" "Engine/Core/MouseCode.h" "Engine/Core/Events/ApplicationEvent.h")
+add_library(SnowEngine SHARED ${IMGUI_SOURCES} 
+	"Engine/Core/Core.h" 
+	"Engine/Core/Core.cpp" 
+	"Engine/SnowEngineAPI.h"  
+	"SnowEngine.h" 
+	"Engine/Core/Logging/Log.h" 
+	"Engine/Core/Logging/Log.cpp" 
+	"Engine/Core/Events/Event.h" 
+	"Engine/Core/Events/KeyEvent.h" 
+	"Engine/Core/KeyCode.h" 
+	"Engine/Core/Events/MouseEvent.h" 
+	"Engine/Core/MouseCode.h" 
+	"Engine/Core/Events/ApplicationEvent.h"
+	"Engine/Core/IWindow.h" 
+	"Engine/Core/Platform/Windows/WindowsWindow.h" 
+	"Engine/Core/Platform/Windows/WindowsWindow.cpp")
 
 #Export as dll if on Windows
 if (WIN32)
