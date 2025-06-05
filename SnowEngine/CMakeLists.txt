@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.16)
 
 project("SnowEngine")
 
@@ -15,7 +15,21 @@ set(IMGUI_SOURCES
 
 )
 
-add_library(SnowEngine SHARED "Engine/Core/Core.cpp" "Engine/Core/Core.h" ${IMGUI_SOURCES}    "Engine/SnowEngineAPI.h"  "SnowEngine.h" "Engine/Core/Log.h" "Engine/Core/Log.cpp")
+target_precompile_headers(<CONFIG>_OUTPUT_NAME
+	PRIVATE
+		"Engine/Core/Core.h"
+		"Engine/SnowEngineAPI.h"
+		"SnowEngine.h"
+		"Engine/Core/Logging/Log.h"
+		"Engine/Core/Events/Event.h"
+		"Engine/Core/Events/KeyEvent.h"
+		"Engine/Core/KeyCode.h"
+		"Engine/Core/Events/MouseEvent.h"
+		"Engine/Core/MouseCode.h"
+		"Engine/Core/Events/ApplicationEvent.h"
+)
+
+add_library(SnowEngine SHARED "Engine/Core/Core.cpp" "Engine/Core/Core.h" ${IMGUI_SOURCES}    "Engine/SnowEngineAPI.h"  "SnowEngine.h" "Engine/Core/Logging/Log.h" "Engine/Core/Logging/Log.cpp" "Engine/Core/Events/Event.h" "Engine/Core/Events/KeyEvent.h" "Engine/Core/KeyCode.h" "Engine/Core/Events/MouseEvent.h" "Engine/Core/MouseCode.h" "Engine/Core/Events/ApplicationEvent.h")
 
 #Export as dll if on Windows
 if (WIN32)

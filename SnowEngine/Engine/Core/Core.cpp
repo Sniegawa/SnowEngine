@@ -4,26 +4,30 @@ using namespace SnowEngine;
 
 Application::Application()
 {
+
 }
 
 Application::~Application()
 {
 	//cleanup();
-	std::cout << "Application destroyed" << std::endl;
 }
 
 void Application::innit()
 {
 	Log::Init();
+	SNOW_CORE_INFO("Application initialized");
 }
 
 void Application::cleanup()
 {
-	std::cout << "Application cleaned up" << std::endl;
+	SNOW_CORE_INFO("Application cleaning");
+	
 }
 
 void Application::test()
 {
+	SNOW_CORE_INFO("Test function called");
+
 
 }
 

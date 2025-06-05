@@ -14,7 +14,8 @@
 #include "imgui_impl_opengl3.h"
 
 #include "../SnowEngineAPI.h"
-#include "Log.h"
+#include "Logging/Log.h"
+#include "Events/ApplicationEvent.h"
 
 namespace SnowEngine
 {
