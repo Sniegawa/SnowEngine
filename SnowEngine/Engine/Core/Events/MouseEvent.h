@@ -7,10 +7,10 @@
 
 #include <glm/glm.hpp>
 
-namespace SnowEngine
+namespace Snow
 {
 
-	class MouseMovedEvent : public Event
+	class SNOW_API MouseMovedEvent : public Event
 	{
 	public:
 
@@ -32,7 +32,7 @@ namespace SnowEngine
 		glm::vec2 m_MousePos;
 	};
 
-	class MouseScrolledEvent : public Event
+	class SNOW_API MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset) : m_XOffset(xOffset), m_YOffset(yOffset) {}
@@ -63,7 +63,7 @@ namespace SnowEngine
 		MouseCode m_Button;
 	};
 
-	class MouseButtonPressedEvent : public MouseButtonEvent
+	class SNOW_API MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonPressedEvent(MouseCode button) : MouseButtonEvent(button) {}
@@ -74,7 +74,7 @@ namespace SnowEngine
 		EVENT_CLASS_TYPE(MouseButtonPressed);
 	};
 
-	class MouseButtonReleasedEvent : public MouseButtonEvent
+	class SNOW_API MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonReleasedEvent(MouseCode button) : MouseButtonEvent(button) {}

@@ -1,6 +1,10 @@
 #pragma once
 
-#include "SnowEngine/Engine/SnowEngineAPI.h"
-#include "SnowEngine/Engine/Core/Core.h"
-#include "SnowEngine/Engine/Core/Logging/Log.h"
-#include "SnowEngine/Engine/Core/Events/Event.h"
+#include "Engine/SnowEngineAPI.h"
+#include "Engine/Core/Core.h"
+#include "Engine/Core/Logging/Log.h"
+#include "Engine/Core/Events/Event.h"
+#include "Engine/Core/Layers/Layer.h"
+
+
+#include "EntryPoint.h"

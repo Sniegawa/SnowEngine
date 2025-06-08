@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace SnowEngine
+namespace Snow
 {
 	using MouseCode = uint16_t;
 

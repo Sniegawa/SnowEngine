@@ -1,10 +1,11 @@
 #pragma once
 
 #include "SnowEngine/Engine/Core/IWindow.h"
+#include "SnowEngine/Engine/SnowEngineAPI.h"
 
 #include <GLFW/glfw3.h>
 
-namespace SnowEngine
+namespace Snow
 {
 	class WindowsWindow : public IWindow
 	{

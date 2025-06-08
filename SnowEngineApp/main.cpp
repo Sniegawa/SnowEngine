@@ -1,12 +1,47 @@
 #include <SnowEngine/SnowEngine.h>
 
-int main(int argc, char* argv[])
+class ExampleLayer : public Snow::Layer
 {
-	SnowEngine::Application* app = new SnowEngine::Application();
-	app->innit();
-	
-	app->Run();
+public:
+	ExampleLayer() : Layer("Example") {}
 
-	delete app;
-	return 0;
+	void OnUpdate() override
+	{
+		//SNOW_CLIENT_INFO("EXAMPLELAYER::UPDATE");
+	}
+
+	void OnEvent(Snow::Event& event) override
+	{
+		SNOW_CLIENT_TRACE("{0}", event.ToString());
+	}
+
+};
+
+class Sandbox : public Snow::Application
+{
+public:
+	Sandbox()
+	{
+		innit();
+		PushLayer(new ExampleLayer());
+	}
+	~Sandbox(){}
+};
+
+Snow::Application* Snow::CreateApplication()
+{
+	return new Sandbox();
 }
+
+//int main(int argc, char* argv[])
+//{
+//	//Snow::Application* app = new Snow::Application();
+//	//app->innit();
+//	
+//	//app->Run();
+//
+//	//delete app;
+//
+//
+//	return 0;
+//}

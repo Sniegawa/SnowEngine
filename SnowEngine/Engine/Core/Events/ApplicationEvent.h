@@ -2,9 +2,9 @@
 
 #include "SnowEngine/Engine/Core/Events/Event.h"
 
-namespace SnowEngine
+namespace Snow
 {
-	class WindowResizeEvent : public Event
+	class SNOW_API WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height)
@@ -24,7 +24,7 @@ namespace SnowEngine
 		unsigned int m_Width, m_Height;
 	};
 
-	class WindowCloseEvent : public Event
+	class SNOW_API WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() = default;
@@ -36,7 +36,7 @@ namespace SnowEngine
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
 	};
 
-	class WindowFocusEvent : public Event
+	class SNOW_API WindowFocusEvent : public Event
 	{
 	public:
 		WindowFocusEvent() = default;
@@ -48,7 +48,7 @@ namespace SnowEngine
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
 	};
 
-	class WindowLostFocusEvent : public Event
+	class SNOW_API WindowLostFocusEvent : public Event
 	{
 	public:
 		WindowLostFocusEvent() = default;
@@ -60,7 +60,7 @@ namespace SnowEngine
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
 	};
 
-	class AppTickEvent : public Event
+	class SNOW_API AppTickEvent : public Event
 	{
 	public:
 		AppTickEvent() = default;
@@ -72,7 +72,7 @@ namespace SnowEngine
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP);
 	};
 
-	class AppUpdateEvent : public Event
+	class SNOW_API AppUpdateEvent : public Event
 	{
 	public:
 		AppUpdateEvent() = default;
@@ -83,7 +83,7 @@ namespace SnowEngine
 		EVENT_CLASS_TYPE(AppUpdate);
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP);
 	};
-	class AppRenderEvent : public Event
+	class SNOW_API AppRenderEvent : public Event
 	{
 	public:
 		AppRenderEvent() = default;

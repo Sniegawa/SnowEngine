@@ -7,7 +7,7 @@
 #include <map>
 
 
-namespace SnowEngine
+namespace Snow
 {
 	enum SNOW_API EventType
 	{
@@ -103,4 +103,4 @@ namespace SnowEngine
 		return os << e.ToString();
 	}
 
-};// namespace SnowEngine
+};// namespace Snow

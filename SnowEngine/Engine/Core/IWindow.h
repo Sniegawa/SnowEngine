@@ -5,9 +5,9 @@
 
 #include <glm/glm.hpp>
 
-namespace SnowEngine
+namespace Snow
 {
-	struct WindowProperties
+	struct SNOW_API WindowProperties
 	{
 		unsigned int Width;
 		unsigned int Height;
@@ -18,7 +18,7 @@ namespace SnowEngine
 		}
 	};
 
-	class IWindow
+	class SNOW_API IWindow
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;

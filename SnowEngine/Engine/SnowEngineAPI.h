@@ -2,7 +2,7 @@
 
 
 // Need this to export as dll, without declaring SNOW_API before
-// every class/struct there would be symbol errors
+// every public class/struct there would be symbol errors while using them in app
 #ifdef SNOW_WINDOWS
 	#ifdef SNOW_BUILD_DLL
 		#define SNOW_API __declspec(dllexport)

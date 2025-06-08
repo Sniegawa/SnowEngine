@@ -4,7 +4,7 @@
 #include "../KeyCode.h"
 #include <string>
 
-namespace SnowEngine
+namespace Snow
 {
 	class KeyEvent : public Event
 	{
@@ -21,7 +21,7 @@ namespace SnowEngine
 
 	};
 	
-	class KeyPressedEvent : public KeyEvent
+	class SNOW_API KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(KeyCode KeyCode, int repeatCount) : KeyEvent(KeyCode), m_RepeatCount(repeatCount) {}
@@ -40,7 +40,7 @@ namespace SnowEngine
 		int m_RepeatCount;
 	};
 
-	class KeyReleasedEvent : public KeyEvent
+	class SNOW_API KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(KeyCode KeyCode) : KeyEvent(KeyCode) {}
@@ -53,7 +53,7 @@ namespace SnowEngine
 		EVENT_CLASS_TYPE(KeyReleased);
 	};
 
-	class KeyTypedEvent : public KeyEvent
+	class SNOW_API KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(KeyCode KeyCode) : KeyEvent(KeyCode) {}

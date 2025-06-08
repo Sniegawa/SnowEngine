@@ -2,9 +2,10 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace SnowEngine {
-	std::shared_ptr<spdlog::logger> SNOW_API Log::s_CoreLogger;
-	std::shared_ptr<spdlog::logger> SNOW_API Log::s_ClientLogger;
+namespace Snow
+{
+	SNOW_API std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
+	SNOW_API std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
 	void Log::Init()
 	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");
@@ -15,4 +16,4 @@ namespace SnowEngine {
 		s_ClientLogger = spdlog::stdout_color_mt("APP");
 		s_ClientLogger->set_level(spdlog::level::trace);
 	}
-}
+};

@@ -19,7 +19,9 @@
 
 #include "IWindow.h"
 
-namespace SnowEngine
+#include "Layers/LayerStack.h"
+
+namespace Snow
 {
 	class SNOW_API Application
 	{
@@ -29,9 +31,14 @@ namespace SnowEngine
 		void innit();
 		void Run();
 		void OnEvent(Event& e);
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool m_ShouldClose = false;
 		IWindow* m_window;
+		LayerStack m_LayerStack;
 	};
-}
+
+	Application* CreateApplication();
+};

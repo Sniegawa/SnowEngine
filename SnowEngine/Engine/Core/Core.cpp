@@ -1,6 +1,6 @@
 ﻿#include "Core.h"
 
-namespace SnowEngine 
+namespace Snow 
 {
 
 #define BIND_EVENT_FN(fn) std::bind(&fn,this,std::placeholders::_1)
@@ -12,6 +12,7 @@ namespace SnowEngine
 	Application::~Application()
 	{
 		SNOW_CORE_INFO("Application destruction");
+		delete m_window;
 	}
 
 
@@ -20,19 +21,33 @@ namespace SnowEngine
 	{
 		Log::Init();
 		m_window = IWindow::Create(WindowProperties(1280, 720, "SnowEngine"));
-		m_window->SetVSync(true);
 		m_window->SetClearColor(glm::vec4(0.1f, 0.1f, 0.7f, 1.0f));
 		m_window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		SNOW_CORE_INFO("Application initialized");
 	}
+
+
+	void Application::PushLayer(Layer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+	}
+	void Application::PushOverlay(Layer* overlay)
+	{
+		m_LayerStack.PushOverlay(overlay);
+	}
+
 
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 
-
-		//SNOW_CORE_TRACE("{0}", e.ToString());
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+		{
+			(*--it)->OnEvent(e);
+			if (e.Handled())
+				break;
+		}
 	}
 
 	void Application::Run()
@@ -42,6 +57,10 @@ namespace SnowEngine
 		while (!m_ShouldClose)
 		{
 			m_window->OnUpdate();
+
+			for (Layer* layer : m_LayerStack)
+				layer->OnUpdate();
+
 		}
 	}
 

@@ -5,7 +5,7 @@
 #include "SnowEngine/Engine/Core/Events/MouseEvent.h"
 
 
-namespace SnowEngine
+namespace Snow
 {
 	static bool s_GLFWInitialized = false;
 

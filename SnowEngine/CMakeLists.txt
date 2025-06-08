@@ -30,11 +30,16 @@ add_library(SnowEngine SHARED ${IMGUI_SOURCES}
 	"Engine/Core/Events/ApplicationEvent.h"
 	"Engine/Core/IWindow.h" 
 	"Engine/Core/Platform/Windows/WindowsWindow.h" 
-	"Engine/Core/Platform/Windows/WindowsWindow.cpp")
+	"Engine/Core/Platform/Windows/WindowsWindow.cpp" 
+	"Engine/Core/Layers/Layer.h" 
+	"Engine/Core/Layers/LayerStack.h" 
+	"Engine/Core/Layers/LayerStack.cpp" 
+	"EntryPoint.h")
 
 #Export as dll if on Windows
 if (WIN32)
-    target_compile_definitions(SnowEngine PUBLIC SNOW_WINDOWS SNOW_BUILD_DLL)
+    target_compile_definitions(SnowEngine PRIVATE SNOW_BUILD_DLL)
+	target_compile_definitions(SnowEngine PUBLIC SNOW_WINDOWS)
 else()
     target_compile_definitions(SnowEngine PUBLIC SNOW_LINUX)
 endif()
@@ -42,7 +47,12 @@ endif()
 #Spdlog error fix
 if (MSVC)
     target_compile_options(SnowEngine PRIVATE "/utf-8")
+	target_compile_options(SnowEngine PRIVATE /GR)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR
+       CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(SnowEngine PRIVATE -frtti)
 endif()
+
 
 target_include_directories(SnowEngine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/..)
