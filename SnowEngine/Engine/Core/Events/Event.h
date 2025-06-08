@@ -9,7 +9,7 @@
 
 namespace SnowEngine
 {
-	enum EventType
+	enum SNOW_API EventType
 	{
 		NONE = 0,
 
@@ -34,7 +34,7 @@ namespace SnowEngine
 
 	};
 
-	enum EventCategory
+	enum SNOW_API EventCategory
 	{
 		EVENT_NONE = 0,
 		EVENT_CATEGORY_APP			= BIT(0),
@@ -91,7 +91,7 @@ namespace SnowEngine
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{
-				m_event.m_handled = func(*(T*)&m_event); //Magic hack for casting event to T and using it as argument
+				m_event.m_handled = func(dynamic_cast<T&>(m_event)); //func(*(T*)&m_event); Magic hack for casting event to T and using it as argument
 				return true;
 			}
 			return false;
