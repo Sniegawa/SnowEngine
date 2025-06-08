@@ -1,5 +1,9 @@
 #include "WindowsWindow.h"
 #include "SnowEngine/Engine/Core/Logging/Log.h"
+#include "SnowEngine/Engine/Core/Events/ApplicationEvent.h"
+#include "SnowEngine/Engine/Core/Events/KeyEvent.h"
+#include "SnowEngine/Engine/Core/Events/MouseEvent.h"
+
 
 namespace SnowEngine
 {
@@ -25,7 +29,7 @@ namespace SnowEngine
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
-		
+
 		SNOW_CORE_INFO("Creating window: {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
 
 		if (!s_GLFWInitialized)
@@ -40,6 +44,90 @@ namespace SnowEngine
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(m_Data.VSync);
 
+		//Set glfw callbacks
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			data.Width = width;
+			data.Height = height;
+
+			data.EventCallback(WindowResizeEvent(width, height));
+			});
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			data.EventCallback(WindowCloseEvent());
+			});
+
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+					data.EventCallback(KeyPressedEvent(key, 0));
+					break;
+				case GLFW_RELEASE:
+					data.EventCallback(KeyReleasedEvent(key));
+					break;
+				case GLFW_REPEAT:
+					//Glfw doesn't p[rovide repeat count, so we use 1 for simplicity, in future can fork glfw to add this feature
+					data.EventCallback(KeyPressedEvent(key, 1));
+					break;
+				default:
+					SNOW_CORE_ERROR("Unknown key action: {0}", action);
+					break;
+				}
+
+			});
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+					data.EventCallback(MouseButtonPressedEvent(button));
+					break;
+				case GLFW_RELEASE:
+					data.EventCallback(MouseButtonReleasedEvent(button));
+					break;
+				default:
+					SNOW_CORE_ERROR("Unknown MouseButton action: {0}", action);
+					break;
+
+				}
+			});
+
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				data.EventCallback(MouseScrolledEvent((float)xoffset, (float)yoffset));
+			});
+
+		glfwSetWindowFocusCallback(m_Window, [](GLFWwindow* window, int focused)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				if (focused == GLFW_TRUE)
+				{
+					data.EventCallback(WindowFocusEvent());
+				}
+				else if (focused == GLFW_FALSE)
+				{
+					data.EventCallback(WindowLostFocusEvent());
+				}
+				else
+				{
+					SNOW_CORE_ERROR("Unknown window focus change : {0}", focused);
+				}
+			});
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) 
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				data.EventCallback(MouseMovedEvent((float)xPos, (float)yPos));
+			});
 	}
 
 	void WindowsWindow::Shutdown()
@@ -73,10 +161,13 @@ namespace SnowEngine
 	bool WindowsWindow::IsVSync() const
 	{
 		return m_Data.VSync;
+		
 	}
 
 	bool WindowsWindow::ShouldClose()
 	{
 		return glfwWindowShouldClose(m_Window);
 	}
+
+
 };

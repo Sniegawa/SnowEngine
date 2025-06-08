@@ -36,6 +36,30 @@ namespace SnowEngine
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
 	};
 
+	class WindowFocusEvent : public Event
+	{
+	public:
+		WindowFocusEvent() = default;
+		std::string ToString() const override
+		{
+			return "WindowFocusEvent";
+		};
+		EVENT_CLASS_TYPE(WindowFocus);
+		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
+	};
+
+	class WindowLostFocusEvent : public Event
+	{
+	public:
+		WindowLostFocusEvent() = default;
+		std::string ToString() const override
+		{
+			return "WindowLostFocusEvent";
+		};
+		EVENT_CLASS_TYPE(WindowLostFocus);
+		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
+	};
+
 	class AppTickEvent : public Event
 	{
 	public:

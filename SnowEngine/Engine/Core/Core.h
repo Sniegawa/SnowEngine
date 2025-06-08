@@ -27,9 +27,8 @@ namespace SnowEngine
 		Application();
 		~Application();
 		void innit();
-		void test();
 		void Run();
-
+		void OnEvent(Event& e);
 	private:
 		IWindow* m_window;
 	};
