@@ -6,8 +6,6 @@ namespace SnowEngine
 {
 	using MouseCode = uint16_t;
 
-	namespace Mouse
-	{
 		enum : MouseCode
 		{
 			// From glfw3.h
@@ -25,5 +23,4 @@ namespace SnowEngine
 			ButtonRight = Button1,
 			ButtonMiddle = Button2
 		};
-	}
 }
