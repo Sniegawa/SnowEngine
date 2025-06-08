@@ -9,6 +9,11 @@ namespace SnowEngine
 {
 	static bool s_GLFWInitialized = false;
 
+	static void GLFWErrorCallback(int error, const char* description)
+	{
+		SNOW_CORE_ERROR("GLFW Error ({0}) : {1}", error, description);
+	}
+
 	IWindow* IWindow::Create(const WindowProperties& props)
 	{
 		return new WindowsWindow(props);
@@ -36,6 +41,7 @@ namespace SnowEngine
 		{
 			int success = glfwInit();
 			SNOW_CORE_ASSERT(success, "Could not initialize GLFW!");
+			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
 
@@ -163,11 +169,4 @@ namespace SnowEngine
 		return m_Data.VSync;
 		
 	}
-
-	bool WindowsWindow::ShouldClose()
-	{
-		return glfwWindowShouldClose(m_Window);
-	}
-
-
 };

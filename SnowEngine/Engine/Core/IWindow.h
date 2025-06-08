@@ -42,8 +42,6 @@ namespace SnowEngine
 		
 		static IWindow* Create(const WindowProperties& props = WindowProperties());
 
-		virtual bool ShouldClose() = 0;
-
 	protected:
 		
 	};

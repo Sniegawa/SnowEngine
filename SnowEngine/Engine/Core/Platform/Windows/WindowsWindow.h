@@ -22,7 +22,6 @@ namespace SnowEngine
 		void SetVSync(bool enabled) override;
 		void SetClearColor(const glm::vec4& color) override;
 		bool IsVSync() const override;
-		bool ShouldClose() override;
 
 	private:
 		void Init(const WindowProperties& props) override;

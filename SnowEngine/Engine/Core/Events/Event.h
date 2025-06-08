@@ -54,7 +54,7 @@ namespace SnowEngine
 
 	class SNOW_API Event
 	{
-
+		friend class EventDispatcher;
 	public:
 
 		virtual ~Event() = default;
@@ -91,7 +91,7 @@ namespace SnowEngine
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{
-				m_event.m_handled = func(dynamic_cast<T>(m_event)); //func(*(T*)&m_event);
+				m_event.m_handled = func(*(T*)&m_event); //Magic hack for casting event to T and using it as argument
 				return true;
 			}
 			return false;

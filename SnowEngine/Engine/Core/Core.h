@@ -30,6 +30,8 @@ namespace SnowEngine
 		void Run();
 		void OnEvent(Event& e);
 	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+		bool m_ShouldClose = false;
 		IWindow* m_window;
 	};
 }
