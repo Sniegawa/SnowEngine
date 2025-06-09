@@ -7,12 +7,12 @@ public:
 
 	void OnUpdate() override
 	{
-		//SNOW_CLIENT_INFO("EXAMPLELAYER::UPDATE");
+		
 	}
 
 	void OnEvent(Snow::Event& event) override
 	{
-		SNOW_CLIENT_TRACE("{0}", event.ToString());
+		//SNOW_CLIENT_TRACE("{0}", event.ToString());
 	}
 
 };

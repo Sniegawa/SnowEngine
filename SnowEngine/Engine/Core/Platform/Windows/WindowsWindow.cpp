@@ -5,6 +5,8 @@
 #include "SnowEngine/Engine/Core/Events/MouseEvent.h"
 
 
+#include <glad/glad.h>
+
 namespace Snow
 {
 	static bool s_GLFWInitialized = false;
@@ -36,7 +38,6 @@ namespace Snow
 		m_Data.Height = props.Height;
 
 		SNOW_CORE_INFO("Creating window: {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
-
 		if (!s_GLFWInitialized)
 		{
 			int success = glfwInit();
@@ -47,6 +48,8 @@ namespace Snow
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		SNOW_CORE_ASSERT(status, "Failed to initialize GLAD!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(m_Data.VSync);
 
@@ -55,14 +58,12 @@ namespace Snow
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.Width = width;
 			data.Height = height;
-
 			data.EventCallback(WindowResizeEvent(width, height));
 			});
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.EventCallback(WindowCloseEvent());
 			});
-
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -104,14 +105,12 @@ namespace Snow
 
 				}
 			});
-
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				data.EventCallback(MouseScrolledEvent((float)xoffset, (float)yoffset));
 			});
-
 		glfwSetWindowFocusCallback(m_Window, [](GLFWwindow* window, int focused)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -132,6 +131,7 @@ namespace Snow
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) 
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				
 				data.EventCallback(MouseMovedEvent((float)xPos, (float)yPos));
 			});
 	}
@@ -161,7 +161,9 @@ namespace Snow
 
 	void WindowsWindow::SetClearColor(const glm::vec4& color)
 	{
+		SNOW_CORE_INFO("Setting clear color to {0},{1},{2},{3}", color.x, color.y, color.z, color.w);
 		glClearColor(color.r, color.g, color.b, color.a);
+		SNOW_CORE_INFO("TEST");
 	}
 
 	bool WindowsWindow::IsVSync() const

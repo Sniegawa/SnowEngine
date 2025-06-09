@@ -4,7 +4,7 @@ project(SnowEngineProject)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(Libs/glew)
+add_subdirectory(Libs/GLAD)
 add_subdirectory(Libs/glfw)
 add_subdirectory(Libs/spdlog)
 

@@ -12,10 +12,9 @@ set(IMGUI_SOURCES
 	${IMGUI_DIR}/imgui_demo.cpp
 	${IMGUI_DIR}/imgui_impl_glfw.cpp
 	${IMGUI_DIR}/imgui_impl_opengl3.cpp
-
 )
 
-add_library(SnowEngine SHARED ${IMGUI_SOURCES} 
+add_library(SnowEngine SHARED ${IMGUI_SOURCES}
 	"Engine/Core/Core.h" 
 	"Engine/Core/Core.cpp" 
 	"Engine/SnowEngineAPI.h"  
@@ -44,6 +43,8 @@ else()
     target_compile_definitions(SnowEngine PUBLIC SNOW_LINUX)
 endif()
 
+target_compile_definitions(SnowEngine PUBLIC GLFW_INCLUDE_NONE)
+
 #Spdlog error fix
 if (MSVC)
     target_compile_options(SnowEngine PRIVATE "/utf-8")
@@ -59,7 +60,7 @@ target_include_directories(SnowEngine PUBLIC
 
 target_include_directories(SnowEngine PUBLIC
     ${CMAKE_SOURCE_DIR}/Libs/glfw/include
-    ${CMAKE_SOURCE_DIR}/Libs/glew/include
+	${CMAKE_SOURCE_DIR}/Libs/GLAD/include
     ${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
 	${IMGUI_DIR}
@@ -67,7 +68,7 @@ target_include_directories(SnowEngine PUBLIC
 
 target_link_libraries (SnowEngine PUBLIC
 		glfw
-		libglew_static
+		GLAD
 		spdlog::spdlog
 )
 

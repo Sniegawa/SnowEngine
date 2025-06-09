@@ -22,7 +22,7 @@ namespace Snow
 
 		std::string ToString() const override
 		{
-			return "MouseMovedEvent: " + std::to_string(m_MousePos.x) + ", " + std::to_string(m_MousePos.x);
+			return "MouseMovedEvent: " + std::to_string(m_MousePos.x) + ", " + std::to_string(m_MousePos.y);
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved);
