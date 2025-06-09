@@ -29,9 +29,13 @@ namespace Snow
 		
 		virtual void OnUpdate() = 0;
 		
+		virtual void ClearWindow() = 0;
+
 		virtual void Shutdown() = 0;
 		
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+
+		virtual void* GetNativeWindow() = 0;
 
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;

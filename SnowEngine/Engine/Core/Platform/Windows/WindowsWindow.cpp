@@ -145,8 +145,12 @@ namespace Snow
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glClear(GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(m_Window);
+	}
+
+	void WindowsWindow::ClearWindow()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
@@ -163,7 +167,6 @@ namespace Snow
 	{
 		SNOW_CORE_INFO("Setting clear color to {0},{1},{2},{3}", color.x, color.y, color.z, color.w);
 		glClearColor(color.r, color.g, color.b, color.a);
-		SNOW_CORE_INFO("TEST");
 	}
 
 	bool WindowsWindow::IsVSync() const

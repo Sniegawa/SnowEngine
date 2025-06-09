@@ -22,8 +22,9 @@ class Sandbox : public Snow::Application
 public:
 	Sandbox()
 	{
-		innit();
+
 		PushLayer(new ExampleLayer());
+		PushOverlay(new Snow::ImGuiLayer());
 	}
 	~Sandbox(){}
 };
@@ -32,16 +33,3 @@ Snow::Application* Snow::CreateApplication()
 {
 	return new Sandbox();
 }
-
-//int main(int argc, char* argv[])
-//{
-//	//Snow::Application* app = new Snow::Application();
-//	//app->innit();
-//	
-//	//app->Run();
-//
-//	//delete app;
-//
-//
-//	return 0;
-//}

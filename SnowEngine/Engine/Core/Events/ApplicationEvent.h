@@ -91,7 +91,7 @@ namespace Snow
 		{
 			return "AppRenderEvent";
 		}
-		EVENT_CLASS_TYPE(AppReder);
+		EVENT_CLASS_TYPE(AppRender);
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP);
 	};
 };

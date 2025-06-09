@@ -21,7 +21,7 @@ namespace Snow
 
 		AppTick,
 		AppUpdate,
-		AppReder,
+		AppRender,
 
 		KeyPressed,
 		KeyReleased,

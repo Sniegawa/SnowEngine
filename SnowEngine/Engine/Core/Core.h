@@ -24,16 +24,20 @@ namespace Snow
 	public:
 		Application();
 		~Application();
-		void innit();
 		void Run();
 		void OnEvent(Event& e);
+
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+
+		inline IWindow& GetWindow() { return *m_Window; }
+		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool m_ShouldClose = false;
-		IWindow* m_window;
+		IWindow* m_Window;
 		LayerStack m_LayerStack;
+		static Application* s_Instance;
 	};
 
 	Application* CreateApplication();

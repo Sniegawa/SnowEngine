@@ -17,13 +17,19 @@ namespace Snow
 
 		void OnUpdate() override;
 
+		void ClearWindow() override;
+
 		inline unsigned int GetWidth() const override { return m_Data.Width; }
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
 
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+		
 		void SetVSync(bool enabled) override;
-		void SetClearColor(const glm::vec4& color) override;
 		bool IsVSync() const override;
+		
+		void SetClearColor(const glm::vec4& color) override;
+
+		void* GetNativeWindow() override { return m_Window; }
 
 	private:
 		void Init(const WindowProperties& props) override;

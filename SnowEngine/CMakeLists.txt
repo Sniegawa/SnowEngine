@@ -14,7 +14,7 @@ set(IMGUI_SOURCES
 	${IMGUI_DIR}/imgui_impl_opengl3.cpp
 )
 
-add_library(SnowEngine SHARED ${IMGUI_SOURCES}
+add_library(SnowEngine SHARED
 	"Engine/Core/Core.h" 
 	"Engine/Core/Core.cpp" 
 	"Engine/SnowEngineAPI.h"  
@@ -33,7 +33,10 @@ add_library(SnowEngine SHARED ${IMGUI_SOURCES}
 	"Engine/Core/Layers/Layer.h" 
 	"Engine/Core/Layers/LayerStack.h" 
 	"Engine/Core/Layers/LayerStack.cpp" 
-	"EntryPoint.h")
+	"EntryPoint.h" 
+	"Engine/Core/ImGui/ImGuiLayer.h" 
+	"Engine/Core/ImGui/ImGuiLayer.cpp"
+	${IMGUI_SOURCES})
 
 #Export as dll if on Windows
 if (WIN32)
@@ -49,8 +52,7 @@ target_compile_definitions(SnowEngine PUBLIC GLFW_INCLUDE_NONE)
 if (MSVC)
     target_compile_options(SnowEngine PRIVATE "/utf-8")
 	target_compile_options(SnowEngine PRIVATE /GR)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR
-       CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(SnowEngine PRIVATE -frtti)
 endif()
 
@@ -59,16 +61,16 @@ target_include_directories(SnowEngine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 target_include_directories(SnowEngine PUBLIC
-    ${CMAKE_SOURCE_DIR}/Libs/glfw/include
 	${CMAKE_SOURCE_DIR}/Libs/GLAD/include
+    ${CMAKE_SOURCE_DIR}/Libs/glfw/include
     ${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
 	${IMGUI_DIR}
 )
 
 target_link_libraries (SnowEngine PUBLIC
-		glfw
 		GLAD
+		glfw
 		spdlog::spdlog
 )
 

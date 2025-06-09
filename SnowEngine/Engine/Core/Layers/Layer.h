@@ -10,7 +10,7 @@ namespace Snow
 	class SNOW_API Layer
 	{
 	public:
-		Layer(const std::string& name) {}
+		Layer(const std::string& name) : m_Name(name) {}
 		virtual ~Layer() = default;
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
