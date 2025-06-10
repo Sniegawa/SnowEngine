@@ -2,9 +2,6 @@
 
 namespace Snow 
 {
-
-#define BIND_EVENT_FN(fn) std::bind(&fn,this,std::placeholders::_1)
-
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
@@ -14,7 +11,7 @@ namespace Snow
 		Log::Init();
 		m_Window = IWindow::Create(WindowProperties(1280, 720, "SnowEngine"));
 		m_Window->SetClearColor(glm::vec4(0.1f, 0.1f, 0.7f, 1.0f));
-		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent,1));
 		SNOW_CORE_INFO("Application initialized");
 	}
 
@@ -42,7 +39,7 @@ namespace Snow
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowCloseEvent>(SNOW_BIND_EVENT_FN(Application::OnWindowClose,1));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

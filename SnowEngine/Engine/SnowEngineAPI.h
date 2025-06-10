@@ -13,6 +13,11 @@
 	#define SNOW_API
 #endif
 
+#ifdef SNOW_DEBUG
+	#define SNOW_ENABLE_ASSERTS
+#endif
+
+
 #ifdef SNOW_ENABLE_ASSERTS
 	#define SNOW_ASSERT(x, ...) { if(!(x)) { SNOW_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define SNOW_CORE_ASSERT(x, ...) { if(!(x)) { SNOW_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
@@ -22,3 +27,5 @@
 #endif
 
 #define BIT(x) (1 << x)
+
+#define SNOW_BIND_EVENT_FN(fn,args) std::bind(&fn,this,std::placeholders::_##args)

@@ -87,6 +87,11 @@ namespace Snow
 				}
 
 			});
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			KeyTypedEvent event(keycode);
+			data.EventCallback(event);
+			});
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -165,7 +170,7 @@ namespace Snow
 
 	void WindowsWindow::SetClearColor(const glm::vec4& color)
 	{
-		SNOW_CORE_INFO("Setting clear color to {0},{1},{2},{3}", color.x, color.y, color.z, color.w);
+		//SNOW_CORE_INFO("Setting clear color to {0},{1},{2},{3}", color.x, color.y, color.z, color.w);
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 

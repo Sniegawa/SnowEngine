@@ -46,6 +46,7 @@ else()
     target_compile_definitions(SnowEngine PUBLIC SNOW_LINUX)
 endif()
 
+target_compile_definitions(SnowEngine PUBLIC SNOW_GLFW)
 target_compile_definitions(SnowEngine PUBLIC GLFW_INCLUDE_NONE)
 
 #Spdlog error fix
