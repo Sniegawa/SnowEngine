@@ -7,7 +7,10 @@ public:
 
 	void OnUpdate() override
 	{
-		
+		if (Snow::Input::IsKeyPressed(Snow::Key::X))
+		{
+			SNOW_CLIENT_TRACE("X was pressed");
+		}
 	}
 
 	void OnEvent(Snow::Event& event) override
@@ -26,6 +29,7 @@ public:
 		PushLayer(new ExampleLayer());
 		PushOverlay(new Snow::ImGuiLayer());
 	}
+
 	~Sandbox(){}
 };
 

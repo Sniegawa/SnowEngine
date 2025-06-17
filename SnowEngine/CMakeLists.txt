@@ -15,8 +15,9 @@ set(IMGUI_SOURCES
 )
 
 add_library(SnowEngine SHARED
-	"Engine/Core/Core.h" 
-	"Engine/Core/Core.cpp" 
+	${IMGUI_SOURCES} 
+	"Engine/Core/Application.h" 
+	"Engine/Core/Application.cpp" 
 	"Engine/SnowEngineAPI.h"  
 	"SnowEngine.h" 
 	"Engine/Core/Logging/Log.h" 
@@ -28,15 +29,17 @@ add_library(SnowEngine SHARED
 	"Engine/Core/MouseCode.h" 
 	"Engine/Core/Events/ApplicationEvent.h"
 	"Engine/Core/IWindow.h" 
-	"Engine/Core/Platform/Windows/WindowsWindow.h" 
-	"Engine/Core/Platform/Windows/WindowsWindow.cpp" 
+	"Engine/Platform/Windows/WindowsWindow.h" 
+	"Engine/Platform/Windows/WindowsWindow.cpp" 
 	"Engine/Core/Layers/Layer.h" 
 	"Engine/Core/Layers/LayerStack.h" 
 	"Engine/Core/Layers/LayerStack.cpp" 
 	"EntryPoint.h" 
 	"Engine/Core/ImGui/ImGuiLayer.h" 
 	"Engine/Core/ImGui/ImGuiLayer.cpp"
-	${IMGUI_SOURCES})
+	"Engine/Core/Input.h" 
+	"Engine/Platform/Windows/WindowsInput.h" 
+	"Engine/Platform/Windows/WindowsInput.cpp")
 
 #Export as dll if on Windows
 if (WIN32)

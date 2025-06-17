@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+﻿#include "Application.h"
 
 namespace Snow 
 {
@@ -18,7 +18,6 @@ namespace Snow
 	Application::~Application()
 	{
 		SNOW_CORE_INFO("Application destruction");
-		delete m_Window;
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -62,6 +61,12 @@ namespace Snow
 
 			m_Window->OnUpdate();
 			
+			if (Input::IsKeyPressed(Key::A))
+			{
+				auto [x, y] = Input::GetMousePosition();
+
+				SNOW_CORE_TRACE("{0},{1}", x, y);
+			}
 		}
 	}
 

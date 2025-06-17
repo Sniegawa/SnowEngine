@@ -9,12 +9,12 @@
 
 #elif SNOW_SDL
 
-//#include <sdl>
+SNOW_CORE_ERROR("No sdl support yet");
 
 #endif
 
 
-#include "SnowEngine/Engine/Core/Core.h"
+#include "SnowEngine/Engine/Core/Application.h"
 namespace Snow
 {
 	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")

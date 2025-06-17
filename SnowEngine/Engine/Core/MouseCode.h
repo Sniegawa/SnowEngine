@@ -5,8 +5,10 @@
 namespace Snow
 {
 	using MouseCode = uint16_t;
+	namespace MouseButton
+	{
 
-		enum : MouseCode
+		enum MouseButtons : MouseCode
 		{
 			// From glfw3.h
 			Button0 = 0,
@@ -23,4 +25,5 @@ namespace Snow
 			ButtonRight = Button1,
 			ButtonMiddle = Button2
 		};
+	};
 }

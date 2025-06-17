@@ -16,6 +16,8 @@
 #include "IWindow.h"
 
 #include "Layers/LayerStack.h"
+#include "Input.h"
+
 
 namespace Snow
 {
