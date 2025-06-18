@@ -51,9 +51,6 @@ endif()
 
 target_compile_definitions(SnowEngine PUBLIC SNOW_GLFW)
 target_compile_definitions(SnowEngine PUBLIC GLFW_INCLUDE_NONE)
-target_compile_definitions(SnowEngine PUBLIC IMGUI_HAS_DOCK)
-target_compile_definitions(SnowEngine PUBLIC IMGUI_HAS_VIEWPORT)
-target_compile_definitions(SnowEngine PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 
 #Spdlog error fix
