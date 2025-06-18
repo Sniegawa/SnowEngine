@@ -39,7 +39,6 @@ namespace Snow
 
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
-		virtual void SetClearColor(const glm::vec4& color) = 0;
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;

@@ -3,9 +3,8 @@
 #include "SnowEngine/Engine/Core/Events/ApplicationEvent.h"
 #include "SnowEngine/Engine/Core/Events/KeyEvent.h"
 #include "SnowEngine/Engine/Core/Events/MouseEvent.h"
+#include "SnowEngine/Engine/Platform/OpenGL/OpenGLContext.h"
 
-
-#include <glad/glad.h>
 
 namespace Snow
 {
@@ -37,6 +36,7 @@ namespace Snow
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 
+
 		SNOW_CORE_INFO("Creating window: {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
 		if (!s_GLFWInitialized)
 		{
@@ -47,10 +47,13 @@ namespace Snow
 		}
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		SNOW_CORE_ASSERT(status, "Failed to initialize GLAD!");
+
+		m_Context = new OpenGLContext(m_Window);
+
+		m_Context->Init();
+
 		glfwSetWindowUserPointer(m_Window, &m_Data);
+
 		SetVSync(m_Data.VSync);
 
 		//Set glfw callbacks
@@ -150,12 +153,12 @@ namespace Snow
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::ClearWindow()
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
@@ -166,12 +169,6 @@ namespace Snow
 		else
 			glfwSwapInterval(0);
 		SNOW_CORE_INFO("VSync is {0}", m_Data.VSync ? "enabled" : "disabled");
-	}
-
-	void WindowsWindow::SetClearColor(const glm::vec4& color)
-	{
-		//SNOW_CORE_INFO("Setting clear color to {0},{1},{2},{3}", color.x, color.y, color.z, color.w);
-		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
 	bool WindowsWindow::IsVSync() const
