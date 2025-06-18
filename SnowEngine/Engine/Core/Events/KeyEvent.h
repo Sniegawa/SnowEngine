@@ -21,7 +21,7 @@ namespace Snow
 
 	};
 	
-	class SNOW_API KeyPressedEvent : public KeyEvent
+	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(KeyCode KeyCode, int repeatCount) : KeyEvent(KeyCode), m_RepeatCount(repeatCount) {}
@@ -40,7 +40,7 @@ namespace Snow
 		int m_RepeatCount;
 	};
 
-	class SNOW_API KeyReleasedEvent : public KeyEvent
+	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(KeyCode KeyCode) : KeyEvent(KeyCode) {}
@@ -53,7 +53,7 @@ namespace Snow
 		EVENT_CLASS_TYPE(KeyReleased);
 	};
 
-	class SNOW_API KeyTypedEvent : public KeyEvent
+	class KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(KeyCode KeyCode) : KeyEvent(KeyCode) {}

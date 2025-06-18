@@ -4,7 +4,7 @@
 
 namespace Snow
 {
-	class SNOW_API WindowResizeEvent : public Event
+	class WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height)
@@ -24,7 +24,7 @@ namespace Snow
 		unsigned int m_Width, m_Height;
 	};
 
-	class SNOW_API WindowCloseEvent : public Event
+	class WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() = default;
@@ -36,7 +36,7 @@ namespace Snow
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
 	};
 
-	class SNOW_API WindowFocusEvent : public Event
+	class WindowFocusEvent : public Event
 	{
 	public:
 		WindowFocusEvent() = default;
@@ -48,7 +48,7 @@ namespace Snow
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
 	};
 
-	class SNOW_API WindowLostFocusEvent : public Event
+	class WindowLostFocusEvent : public Event
 	{
 	public:
 		WindowLostFocusEvent() = default;
@@ -60,7 +60,7 @@ namespace Snow
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP | EVENT_CATEGORY_WINDOW);
 	};
 
-	class SNOW_API AppTickEvent : public Event
+	class AppTickEvent : public Event
 	{
 	public:
 		AppTickEvent() = default;
@@ -72,7 +72,7 @@ namespace Snow
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP);
 	};
 
-	class SNOW_API AppUpdateEvent : public Event
+	class AppUpdateEvent : public Event
 	{
 	public:
 		AppUpdateEvent() = default;
@@ -83,7 +83,7 @@ namespace Snow
 		EVENT_CLASS_TYPE(AppUpdate);
 		EVENT_CLASS_CATEGORY(EVENT_CATEGORY_APP);
 	};
-	class SNOW_API AppRenderEvent : public Event
+	class AppRenderEvent : public Event
 	{
 	public:
 		AppRenderEvent() = default;

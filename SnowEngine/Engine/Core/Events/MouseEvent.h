@@ -10,7 +10,7 @@
 namespace Snow
 {
 
-	class SNOW_API MouseMovedEvent : public Event
+	class MouseMovedEvent : public Event
 	{
 	public:
 
@@ -32,7 +32,7 @@ namespace Snow
 		glm::vec2 m_MousePos;
 	};
 
-	class SNOW_API MouseScrolledEvent : public Event
+	class MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset) : m_XOffset(xOffset), m_YOffset(yOffset) {}
@@ -63,7 +63,7 @@ namespace Snow
 		MouseCode m_Button;
 	};
 
-	class SNOW_API MouseButtonPressedEvent : public MouseButtonEvent
+	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonPressedEvent(MouseCode button) : MouseButtonEvent(button) {}
@@ -74,7 +74,7 @@ namespace Snow
 		EVENT_CLASS_TYPE(MouseButtonPressed);
 	};
 
-	class SNOW_API MouseButtonReleasedEvent : public MouseButtonEvent
+	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonReleasedEvent(MouseCode button) : MouseButtonEvent(button) {}

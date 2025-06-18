@@ -7,7 +7,7 @@
 
 namespace Snow
 {
-	struct SNOW_API WindowProperties
+	struct WindowProperties
 	{
 		unsigned int Width;
 		unsigned int Height;
@@ -18,7 +18,7 @@ namespace Snow
 		}
 	};
 
-	class SNOW_API IWindow
+	class IWindow
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;

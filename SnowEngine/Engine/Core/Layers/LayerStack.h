@@ -7,7 +7,7 @@
 
 namespace Snow
 {
-	class SNOW_API LayerStack
+	class LayerStack
 	{
 	public:
 		LayerStack();

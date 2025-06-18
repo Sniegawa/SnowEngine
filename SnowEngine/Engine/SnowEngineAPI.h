@@ -1,21 +1,24 @@
 #pragma once
 
-
 // Need this to export as dll, without declaring SNOW_API before
 // every public class/struct there would be symbol errors while using them in app
-#ifdef SNOW_WINDOWS
-	#ifdef SNOW_BUILD_DLL
-		#define SNOW_API __declspec(dllexport)
-	#else
-		#define SNOW_API __declspec(dllimport)
-	#endif
-#else
-	#define SNOW_API
-#endif
+//#ifdef SNOW_WINDOWS
+//	#ifdef SNOW_BUILD_DLL
+//		#define SNOW_API __declspec(dllexport)
+//	#else
+//		#define SNOW_API __declspec(dllimport)
+//	#endif
+//#else
+//	#define SNOW_API
+//#endif
+//
+//For now I'll export as static lib for simplicity
+
 
 #ifdef SNOW_DEBUG
 	#define SNOW_ENABLE_ASSERTS
 #endif
+
 
 
 #ifdef SNOW_ENABLE_ASSERTS

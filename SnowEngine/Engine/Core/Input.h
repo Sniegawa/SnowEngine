@@ -7,7 +7,7 @@
 
 namespace Snow
 {
-	class SNOW_API Input
+	class Input
 	{
 	public:
 		inline static bool IsKeyPressed(KeyCode code) { return s_Instance->IsKeyPressedImpl(code); }

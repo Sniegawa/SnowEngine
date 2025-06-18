@@ -9,7 +9,7 @@
 
 namespace Snow
 {
-	enum SNOW_API EventType
+	enum EventType
 	{
 		NONE = 0,
 
@@ -34,7 +34,7 @@ namespace Snow
 
 	};
 
-	enum SNOW_API EventCategory
+	enum EventCategory
 	{
 		EVENT_NONE = 0,
 		EVENT_CATEGORY_APP			= BIT(0),
@@ -52,7 +52,7 @@ namespace Snow
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category;}
 
 
-	class SNOW_API Event
+	class Event
 	{
 		friend class EventDispatcher;
 	public:
@@ -75,7 +75,7 @@ namespace Snow
 		bool m_handled = false;
 	};
 	
-	class SNOW_API EventDispatcher
+	class EventDispatcher
 	{
 	private:
 		template<typename T>

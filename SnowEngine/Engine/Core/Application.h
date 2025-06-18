@@ -21,7 +21,7 @@
 
 namespace Snow
 {
-	class SNOW_API Application
+	class Application
 	{
 	public:
 		Application();

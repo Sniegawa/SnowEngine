@@ -17,6 +17,7 @@ namespace Snow
 
 	Application::~Application()
 	{
+		delete m_Window;
 		SNOW_CORE_INFO("Application destruction");
 	}
 

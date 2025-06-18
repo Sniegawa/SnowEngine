@@ -7,7 +7,7 @@
 
 namespace Snow
 {
-	class SNOW_API Layer
+	class Layer
 	{
 	public:
 		Layer(const std::string& name) : m_Name(name) {}

@@ -14,7 +14,7 @@ set(IMGUI_SOURCES
 	${IMGUI_DIR}/imgui_impl_opengl3.cpp
 )
 
-add_library(SnowEngine SHARED
+add_library(SnowEngine STATIC
 	${IMGUI_SOURCES} 
 	"Engine/Core/Application.h" 
 	"Engine/Core/Application.cpp" 
