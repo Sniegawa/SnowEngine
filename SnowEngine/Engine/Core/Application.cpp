@@ -43,7 +43,37 @@ namespace Snow
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		glBindVertexArray(0);
+
+		std::string vertexSrc = R"(
+		#version 330 core
+				
+		layout(location = 0) in vec3 a_Position;
+	
+		out vec3 v_Position;
+
+		void main()
+		{
+			gl_Position = vec4(a_Position,1.0);
+			v_Position = a_Position;
+		}
+
+		)";
+
+		std::string fragmentSrc = R"(
+			#version 330 core
 		
+			in vec3 v_Position;
+			out vec4 color;
+
+			void main()
+			{
+				color = vec4(v_Position + 0.5,1.0);
+			}
+		
+
+		)";
+
+		m_Shader.reset(new Shader(vertexSrc,fragmentSrc));
 
 		SNOW_CORE_INFO("Application initialized");
 	}
@@ -91,6 +121,7 @@ namespace Snow
 			glClearColor(0.4f, 0.4f, 0.9f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			m_Shader->Bind();
 			glBindVertexArray(m_VertexArray);
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 			glBindVertexArray(0);

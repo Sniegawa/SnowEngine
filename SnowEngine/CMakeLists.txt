@@ -39,7 +39,7 @@ add_library(SnowEngine STATIC
 	"Engine/Core/ImGui/ImGuiLayer.cpp"
 	"Engine/Core/Input.h" 
 	"Engine/Platform/Windows/WindowsInput.h" 
-	"Engine/Platform/Windows/WindowsInput.cpp" "EntryPoint.h" "Engine/Core/Renderer/GraphicsContext.h" "Engine/Platform/OpenGL/OpenGLContext.h" "Engine/Platform/OpenGL/OpenGLContext.cpp")
+	"Engine/Platform/Windows/WindowsInput.cpp" "EntryPoint.h" "Engine/Core/Renderer/GraphicsContext.h" "Engine/Platform/OpenGL/OpenGLContext.h" "Engine/Platform/OpenGL/OpenGLContext.cpp" "Engine/Core/Renderer/Shader.h" "Engine/Core/Renderer/Shader.cpp")
 
 #Export as dll if on Windows
 if (WIN32)
