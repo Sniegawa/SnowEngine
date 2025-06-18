@@ -13,6 +13,13 @@ public:
 		}
 	}
 
+	void OnImGuiRender() override
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("Hello WORLD");
+		ImGui::End();
+	}
+
 	void OnEvent(Snow::Event& event) override
 	{
 		//SNOW_CLIENT_TRACE("{0}", event.ToString());
@@ -25,9 +32,7 @@ class Sandbox : public Snow::Application
 public:
 	Sandbox()
 	{
-
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Snow::ImGuiLayer());
 	}
 
 	~Sandbox(){}

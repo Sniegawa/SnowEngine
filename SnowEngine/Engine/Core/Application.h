@@ -16,6 +16,7 @@
 #include "IWindow.h"
 
 #include "Layers/LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 #include "Input.h"
 
 
@@ -38,6 +39,7 @@ namespace Snow
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool m_ShouldClose = false;
 		IWindow* m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		static Application* s_Instance;
 	};

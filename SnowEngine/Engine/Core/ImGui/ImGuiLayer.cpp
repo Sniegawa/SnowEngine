@@ -24,7 +24,9 @@ namespace Snow
 
 	ImGuiLayer::~ImGuiLayer()
 	{
-
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -37,65 +39,66 @@ namespace Snow
 	void ImGuiLayer::OnAttach()
 	{
 		Application& app = Application::Get();
-		
+
 		IMGUI_CHECKVERSION();
 
 		ImGui::CreateContext();
-		ImGui::StyleColorsDark();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		
-		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		ImGui::StyleColorsDark();
+
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
-		
 #ifdef SNOW_GLFW
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 #endif
-		
+
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
-
-	void ImGuiLayer::OnUpdate()
+	void ImGuiLayer::Begin()
 	{
-		static ImVec4 color = ImVec4(0.1f,0.1f,0.7f,1.0f);
-		ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::Get();
-		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 		ImGui_ImplOpenGL3_NewFrame();
+
+#ifdef  SNOW_GLFW
+		ImGui_ImplGlfw_NewFrame();
+#endif //  SNOW_GLFW
+
 		ImGui::NewFrame();
-#ifdef SNOW_GLFW
-		float time = (float)glfwGetTime();
-		io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
-		m_Time = time;
-#endif
+	}
 
-		ImGui::Begin("Color picker");
+	void ImGuiLayer::End()
+	{
+		ImGuiIO& io = ImGui::GetIO();
 
-		ImGui::ColorPicker3("Background color", (float*)&color);
-		app.GetWindow().SetClearColor(glm::vec4(color.x, color.y, color.z, color.w));
-		ImGui::End();
+		Application& app = Application::Get();
 
+		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+#ifdef SNOW_GLFW
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+		}
+#endif //  SNOW_GLFW
+
+	}
+
+
+	void ImGuiLayer::OnImGuiRender()
+	{
+		static bool show = true;
+		ImGui::ShowDemoWindow(&show);
 	}
 
 	
-	void ImGuiLayer::OnEvent(Event& event)
-	{
-		//EventDispatcher dispatcher(event);
-		//dispatcher.Dispatch<MouseButtonPressedEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent,1));
-		//dispatcher.Dispatch<MouseButtonReleasedEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent,1));
-		//dispatcher.Dispatch<MouseMovedEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnMouseMovedEvent,1));
-		//dispatcher.Dispatch<MouseScrolledEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent,1));
-		//dispatcher.Dispatch<KeyPressedEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent,1));
-		//dispatcher.Dispatch<KeyReleasedEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent,1));
-		//dispatcher.Dispatch<KeyTypedEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent,1));
-		//dispatcher.Dispatch<WindowResizeEvent>(SNOW_BIND_EVENT_FN(ImGuiLayer::OnWindowResizedEvent,1));
-
-	}
 /* Leaving it here for now, works a bit, resize mouse fully working, from keyboard only typing chars work
 	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{

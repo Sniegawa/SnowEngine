@@ -12,6 +12,11 @@ namespace Snow
 		m_Window = IWindow::Create(WindowProperties(1280, 720, "SnowEngine"));
 		m_Window->SetClearColor(glm::vec4(0.1f, 0.1f, 0.7f, 1.0f));
 		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent,1));
+
+		m_ImGuiLayer = new ImGuiLayer();
+		
+		PushOverlay(m_ImGuiLayer);
+
 		SNOW_CORE_INFO("Application initialized");
 	}
 
@@ -28,13 +33,13 @@ namespace Snow
 		layer->OnAttach();
 
 	}
+
 	void Application::PushOverlay(Layer* overlay)
 	{
 		SNOW_CORE_INFO("Attaching overlay {0}", overlay->GetName());
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
-
 
 	void Application::OnEvent(Event& e)
 	{
@@ -60,6 +65,12 @@ namespace Snow
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
+			m_ImGuiLayer->Begin();
+
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+
+			m_ImGuiLayer->End();
 			m_Window->OnUpdate();
 			
 			if (Input::IsKeyPressed(Key::A))

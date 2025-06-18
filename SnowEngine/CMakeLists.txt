@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 
 project("SnowEngine")
 
@@ -34,16 +34,16 @@ add_library(SnowEngine STATIC
 	"Engine/Core/Layers/Layer.h" 
 	"Engine/Core/Layers/LayerStack.h" 
 	"Engine/Core/Layers/LayerStack.cpp" 
-	"EntryPoint.h" 
+	 
 	"Engine/Core/ImGui/ImGuiLayer.h" 
 	"Engine/Core/ImGui/ImGuiLayer.cpp"
 	"Engine/Core/Input.h" 
 	"Engine/Platform/Windows/WindowsInput.h" 
-	"Engine/Platform/Windows/WindowsInput.cpp")
+	"Engine/Platform/Windows/WindowsInput.cpp" "EntryPoint.h")
 
 #Export as dll if on Windows
 if (WIN32)
-    target_compile_definitions(SnowEngine PRIVATE SNOW_BUILD_DLL)
+    #target_compile_definitions(SnowEngine PRIVATE SNOW_BUILD_DLL)
 	target_compile_definitions(SnowEngine PUBLIC SNOW_WINDOWS)
 else()
     target_compile_definitions(SnowEngine PUBLIC SNOW_LINUX)
@@ -51,6 +51,10 @@ endif()
 
 target_compile_definitions(SnowEngine PUBLIC SNOW_GLFW)
 target_compile_definitions(SnowEngine PUBLIC GLFW_INCLUDE_NONE)
+target_compile_definitions(SnowEngine PUBLIC IMGUI_HAS_DOCK)
+target_compile_definitions(SnowEngine PUBLIC IMGUI_HAS_VIEWPORT)
+target_compile_definitions(SnowEngine PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
+
 
 #Spdlog error fix
 if (MSVC)
@@ -85,8 +89,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/Release)
 
 add_custom_command(TARGET SnowEngine POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_BINARY_DIR}/SnowEngine.dll"
-        "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.dll"
+        "${PROJECT_BINARY_DIR}/SnowEngine.lib"
+        "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.lib"
 )
 
 message(CMAKE_BINARY_DIR ="${CMAKE_BINARY_DIR}")
