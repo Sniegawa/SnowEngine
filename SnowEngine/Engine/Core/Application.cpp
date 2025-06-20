@@ -26,20 +26,20 @@ namespace Snow
 			0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
 		};
 
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		std::shared_ptr<VertexBuffer> vertexBuffer(VertexBuffer::Create(vertices, sizeof(vertices)));
 		BufferLayout layout =
 		{
 			{ShaderDataType::Float3,"a_Position"},
 			{ShaderDataType::Float4,"a_Color"}
 		};
-		m_VertexBuffer->SetLayout(layout);
+		vertexBuffer->SetLayout(layout);
 
-		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[3] = { 0,1,2 };
 
-		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+		std::shared_ptr<IndexBuffer> indexBuffer( IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		std::string vertexSrc = R"(
 		#version 330 core
@@ -92,7 +92,7 @@ namespace Snow
 
 		m_SquareVA->AddVertexBuffer(vb);
 
-		uint32_t indicesSquare[6] = {0,1,2,0,3,2};
+		uint32_t indicesSquare[6] = {0,1,2,2,3,0};
 		std::shared_ptr<IndexBuffer> ib(IndexBuffer::Create(indicesSquare, sizeof(indicesSquare) / sizeof(uint32_t)));
 
 		m_SquareVA->SetIndexBuffer(ib);
@@ -146,12 +146,12 @@ namespace Snow
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			m_Shader->Bind();
-			//m_VertexArray->Bind(); 
-			//glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 			m_SquareVA->Bind();
 			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 			glBindVertexArray(0);
-
+			m_VertexArray->Bind(); 
+			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			glBindVertexArray(0);
 			m_Window->ClearWindow();
 			
 			for (Layer* layer : m_LayerStack)
