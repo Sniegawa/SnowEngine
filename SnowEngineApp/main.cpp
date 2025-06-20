@@ -15,9 +15,9 @@ public:
 
 	void OnImGuiRender() override
 	{
-		ImGui::Begin("Test");
+		/*ImGui::Begin("Test");
 		ImGui::Text("Hello WORLD");
-		ImGui::End();
+		ImGui::End();*/
 	}
 
 	void OnEvent(Snow::Event& event) override

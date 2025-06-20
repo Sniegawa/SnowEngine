@@ -39,7 +39,23 @@ add_library(SnowEngine STATIC
 	"Engine/Core/ImGui/ImGuiLayer.cpp"
 	"Engine/Core/Input.h" 
 	"Engine/Platform/Windows/WindowsInput.h" 
-	"Engine/Platform/Windows/WindowsInput.cpp" "EntryPoint.h" "Engine/Core/Renderer/GraphicsContext.h" "Engine/Platform/OpenGL/OpenGLContext.h" "Engine/Platform/OpenGL/OpenGLContext.cpp" "Engine/Core/Renderer/Shader.h" "Engine/Core/Renderer/Shader.cpp")
+	"Engine/Platform/Windows/WindowsInput.cpp" 
+	"EntryPoint.h" 
+	"Engine/Core/Renderer/GraphicsContext.h" 
+	"Engine/Platform/OpenGL/OpenGLContext.h" 
+	"Engine/Platform/OpenGL/OpenGLContext.cpp" 
+	"Engine/Core/Renderer/Shader.h" 
+	"Engine/Core/Renderer/Shader.cpp" 
+	"Engine/Core/Renderer/Buffer.h" 
+	"Engine/Core/Renderer/Buffer.cpp" 
+	"Engine/Platform/OpenGL/OpenGLBuffer.h" 
+	"Engine/Platform/OpenGL/OpenGLBuffer.cpp" 
+	"Engine/Core/Renderer/Renderer.h" 
+	"Engine/Core/Renderer/Renderer.cpp" 
+	"Engine/Core/Renderer/VertexArray.h" 
+	"Engine/Core/Renderer/VertexArray.cpp" 
+	"Engine/Platform/OpenGL/OpenGLVertexArray.cpp" 
+	"Engine/Platform/OpenGL/OpenGLVertexArray.h")
 
 #Export as dll if on Windows
 if (WIN32)
@@ -63,7 +79,9 @@ endif()
 
 
 target_include_directories(SnowEngine PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/..)
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+	${CMAKE_CURRENT_SOURCE_DIR}/Engine
+)
 
 target_include_directories(SnowEngine PUBLIC
 	${CMAKE_SOURCE_DIR}/Libs/GLAD/include
@@ -78,6 +96,11 @@ target_link_libraries (SnowEngine PUBLIC
 		glfw
 		spdlog::spdlog
 )
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	target_compile_definitions(SnowEngine PRIVATE SNOW_DEBUG)
+endif()
+
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/Debug)

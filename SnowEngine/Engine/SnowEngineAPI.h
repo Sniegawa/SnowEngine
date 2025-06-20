@@ -22,7 +22,7 @@
 
 
 #ifdef SNOW_ENABLE_ASSERTS
-	#define SNOW_ASSERT(x, ...) { if(!(x)) { SNOW_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define SNOW_ASSERT(x, ...) { if(!(x)) { SNOW_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define SNOW_CORE_ASSERT(x, ...) { if(!(x)) { SNOW_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
 	#define SNOW_ASSERT(x, ...)
