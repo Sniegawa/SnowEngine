@@ -28,8 +28,6 @@ namespace Snow
 		virtual void Init(const WindowProperties& props) = 0;
 		
 		virtual void OnUpdate() = 0;
-		
-		virtual void ClearWindow() = 0;
 
 		virtual void Shutdown() = 0;
 		

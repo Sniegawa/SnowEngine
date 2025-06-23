@@ -1,7 +1,7 @@
 ﻿#include "Application.h"
 
-//Temp
-#include <glad/glad.h>
+#include "Renderer/Renderer.h"
+
 namespace Snow 
 {
 	Application* Application::s_Instance = nullptr;
@@ -142,18 +142,18 @@ namespace Snow
 
 		while (!m_ShouldClose)
 		{
-			glClearColor(0.4f, 0.4f, 0.9f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
+			RenderCommand::Clear();
+				
+			Renderer::BeginScene();
 
 			m_Shader->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-			glBindVertexArray(0);
-			m_VertexArray->Bind(); 
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-			glBindVertexArray(0);
-			m_Window->ClearWindow();
+			Renderer::Submit(m_SquareVA);
 			
+			Renderer::Submit(m_VertexArray);
+
+			Renderer::EndScene();
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 

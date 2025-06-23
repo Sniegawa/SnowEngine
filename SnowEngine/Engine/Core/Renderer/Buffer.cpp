@@ -11,8 +11,8 @@ namespace Snow
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
-		case RendererAPI::OpenGL:	return new OpenGLVertexBuffer(vertices,size);
+		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
+		case RendererAPI::API::OpenGL:	return new OpenGLVertexBuffer(vertices,size);
 			
 		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
 		}
@@ -22,8 +22,8 @@ namespace Snow
 	{
 		switch(Renderer::GetAPI())
 		{
-		case RendererAPI::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
-		case RendererAPI::OpenGL:	return new OpenGLIndexBuffer(indices, count);
+		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
+		case RendererAPI::API::OpenGL:	return new OpenGLIndexBuffer(indices, count);
 
 		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
 		}

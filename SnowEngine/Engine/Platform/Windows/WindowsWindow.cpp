@@ -156,11 +156,6 @@ namespace Snow
 		m_Context->SwapBuffers();
 	}
 
-	void WindowsWindow::ClearWindow()
-	{
-		//glClear(GL_COLOR_BUFFER_BIT);
-	}
-
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 		m_Data.VSync = enabled;
