@@ -22,6 +22,8 @@
 #include "Renderer/Buffer.h"
 #include "Renderer/VertexArray.h"
 
+#include "Renderer/OrthographicCamera.h"
+
 namespace Snow
 {
 	class Application
@@ -49,6 +51,8 @@ namespace Snow
 		std::shared_ptr<VertexArray> m_SquareVA;
 
 		std::shared_ptr<Shader> m_Shader;
+
+		std::shared_ptr<Camera> m_Camera;
 	};
 
 	Application* CreateApplication();
