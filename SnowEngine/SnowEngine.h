@@ -2,9 +2,25 @@
 
 #include "Engine/SnowEngineAPI.h"
 #include "Engine/Core/Application.h"
+
 #include "Engine/Core/Logging/Log.h"
+
 #include "Engine/Core/Events/Event.h"
+
+#include "Engine/Core/IWindow.h"
+
 #include "Engine/Core/Layers/Layer.h"
 #include "Engine/Core/ImGui/ImGuiLayer.h"
+
+#include "Engine/Core/Input.h"
+
+#include "Engine/Core/Renderer/Shader.h"
+#include "Engine/Core/Renderer/VertexArray.h"
+#include "Engine/Core/Renderer/Buffer.h"
+#include "Engine/Core/Renderer/OrthographicCamera.h"
+
+#include "Engine/Core/Renderer/Renderer.h"
+#include "Engine/Core/Renderer/RenderCommand.h"
+#include "Engine/Core/Renderer/RendererAPI.h"
 
 #include "EntryPoint.h"

@@ -34,7 +34,6 @@ add_library(SnowEngine STATIC
 	"Engine/Core/Layers/Layer.h" 
 	"Engine/Core/Layers/LayerStack.h" 
 	"Engine/Core/Layers/LayerStack.cpp" 
-	 
 	"Engine/Core/ImGui/ImGuiLayer.h" 
 	"Engine/Core/ImGui/ImGuiLayer.cpp"
 	"Engine/Core/Input.h" 
@@ -55,7 +54,16 @@ add_library(SnowEngine STATIC
 	"Engine/Core/Renderer/VertexArray.h" 
 	"Engine/Core/Renderer/VertexArray.cpp" 
 	"Engine/Platform/OpenGL/OpenGLVertexArray.cpp" 
-	"Engine/Platform/OpenGL/OpenGLVertexArray.h" "Engine/Core/Renderer/Camera.h" "Engine/Core/Renderer/RendererAPI.h" "Engine/Core/Renderer/RendererAPI.cpp" "Engine/Core/Renderer/RenderCommand.h" "Engine/Core/Renderer/RenderCommand.cpp" "Engine/Platform/OpenGL/OpenGLRendererAPI.h" "Engine/Platform/OpenGL/OpenGLRendererAPI.cpp" "Engine/Core/Renderer/OrthographicCamera.h" "Engine/Core/Renderer/OrthographicCamera.cpp")
+	"Engine/Platform/OpenGL/OpenGLVertexArray.h" 
+	"Engine/Core/Renderer/Camera.h" 
+	"Engine/Core/Renderer/RendererAPI.h" 
+	"Engine/Core/Renderer/RendererAPI.cpp" 
+	"Engine/Core/Renderer/RenderCommand.h" 
+	"Engine/Core/Renderer/RenderCommand.cpp" 
+	"Engine/Platform/OpenGL/OpenGLRendererAPI.h" 
+	"Engine/Platform/OpenGL/OpenGLRendererAPI.cpp" 
+	"Engine/Core/Renderer/OrthographicCamera.h" 
+	"Engine/Core/Renderer/OrthographicCamera.cpp")
 
 #Export as dll if on Windows
 if (WIN32)

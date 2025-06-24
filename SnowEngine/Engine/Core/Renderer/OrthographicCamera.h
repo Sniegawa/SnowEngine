@@ -3,25 +3,27 @@
 
 namespace Snow
 {
-	struct OrthographicCameraParams
+	namespace CameraParams
 	{
-		float left;
-		float right;
-		float bottom;
-		float top;
-
-		OrthographicCameraParams(float _left = -1.0f, float _right = 1.0f, float _bottom = -1.0f, float _top = 1.0f) :
-			left(_left), right(_right), bottom(_bottom), top(_top)
+		struct OrthographicCameraParams
 		{
-		
-		}
-	};
+			float left;
+			float right;
+			float bottom;
+			float top;
 
+			OrthographicCameraParams(float _left = -1.0f, float _right = 1.0f, float _bottom = -1.0f, float _top = 1.0f) :
+				left(_left), right(_right), bottom(_bottom), top(_top)
+			{
+
+			}
+		};
+	};
 
 	class OrthographicCamera : public Camera
 	{
 	public:
-		OrthographicCamera(glm::vec3 position = glm::vec3(0.0f), float rotation = 0.0f, OrthographicCameraParams params = OrthographicCameraParams());
+		OrthographicCamera(glm::vec3 position = glm::vec3(0.0f), float rotation = 0.0f, CameraParams::OrthographicCameraParams params = CameraParams::OrthographicCameraParams());
 		~OrthographicCamera() {};
 
 		virtual void Move(const glm::vec3& movement) override;
