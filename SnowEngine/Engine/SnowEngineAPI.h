@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 // Need this to export as dll, without declaring SNOW_API before
 // every public class/struct there would be symbol errors while using them in app
 //#ifdef SNOW_WINDOWS
@@ -32,3 +34,12 @@
 #define BIT(x) (1 << x)
 
 #define SNOW_BIND_EVENT_FN(fn,args) std::bind(&fn,this,std::placeholders::_##args)
+
+namespace Snow
+{
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+};

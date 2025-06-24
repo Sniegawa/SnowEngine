@@ -14,7 +14,7 @@ public:
 			0.0f, 0.5f, 0.0f,
 		};
 
-		std::shared_ptr<Snow::VertexBuffer> vertexBuffer(Snow::VertexBuffer::Create(vertices, sizeof(vertices)));
+		Snow::Ref<Snow::VertexBuffer> vertexBuffer(Snow::VertexBuffer::Create(vertices, sizeof(vertices)));
 		Snow::BufferLayout layout =
 		{
 			{Snow::ShaderDataType::Float3,"a_Position"},
@@ -25,7 +25,7 @@ public:
 
 		uint32_t indices[3] = { 0,1,2 };
 
-		std::shared_ptr<Snow::IndexBuffer> indexBuffer(Snow::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		Snow::Ref<Snow::IndexBuffer> indexBuffer(Snow::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		m_Trianglepos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -72,7 +72,7 @@ public:
 			-0.5f,0.5f,0.0f,
 		};
 
-		std::shared_ptr<Snow::VertexBuffer> vb(Snow::VertexBuffer::Create(verticesSquare, sizeof(verticesSquare)));
+		Snow::Ref<Snow::VertexBuffer> vb(Snow::VertexBuffer::Create(verticesSquare, sizeof(verticesSquare)));
 
 		Snow::BufferLayout Squarelayout =
 		{
@@ -84,7 +84,7 @@ public:
 		m_SquareVA->AddVertexBuffer(vb);
 
 		uint32_t indicesSquare[6] = { 0,1,2,2,3,0 };
-		std::shared_ptr<Snow::IndexBuffer> ib(Snow::IndexBuffer::Create(indicesSquare, sizeof(indicesSquare) / sizeof(uint32_t)));
+		Snow::Ref<Snow::IndexBuffer> ib(Snow::IndexBuffer::Create(indicesSquare, sizeof(indicesSquare) / sizeof(uint32_t)));
 
 		m_SquareVA->SetIndexBuffer(ib);
 
@@ -187,12 +187,12 @@ public:
 	}
 
 private:
-	std::shared_ptr<Snow::VertexArray> m_VertexArray;
-	std::shared_ptr<Snow::VertexArray> m_SquareVA;
+	Snow::Ref<Snow::VertexArray> m_VertexArray;
+	Snow::Ref<Snow::VertexArray> m_SquareVA;
 
-	std::shared_ptr<Snow::Shader> m_Shader;
+	Snow::Ref<Snow::Shader> m_Shader;
 
-	std::shared_ptr<Snow::Camera> m_Camera;
+	Snow::Ref<Snow::Camera> m_Camera;
 
 	glm::vec3 m_Trianglepos;
 
