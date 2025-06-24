@@ -8,17 +8,16 @@ public:
 
 		m_VertexArray.reset(Snow::VertexArray::Create());
 
-		float vertices[3 * 7] = {
-			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+		float vertices[3 * 3] = {
+			-0.5f, -0.5f, 0.0f, 
+			0.5f, -0.5f, 0.0f,
+			0.0f, 0.5f, 0.0f,
 		};
 
 		std::shared_ptr<Snow::VertexBuffer> vertexBuffer(Snow::VertexBuffer::Create(vertices, sizeof(vertices)));
 		Snow::BufferLayout layout =
 		{
 			{Snow::ShaderDataType::Float3,"a_Position"},
-			{Snow::ShaderDataType::Float4,"a_Color"}
 		};
 		vertexBuffer->SetLayout(layout);
 
@@ -35,16 +34,14 @@ public:
 		#version 330 core
 				
 		layout(location = 0) in vec3 a_Position;
-		layout(location = 1) in vec4 a_Color;
 		
 		uniform mat4 u_ViewProjection;
 		uniform mat4 u_ModelMatrix;
 
-		out vec4 v_color;
+
 		void main()
 		{
 			gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Position,1.0);
-			v_color = a_Color;
 		}
 
 		)";
@@ -52,26 +49,27 @@ public:
 		std::string fragmentSrc = R"(
 			#version 330 core
 		
-			in vec4 v_color;
+			uniform vec4 u_Color;			
+
 			out vec4 color;
 
 			void main()
 			{
-				color = v_color;
+				color = u_Color;
 			}
 		
 
 		)";
 
-		m_Shader.reset(new Snow::Shader(vertexSrc, fragmentSrc));
+		m_Shader.reset(Snow::Shader::Create(vertexSrc, fragmentSrc));
 
 		m_SquareVA.reset(Snow::VertexArray::Create());
 
-		float verticesSquare[4 * (3 + 4)] = {
-			-0.5f,-0.5f,0.0f,		0.0f,0.0f,0.0f,1.0f,
-			0.5f,-0.5f,0.0f,		1.0f,0.0f,0.0f,1.0f,
-			0.5f,0.5f,0.0f,			1.0f,1.0f,0.0f,1.0f,
-			-0.5f,0.5f,0.0f,		0.0f,1.0f,0.0f,1.0f
+		float verticesSquare[4 * 3] = {
+			-0.5f,-0.5f,0.0f,
+			0.5f,-0.5f,0.0f,
+			0.5f,0.5f,0.0f,
+			-0.5f,0.5f,0.0f,
 		};
 
 		std::shared_ptr<Snow::VertexBuffer> vb(Snow::VertexBuffer::Create(verticesSquare, sizeof(verticesSquare)));
@@ -79,7 +77,6 @@ public:
 		Snow::BufferLayout Squarelayout =
 		{
 			{Snow::ShaderDataType::Float3,"a_Position"},
-			{Snow::ShaderDataType::Float4,"a_Color"}
 		};
 
 		vb->SetLayout(Squarelayout);
@@ -95,41 +92,44 @@ public:
 
 	void OnUpdate(Snow::Timestep ts) override
 	{
-		float dt = ts;
-		
-		if (Snow::Input::IsKeyPressed(Snow::Key::Left))
 		{
-			m_Camera->Move(glm::vec3(-1.0f, 0.0f, 0.0f) * dt);
-		}
-		if (Snow::Input::IsKeyPressed(Snow::Key::Right))
-		{
-			m_Camera->Move(glm::vec3(1.0f, 0.0f, 0.0f) * dt);
-		}
-		if (Snow::Input::IsKeyPressed(Snow::Key::Up))
-		{
-			m_Camera->Move(glm::vec3(0.0f, 1.0f, 0.0f) * dt);
-		}
-		if (Snow::Input::IsKeyPressed(Snow::Key::Down))
-		{
-			m_Camera->Move(glm::vec3(0.0f, -1.0f, 0.0f) * dt);
-		}
+			float dt = ts;
+
+			if (Snow::Input::IsKeyPressed(Snow::Key::Left))
+			{
+				m_Camera->Move(glm::vec3(-1.0f, 0.0f, 0.0f) * dt);
+			}
+			if (Snow::Input::IsKeyPressed(Snow::Key::Right))
+			{
+				m_Camera->Move(glm::vec3(1.0f, 0.0f, 0.0f) * dt);
+			}
+			if (Snow::Input::IsKeyPressed(Snow::Key::Up))
+			{
+				m_Camera->Move(glm::vec3(0.0f, 1.0f, 0.0f) * dt);
+			}
+			if (Snow::Input::IsKeyPressed(Snow::Key::Down))
+			{
+				m_Camera->Move(glm::vec3(0.0f, -1.0f, 0.0f) * dt);
+			}
 
 
-		if (Snow::Input::IsKeyPressed(Snow::Key::A))
-		{
-			m_Trianglepos += glm::vec3(-1.0f, 0.0f, 0.0f) * dt;
-		}
-		if (Snow::Input::IsKeyPressed(Snow::Key::D))
-		{
-			m_Trianglepos += glm::vec3(1.0f, 0.0f, 0.0f) * dt;
-		}
-		if (Snow::Input::IsKeyPressed(Snow::Key::W))
-		{
-			m_Trianglepos += glm::vec3(0.0f, 1.0f, 0.0f) * dt;
-		}
-		if (Snow::Input::IsKeyPressed(Snow::Key::S))
-		{
-			m_Trianglepos += glm::vec3(0.0f, -1.0f, 0.0f) * dt;
+			if (Snow::Input::IsKeyPressed(Snow::Key::A))
+			{
+				m_Trianglepos += glm::vec3(-1.0f, 0.0f, 0.0f) * dt;
+			}
+			if (Snow::Input::IsKeyPressed(Snow::Key::D))
+			{
+				m_Trianglepos += glm::vec3(1.0f, 0.0f, 0.0f) * dt;
+			}
+			if (Snow::Input::IsKeyPressed(Snow::Key::W))
+			{
+				m_Trianglepos += glm::vec3(0.0f, 1.0f, 0.0f) * dt;
+			}
+			if (Snow::Input::IsKeyPressed(Snow::Key::S))
+			{
+				m_Trianglepos += glm::vec3(0.0f, -1.0f, 0.0f) * dt;
+			}
+
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Trianglepos);
@@ -141,19 +141,27 @@ public:
 
 		m_Shader->Bind();
 
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
 		for (int y = 0; y < 25; y++)
 		{
 			for (int x = 0; x < 25; x++)
 			{
-				glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3((x*y)/(25.0f*25.0f * 8.0f)));
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				if ((x*y) % 2 == 0)
+				{
+					m_Shader->UploadUniformFloat4("u_Color", m_Color1);
+				}
+				else
+				{
+					m_Shader->UploadUniformFloat4("u_Color", m_Color2);
+				}
 				Snow::Renderer::Submit(m_SquareVA, m_Shader,transform);
 			}
 		}
 
-
+		m_Shader->UploadUniformFloat4("u_Color", glm::vec4(0.1f, 0.8f, 0.1f, 1.0f));
 		Snow::Renderer::Submit(m_VertexArray, m_Shader,transform);
 
 		Snow::Renderer::EndScene();
@@ -161,7 +169,10 @@ public:
 
 	void OnImGuiRender() override
 	{
-
+		ImGui::Begin("Color Picker");
+		ImGui::ColorPicker4("Odd",glm::value_ptr(m_Color1));
+		ImGui::ColorPicker4("Even",glm::value_ptr(m_Color2));
+		ImGui::End();
 	}
 
 	void OnEvent(Snow::Event& event) override
@@ -184,6 +195,9 @@ private:
 	std::shared_ptr<Snow::Camera> m_Camera;
 
 	glm::vec3 m_Trianglepos;
+
+	glm::vec4 m_Color1 = glm::vec4(0.0f);
+	glm::vec4 m_Color2 = glm::vec4(0.0f);
 };
 
 class Sandbox : public Snow::Application
