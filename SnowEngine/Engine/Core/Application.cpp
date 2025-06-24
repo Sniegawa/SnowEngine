@@ -1,5 +1,9 @@
 ﻿#include "Application.h"
 
+#include "Logging/Log.h"
+
+#include <GLFW/glfw3.h>
+
 namespace Snow 
 {
 	Application* Application::s_Instance = nullptr;
@@ -11,7 +15,7 @@ namespace Snow
 		Log::Init();
 		m_Window = IWindow::Create(WindowProperties(1280, 720, "SnowEngine"));
 		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent, 1));
-
+		m_Window->SetVSync(false);
 		m_ImGuiLayer = new ImGuiLayer();
 
 		PushOverlay(m_ImGuiLayer);
@@ -56,11 +60,14 @@ namespace Snow
 	void Application::Run()
 	{
 		SNOW_CORE_INFO("Application running");
-
+		
 		while (!m_ShouldClose)
 		{
+			auto time = (float)glfwGetTime(); // Temp Platform::GetTime()
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 
 			m_ImGuiLayer->Begin();
 

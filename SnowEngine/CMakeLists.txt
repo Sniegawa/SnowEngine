@@ -63,7 +63,7 @@ add_library(SnowEngine STATIC
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.h" 
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.cpp" 
 	"Engine/Core/Renderer/OrthographicCamera.h" 
-	"Engine/Core/Renderer/OrthographicCamera.cpp")
+	"Engine/Core/Renderer/OrthographicCamera.cpp" "Engine/Core/Timestep.h")
 
 #Export as dll if on Windows
 if (WIN32)

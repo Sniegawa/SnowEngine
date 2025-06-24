@@ -5,6 +5,8 @@
 #include "SnowEngine/Engine/SnowEngineAPI.h"
 #include <sstream>
 
+#include "../Timestep.h"
+
 namespace Snow
 {
 	class Layer
@@ -15,7 +17,7 @@ namespace Snow
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 

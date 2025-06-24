@@ -90,23 +90,25 @@ public:
 
 	}
 
-	void OnUpdate() override
+	void OnUpdate(Snow::Timestep ts) override
 	{
+		float dt = ts;
+		
 		if (Snow::Input::IsKeyPressed(Snow::Key::Left))
 		{
-			m_Camera->Move(glm::vec3(-0.001f, 0.0f, 0.0f));
+			m_Camera->Move(glm::vec3(-1.0f, 0.0f, 0.0f) * dt);
 		}
 		if (Snow::Input::IsKeyPressed(Snow::Key::Right))
 		{
-			m_Camera->Move(glm::vec3(0.001f, 0.0f, 0.0f));
+			m_Camera->Move(glm::vec3(1.0f, 0.0f, 0.0f) * dt);
 		}
 		if (Snow::Input::IsKeyPressed(Snow::Key::Up))
 		{
-			m_Camera->Move(glm::vec3(0.0f, 0.001f, 0.0f));
+			m_Camera->Move(glm::vec3(0.0f, 1.0f, 0.0f) * dt);
 		}
 		if (Snow::Input::IsKeyPressed(Snow::Key::Down))
 		{
-			m_Camera->Move(glm::vec3(0.0f, -0.001f, 0.0f));
+			m_Camera->Move(glm::vec3(0.0f, -1.0f, 0.0f) * dt);
 		}
 
 		Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });

@@ -9,6 +9,8 @@
 
 #include "Engine/Core/IWindow.h"
 
+#include "Engine/Core/Timestep.h"
+
 #include "Engine/Core/Layers/Layer.h"
 #include "Engine/Core/ImGui/ImGuiLayer.h"
 

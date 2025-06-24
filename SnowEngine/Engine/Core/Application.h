@@ -5,11 +5,12 @@
 
 #include "glm/glm.hpp"
 
-#include "../SnowEngineAPI.h"
-#include "Logging/Log.h"
+#include "SnowEngineAPI.h"
+#include "IWindow.h"
+
 #include "Events/ApplicationEvent.h"
 
-#include "IWindow.h"
+#include "Timestep.h"
 
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
@@ -31,10 +32,13 @@ namespace Snow
 		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+	private:
 		bool m_ShouldClose = false;
 		IWindow* m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
+		float m_LastFrameTime = 0.0f;
+
 		static Application* s_Instance;
 	};
 
