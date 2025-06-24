@@ -29,6 +29,8 @@ public:
 		std::shared_ptr<Snow::IndexBuffer> indexBuffer(Snow::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
+		m_Trianglepos = glm::vec3(0.0f, 0.0f, 0.0f);
+
 		std::string vertexSrc = R"(
 		#version 330 core
 				
@@ -36,11 +38,12 @@ public:
 		layout(location = 1) in vec4 a_Color;
 		
 		uniform mat4 u_ViewProjection;
+		uniform mat4 u_ModelMatrix;
 
 		out vec4 v_color;
 		void main()
 		{
-			gl_Position = u_ViewProjection * vec4(a_Position,1.0);
+			gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Position,1.0);
 			v_color = a_Color;
 		}
 
@@ -65,10 +68,10 @@ public:
 		m_SquareVA.reset(Snow::VertexArray::Create());
 
 		float verticesSquare[4 * (3 + 4)] = {
-			-1.0f,-1.0f,0.0f,		0.0f,0.0f,0.0f,1.0f,
-			1.0f,-1.0f,0.0f,		1.0f,0.0f,0.0f,1.0f,
-			1.0f,1.0f,0.0f,			1.0f,1.0f,0.0f,1.0f,
-			-1.0f,1.0f,0.0f,		0.0f,1.0f,0.0f,1.0f
+			-0.5f,-0.5f,0.0f,		0.0f,0.0f,0.0f,1.0f,
+			0.5f,-0.5f,0.0f,		1.0f,0.0f,0.0f,1.0f,
+			0.5f,0.5f,0.0f,			1.0f,1.0f,0.0f,1.0f,
+			-0.5f,0.5f,0.0f,		0.0f,1.0f,0.0f,1.0f
 		};
 
 		std::shared_ptr<Snow::VertexBuffer> vb(Snow::VertexBuffer::Create(verticesSquare, sizeof(verticesSquare)));
@@ -111,6 +114,26 @@ public:
 			m_Camera->Move(glm::vec3(0.0f, -1.0f, 0.0f) * dt);
 		}
 
+
+		if (Snow::Input::IsKeyPressed(Snow::Key::A))
+		{
+			m_Trianglepos += glm::vec3(-1.0f, 0.0f, 0.0f) * dt;
+		}
+		if (Snow::Input::IsKeyPressed(Snow::Key::D))
+		{
+			m_Trianglepos += glm::vec3(1.0f, 0.0f, 0.0f) * dt;
+		}
+		if (Snow::Input::IsKeyPressed(Snow::Key::W))
+		{
+			m_Trianglepos += glm::vec3(0.0f, 1.0f, 0.0f) * dt;
+		}
+		if (Snow::Input::IsKeyPressed(Snow::Key::S))
+		{
+			m_Trianglepos += glm::vec3(0.0f, -1.0f, 0.0f) * dt;
+		}
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Trianglepos);
+
 		Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 		Snow::RenderCommand::Clear();
 
@@ -118,9 +141,20 @@ public:
 
 		m_Shader->Bind();
 
-		Snow::Renderer::Submit(m_SquareVA, m_Shader);
 
-		Snow::Renderer::Submit(m_VertexArray, m_Shader);
+		for (int y = 0; y < 25; y++)
+		{
+			for (int x = 0; x < 25; x++)
+			{
+				glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3((x*y)/(25.0f*25.0f * 8.0f)));
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				Snow::Renderer::Submit(m_SquareVA, m_Shader,transform);
+			}
+		}
+
+
+		Snow::Renderer::Submit(m_VertexArray, m_Shader,transform);
 
 		Snow::Renderer::EndScene();
 	}
@@ -148,6 +182,8 @@ private:
 	std::shared_ptr<Snow::Shader> m_Shader;
 
 	std::shared_ptr<Snow::Camera> m_Camera;
+
+	glm::vec3 m_Trianglepos;
 };
 
 class Sandbox : public Snow::Application
