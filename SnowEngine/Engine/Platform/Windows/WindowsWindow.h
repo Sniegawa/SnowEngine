@@ -13,7 +13,7 @@ namespace Snow
 	class WindowsWindow : public IWindow
 	{
 	public:
-		WindowsWindow(const WindowProperties& props);
+		WindowsWindow();
 		
 		virtual ~WindowsWindow();
 
@@ -29,9 +29,11 @@ namespace Snow
 		
 		void* GetNativeWindow() override { return m_Window; }
 
-	private:
 		void Init(const WindowProperties& props) override;
+	protected:
 		void Shutdown() override;
+
+	private:
 		
 		GraphicsContext* m_Context;
 		GLFWwindow* m_Window;

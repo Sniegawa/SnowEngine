@@ -25,11 +25,9 @@ namespace Snow
 
 		virtual ~IWindow() = default;
 		
-		virtual void Init(const WindowProperties& props) = 0;
 		
 		virtual void OnUpdate() = 0;
 
-		virtual void Shutdown() = 0;
 		
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 
@@ -41,9 +39,9 @@ namespace Snow
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
 		
-		static IWindow* Create(const WindowProperties& props = WindowProperties());
-
+		static Ref<IWindow> Create();
+		virtual void Init(const WindowProperties& props = WindowProperties()) = 0;
 	protected:
-		
+		virtual void Shutdown() = 0;
 	};
 }

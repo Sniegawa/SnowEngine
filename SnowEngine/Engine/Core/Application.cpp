@@ -13,7 +13,8 @@ namespace Snow
 		SNOW_ASSERT(!s_Instance, "App already exists!");
 		s_Instance = this;
 		Log::Init();
-		m_Window = std::make_unique<IWindow>(IWindow::Create(WindowProperties(1280, 720, "SnowEngine")));
+		m_Window = IWindow::Create();
+		m_Window->Init(WindowProperties(1280, 720, "SnowEngine"));
 		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent, 1));
 		m_Window->SetVSync(false);
 		m_ImGuiLayer = new ImGuiLayer();
@@ -25,7 +26,7 @@ namespace Snow
 
 	Application::~Application()
 	{
-		delete m_Window;
+		
 		SNOW_CORE_INFO("Application destruction");
 	}
 

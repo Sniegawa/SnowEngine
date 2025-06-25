@@ -15,14 +15,13 @@ namespace Snow
 		SNOW_CORE_ERROR("GLFW Error ({0}) : {1}", error, description);
 	}
 
-	IWindow* IWindow::Create(const WindowProperties& props)
+	Ref<IWindow> IWindow::Create()
 	{
-		return new WindowsWindow(props);
+		return std::make_shared<WindowsWindow>();
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProperties& props)
+	WindowsWindow::WindowsWindow()
 	{
-		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
