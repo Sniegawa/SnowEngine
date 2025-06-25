@@ -10,7 +10,7 @@ namespace Snow
 	class Renderer
 	{
 	public:
-
+		static void Init();
 		static void BeginScene(Ref<Camera> camera);
 		static void EndScene();
 

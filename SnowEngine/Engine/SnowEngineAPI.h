@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-
+#include "Core/Logging/Log.h"
 // Need this to export as dll, without declaring SNOW_API before
 // every public class/struct there would be symbol errors while using them in app
 //#ifdef SNOW_WINDOWS

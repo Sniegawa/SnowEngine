@@ -6,31 +6,12 @@ public:
 	ExampleLayer() : Layer("Example") , m_Camera(new Snow::OrthographicCamera(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, Snow::CameraParams::OrthographicCameraParams(-1.6f, 1.6f, -0.9f, 0.9f))) 
 	{
 
-		m_VertexArray.reset(Snow::VertexArray::Create());
-
-		float vertices[3 * 3] = {
-			-0.5f, -0.5f, 0.0f, 
-			0.5f, -0.5f, 0.0f,
-			0.0f, 0.5f, 0.0f,
-		};
-
-		Snow::Ref<Snow::VertexBuffer> vertexBuffer(Snow::VertexBuffer::Create(vertices, sizeof(vertices)));
-		Snow::BufferLayout layout =
-		{
-			{Snow::ShaderDataType::Float3,"a_Position"},
-		};
-		vertexBuffer->SetLayout(layout);
-
-		m_VertexArray->AddVertexBuffer(vertexBuffer);
-
-		uint32_t indices[3] = { 0,1,2 };
-
-		Snow::Ref<Snow::IndexBuffer> indexBuffer(Snow::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-		m_VertexArray->SetIndexBuffer(indexBuffer);
+		
 
 		m_Trianglepos = glm::vec3(0.0f, 0.0f, 0.0f);
 
-		std::string vertexSrc = R"(
+		{
+			std::string vertexSrc = R"(
 		#version 330 core
 				
 		layout(location = 0) in vec3 a_Position;
@@ -46,7 +27,7 @@ public:
 
 		)";
 
-		std::string fragmentSrc = R"(
+			std::string fragmentSrc = R"(
 			#version 330 core
 		
 			uniform vec4 u_Color;			
@@ -61,15 +42,57 @@ public:
 
 		)";
 
-		m_Shader.reset(Snow::Shader::Create(vertexSrc, fragmentSrc));
+			m_Shader.reset(Snow::Shader::Create(vertexSrc, fragmentSrc));
+		}
+
+		{
+			std::string vertexSrc = R"(
+		#version 330 core
+				
+		layout(location = 0) in vec3 a_Position;
+		layout(location = 1) in vec2 a_TexCoord;
+
+		uniform mat4 u_ViewProjection;
+		uniform mat4 u_ModelMatrix;
+
+		out vec2 v_TexCoord;
+
+		void main()
+		{
+			gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Position,1.0);
+			v_TexCoord = a_TexCoord;
+		}
+
+		)";
+
+			std::string fragmentSrc = R"(
+			#version 330 core
+				
+			uniform sampler2D u_Texture;
+			in vec2 v_TexCoord;
+
+			out vec4 color;
+
+			void main()
+			{
+				color = texture(u_Texture,v_TexCoord);
+			}
+		
+
+		)";
+
+			m_TextureShader.reset(Snow::Shader::Create(vertexSrc, fragmentSrc));
+		}
+
+		m_Texture = Snow::Texture2D::Create("Assets/Textures/pizza.png");
 
 		m_SquareVA.reset(Snow::VertexArray::Create());
 
-		float verticesSquare[4 * 3] = {
-			-0.5f,-0.5f,0.0f,
-			0.5f,-0.5f,0.0f,
-			0.5f,0.5f,0.0f,
-			-0.5f,0.5f,0.0f,
+		float verticesSquare[4 * 5] = {
+			-0.5f,-0.5f,0.0f, 0.0f, 0.0f,
+			0.5f,-0.5f,0.0f, 1.0f, 0.0f,
+			0.5f,0.5f,0.0f, 1.0f, 1.0f,
+			-0.5f,0.5f,0.0f, 0.0f, 1.0f
 		};
 
 		Snow::Ref<Snow::VertexBuffer> vb(Snow::VertexBuffer::Create(verticesSquare, sizeof(verticesSquare)));
@@ -77,6 +100,7 @@ public:
 		Snow::BufferLayout Squarelayout =
 		{
 			{Snow::ShaderDataType::Float3,"a_Position"},
+			{Snow::ShaderDataType::FLoat2,"a_TexCoord"}
 		};
 
 		vb->SetLayout(Squarelayout);
@@ -139,6 +163,8 @@ public:
 
 		Snow::Renderer::BeginScene(m_Camera);
 
+
+
 		m_Shader->Bind();
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
@@ -157,12 +183,13 @@ public:
 				{
 					m_Shader->UploadUniformFloat4("u_Color", m_Color2);
 				}
+				m_Texture->Bind();
+				m_Shader->UploadUniformInt("u_Texture", 0);
 				Snow::Renderer::Submit(m_SquareVA, m_Shader,transform);
 			}
 		}
 
-		m_Shader->UploadUniformFloat4("u_Color", glm::vec4(0.1f, 0.8f, 0.1f, 1.0f));
-		Snow::Renderer::Submit(m_VertexArray, m_Shader,transform);
+		Snow::Renderer::Submit(m_SquareVA, m_TextureShader, transform);
 
 		Snow::Renderer::EndScene();
 	}
@@ -187,17 +214,19 @@ public:
 	}
 
 private:
-	Snow::Ref<Snow::VertexArray> m_VertexArray;
 	Snow::Ref<Snow::VertexArray> m_SquareVA;
 
 	Snow::Ref<Snow::Shader> m_Shader;
+	Snow::Ref<Snow::Shader> m_TextureShader;
 
 	Snow::Ref<Snow::Camera> m_Camera;
 
+	Snow::Ref<Snow::Texture2D> m_Texture;
+
 	glm::vec3 m_Trianglepos;
 
-	glm::vec4 m_Color1 = glm::vec4(0.0f);
-	glm::vec4 m_Color2 = glm::vec4(0.0f);
+	glm::vec4 m_Color1 = glm::vec4(0.0f,0.0f,0.0f,1.0f);
+	glm::vec4 m_Color2 = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 };
 
 class Sandbox : public Snow::Application

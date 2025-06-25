@@ -63,7 +63,16 @@ add_library(SnowEngine STATIC
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.h" 
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.cpp" 
 	"Engine/Core/Renderer/OrthographicCamera.h" 
-	"Engine/Core/Renderer/OrthographicCamera.cpp" "Engine/Core/Timestep.h" "Engine/Platform/OpenGL/OpenGLShader.h" "Engine/Platform/OpenGL/OpenGLShader.cpp")
+	"Engine/Core/Renderer/OrthographicCamera.cpp" 
+	"Engine/Core/Timestep.h" 
+	"Engine/Platform/OpenGL/OpenGLShader.h" 
+	"Engine/Platform/OpenGL/OpenGLShader.cpp" 
+	"Engine/Core/Renderer/Texture.h" 
+	"Engine/Core/Renderer/Texture.cpp"   
+	"Engine/Platform/OpenGL/OpenGLTexture.h" 
+	"Engine/Platform/OpenGL/OpenGLTexture.cpp" 
+	"ThirdParty/stb/stb_image.h"
+	"ThirdParty/stb/stb_image.cpp")
 
 #Export as dll if on Windows
 if (WIN32)
@@ -96,7 +105,9 @@ target_include_directories(SnowEngine PUBLIC
     ${CMAKE_SOURCE_DIR}/Libs/glfw/include
     ${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb
 	${IMGUI_DIR}
+
 )
 
 target_link_libraries (SnowEngine PUBLIC
