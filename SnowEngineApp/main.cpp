@@ -42,47 +42,10 @@ public:
 
 		)";
 
-			m_Shader.reset(Snow::Shader::Create(vertexSrc, fragmentSrc));
+			m_ShaderLib.Load("ColorPicker", vertexSrc, fragmentSrc, false);
 		}
 
-		{
-			std::string vertexSrc = R"(
-		#version 330 core
-				
-		layout(location = 0) in vec3 a_Position;
-		layout(location = 1) in vec2 a_TexCoord;
-
-		uniform mat4 u_ViewProjection;
-		uniform mat4 u_ModelMatrix;
-
-		out vec2 v_TexCoord;
-
-		void main()
-		{
-			gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Position,1.0);
-			v_TexCoord = a_TexCoord;
-		}
-
-		)";
-
-			std::string fragmentSrc = R"(
-			#version 330 core
-				
-			uniform sampler2D u_Texture;
-			in vec2 v_TexCoord;
-
-			out vec4 color;
-
-			void main()
-			{
-				color = texture(u_Texture,v_TexCoord);
-			}
-		
-
-		)";
-
-			m_TextureShader.reset(Snow::Shader::Create(vertexSrc, fragmentSrc));
-		}
+		m_ShaderLib.Load("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true);
 
 		m_Texture = Snow::Texture2D::Create("Assets/Textures/pizza.png");
 
@@ -156,7 +119,7 @@ public:
 
 		}
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Trianglepos);
+		
 
 		Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 		Snow::RenderCommand::Clear();
@@ -164,8 +127,7 @@ public:
 		Snow::Renderer::BeginScene(m_Camera);
 
 
-
-		m_Shader->Bind();
+		Snow::Ref<Snow::Shader> ColorPickerShader =	m_ShaderLib.Get("ColorPicker");
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -177,19 +139,20 @@ public:
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 				if ((x*y) % 2 == 0)
 				{
-					m_Shader->UploadUniformFloat4("u_Color", m_Color1);
+					ColorPickerShader->UploadUniformFloat4("u_Color", m_Color1);
 				}
 				else
 				{
-					m_Shader->UploadUniformFloat4("u_Color", m_Color2);
+					ColorPickerShader->UploadUniformFloat4("u_Color", m_Color2);
 				}
 				m_Texture->Bind();
-				m_Shader->UploadUniformInt("u_Texture", 0);
-				Snow::Renderer::Submit(m_SquareVA, m_Shader,transform);
+				ColorPickerShader->UploadUniformInt("u_Texture", 0);
+				Snow::Renderer::Submit(m_SquareVA, ColorPickerShader,transform);
 			}
 		}
 
-		Snow::Renderer::Submit(m_SquareVA, m_TextureShader, transform);
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Trianglepos) * glm::scale(glm::mat4(1.0f),glm::vec3(0.5f));
+		Snow::Renderer::Submit(m_SquareVA, m_ShaderLib.Get("Texture"), transform);
 
 		Snow::Renderer::EndScene();
 	}
@@ -214,10 +177,9 @@ public:
 	}
 
 private:
-	Snow::Ref<Snow::VertexArray> m_SquareVA;
+	Snow::ShaderLibrary m_ShaderLib;
 
-	Snow::Ref<Snow::Shader> m_Shader;
-	Snow::Ref<Snow::Shader> m_TextureShader;
+	Snow::Ref<Snow::VertexArray> m_SquareVA;
 
 	Snow::Ref<Snow::Camera> m_Camera;
 

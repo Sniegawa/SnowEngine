@@ -10,11 +10,13 @@ namespace Snow
 	class OpenGLShader : public Shader
 	{
 	public:
-		OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+		OpenGLShader(const std::string& name, const std::string& vertex, const std::string& fragment, bool isFile = 0);
 		~OpenGLShader();
 
 		void Bind() const override;
 		void Unbind() const;
+
+		virtual const std::string& GetName() const override { return m_Name; }
 
 		void UploadUniformMat4(const std::string& name, const glm::mat4& value) override;
 		void UploadUniformMat3(const std::string& name, const glm::mat3& value) override;
@@ -31,6 +33,7 @@ namespace Snow
 
 		void UploadUniformBool(const std::string& name, const bool& value);
 	private:
+		std::string m_Name;
 		uint32_t m_RendererID;
 	};
 };
