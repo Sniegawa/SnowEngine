@@ -2,7 +2,7 @@
 
 #include "RenderCommand.h"
 
-#include "Camera.h"
+#include "Camera/Camera.h"
 #include "Shader.h"
 namespace Snow
 {
@@ -11,7 +11,7 @@ namespace Snow
 	{
 	public:
 		static void Init();
-		static void BeginScene(Ref<Camera> camera);
+		static void BeginScene(Camera& camera);
 		static void EndScene();
 
 		static void Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform = glm::mat4(1.0f));

@@ -55,15 +55,15 @@ add_library(SnowEngine STATIC
 	"Engine/Core/Renderer/VertexArray.cpp" 
 	"Engine/Platform/OpenGL/OpenGLVertexArray.cpp" 
 	"Engine/Platform/OpenGL/OpenGLVertexArray.h" 
-	"Engine/Core/Renderer/Camera.h" 
+	"Engine/Core/Renderer/Camera/Camera.h" 
 	"Engine/Core/Renderer/RendererAPI.h" 
 	"Engine/Core/Renderer/RendererAPI.cpp" 
 	"Engine/Core/Renderer/RenderCommand.h" 
 	"Engine/Core/Renderer/RenderCommand.cpp" 
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.h" 
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.cpp" 
-	"Engine/Core/Renderer/OrthographicCamera.h" 
-	"Engine/Core/Renderer/OrthographicCamera.cpp" 
+	"Engine/Core/Renderer/Camera/OrthographicCamera.h" 
+	"Engine/Core/Renderer/Camera/OrthographicCamera.cpp" 
 	"Engine/Core/Timestep.h" 
 	"Engine/Platform/OpenGL/OpenGLShader.h" 
 	"Engine/Platform/OpenGL/OpenGLShader.cpp" 
@@ -72,7 +72,10 @@ add_library(SnowEngine STATIC
 	"Engine/Platform/OpenGL/OpenGLTexture.h" 
 	"Engine/Platform/OpenGL/OpenGLTexture.cpp" 
 	"ThirdParty/stb/stb_image.h"
-	"ThirdParty/stb/stb_image.cpp")
+	"ThirdParty/stb/stb_image.cpp" 
+	"Engine/Core/Renderer/Camera/CameraController.h" 
+	"Engine/Core/Renderer/Camera/OrthographicCameraController.h" 
+	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp")
 
 #Export as dll if on Windows
 if (WIN32)
@@ -93,6 +96,10 @@ if (MSVC)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(SnowEngine PRIVATE -frtti)
 endif()
+
+target_compile_options(SnowEngine PRIVATE
+    $<$<CONFIG:Debug>:/Zi /Od /MDd> # MSVC debug flags for Debug config
+)
 
 
 target_include_directories(SnowEngine PUBLIC

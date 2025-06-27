@@ -9,9 +9,9 @@ namespace Snow
 		RenderCommand::Init();
 	}
 
-	void Renderer::BeginScene(Ref<Camera> camera)
+	void Renderer::BeginScene(Camera& camera)
 	{
-		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
+		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}
 
 	void Renderer::EndScene()

@@ -3,10 +3,10 @@
 class ExampleLayer : public Snow::Layer
 {
 public:
-	ExampleLayer() : Layer("Example") , m_Camera(new Snow::OrthographicCamera(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, Snow::CameraParams::OrthographicCameraParams(-1.6f, 1.6f, -0.9f, 0.9f))) 
+	ExampleLayer() : 
+		Layer("Application Example Layer"),
+		m_CameraController(glm::vec3(0.0f,0.0f,0.0f),0.0f,(1280.0f/720.0f),true)
 	{
-
-		
 
 		m_Trianglepos = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -79,52 +79,13 @@ public:
 
 	void OnUpdate(Snow::Timestep ts) override
 	{
-		{
-			float dt = ts;
 
-			if (Snow::Input::IsKeyPressed(Snow::Key::Left))
-			{
-				m_Camera->Move(glm::vec3(-1.0f, 0.0f, 0.0f) * dt);
-			}
-			if (Snow::Input::IsKeyPressed(Snow::Key::Right))
-			{
-				m_Camera->Move(glm::vec3(1.0f, 0.0f, 0.0f) * dt);
-			}
-			if (Snow::Input::IsKeyPressed(Snow::Key::Up))
-			{
-				m_Camera->Move(glm::vec3(0.0f, 1.0f, 0.0f) * dt);
-			}
-			if (Snow::Input::IsKeyPressed(Snow::Key::Down))
-			{
-				m_Camera->Move(glm::vec3(0.0f, -1.0f, 0.0f) * dt);
-			}
-
-
-			if (Snow::Input::IsKeyPressed(Snow::Key::A))
-			{
-				m_Trianglepos += glm::vec3(-1.0f, 0.0f, 0.0f) * dt;
-			}
-			if (Snow::Input::IsKeyPressed(Snow::Key::D))
-			{
-				m_Trianglepos += glm::vec3(1.0f, 0.0f, 0.0f) * dt;
-			}
-			if (Snow::Input::IsKeyPressed(Snow::Key::W))
-			{
-				m_Trianglepos += glm::vec3(0.0f, 1.0f, 0.0f) * dt;
-			}
-			if (Snow::Input::IsKeyPressed(Snow::Key::S))
-			{
-				m_Trianglepos += glm::vec3(0.0f, -1.0f, 0.0f) * dt;
-			}
-
-		}
-
-		
+		m_CameraController.OnUpdate(ts);
 
 		Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 		Snow::RenderCommand::Clear();
 
-		Snow::Renderer::BeginScene(m_Camera);
+		Snow::Renderer::BeginScene(m_CameraController.GetCamera());
 
 
 		Snow::Ref<Snow::Shader> ColorPickerShader =	m_ShaderLib.Get("ColorPicker");
@@ -167,6 +128,7 @@ public:
 
 	void OnEvent(Snow::Event& event) override
 	{
+		m_CameraController.OnEvent(event);
 		Snow::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<Snow::KeyPressedEvent>(SNOW_BIND_EVENT_FN(ExampleLayer::OnKeyPressedEvent, 1));
 	}
@@ -178,10 +140,10 @@ public:
 
 private:
 	Snow::ShaderLibrary m_ShaderLib;
+	Snow::OrthographicCameraController m_CameraController;
 
 	Snow::Ref<Snow::VertexArray> m_SquareVA;
 
-	Snow::Ref<Snow::Camera> m_Camera;
 
 	Snow::Ref<Snow::Texture2D> m_Texture;
 

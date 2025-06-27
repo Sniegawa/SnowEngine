@@ -21,7 +21,7 @@ namespace Snow
 		m_Height = height;
 
 
-		GLenum internalFormat, dataFormat;
+		GLenum internalFormat = GL_RGBA8, dataFormat = GL_RGBA;
 		switch (channels)
 		{
 		case 2:

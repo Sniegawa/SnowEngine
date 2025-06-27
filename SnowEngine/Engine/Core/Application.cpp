@@ -19,7 +19,6 @@ namespace Snow
 		m_Window = IWindow::Create();
 		m_Window->Init(WindowProperties(1280, 720, "SnowEngine"));
 		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent, 1));
-		m_Window->SetVSync(false);
 
 		m_ImGuiLayer = new ImGuiLayer();
 
