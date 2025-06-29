@@ -54,7 +54,7 @@ namespace Snow
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(SNOW_BIND_EVENT_FN(Application::OnWindowClose,1));
-
+		dispatcher.Dispatch<WindowResizeEvent>(SNOW_BIND_EVENT_FN(Application::OnWindowResize, 1));
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{
 			(*--it)->OnEvent(e);
@@ -72,8 +72,12 @@ namespace Snow
 			auto time = (float)glfwGetTime(); // Temp Platform::GetTime()
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate(timestep);
+
+			if (!m_Minimized)
+			{
+				for (Layer* layer : m_LayerStack)
+					layer->OnUpdate(timestep);
+			}
 
 			m_ImGuiLayer->Begin();
 
@@ -90,5 +94,19 @@ namespace Snow
 	{
 		m_ShouldClose = true;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+		
+		m_Minimized = false;
+
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		return false;
 	}
 };

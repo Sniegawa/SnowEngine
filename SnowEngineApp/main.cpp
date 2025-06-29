@@ -132,7 +132,6 @@ public:
 		Snow::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<Snow::KeyPressedEvent>(SNOW_BIND_EVENT_FN(ExampleLayer::OnKeyPressedEvent, 1));
 	}
-
 	bool OnKeyPressedEvent(Snow::KeyPressedEvent& event)
 	{
 		return false;
