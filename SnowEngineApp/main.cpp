@@ -7,44 +7,7 @@ public:
 		Layer("Application Example Layer"),
 		m_CameraController(glm::vec3(0.0f,0.0f,0.0f),0.0f,(1280.0f/720.0f),true)
 	{
-
-		m_Trianglepos = glm::vec3(0.0f, 0.0f, 0.0f);
-
-		{
-			std::string vertexSrc = R"(
-		#version 330 core
-				
-		layout(location = 0) in vec3 a_Position;
-		
-		uniform mat4 u_ViewProjection;
-		uniform mat4 u_ModelMatrix;
-
-
-		void main()
-		{
-			gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Position,1.0);
-		}
-
-		)";
-
-			std::string fragmentSrc = R"(
-			#version 330 core
-		
-			uniform vec4 u_Color;			
-
-			out vec4 color;
-
-			void main()
-			{
-				color = u_Color;
-			}
-		
-
-		)";
-
-			m_ShaderLib.Load("ColorPicker", vertexSrc, fragmentSrc, false);
-		}
-
+		m_ShaderLib.Load("ColorPicker", "Assets/Shaders/PlainColor.vert", "Assets/Shaders/PlainColor.frag", true);
 		m_ShaderLib.Load("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true);
 
 		m_Texture = Snow::Texture2D::Create("Assets/Textures/pizza.png");
@@ -81,6 +44,9 @@ public:
 	{
 
 		m_CameraController.OnUpdate(ts);
+		colorval += ts;
+		m_Color1 = glm::vec4(sin(colorval), cos(colorval), std::max(tan(colorval), 1.0f), 1.0f);
+		m_Color2 = glm::vec4(sin(colorval) * cos(colorval), cos(colorval), sin(colorval), 1.0f);
 
 		Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 		Snow::RenderCommand::Clear();
@@ -112,7 +78,7 @@ public:
 			}
 		}
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Trianglepos) * glm::scale(glm::mat4(1.0f),glm::vec3(0.5f));
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f)) * glm::scale(glm::mat4(1.0f),glm::vec3(0.5f));
 		Snow::Renderer::Submit(m_SquareVA, m_ShaderLib.Get("Texture"), transform);
 
 		Snow::Renderer::EndScene();
@@ -120,10 +86,7 @@ public:
 
 	void OnImGuiRender() override
 	{
-		ImGui::Begin("Color Picker");
-		ImGui::ColorPicker4("Odd",glm::value_ptr(m_Color1));
-		ImGui::ColorPicker4("Even",glm::value_ptr(m_Color2));
-		ImGui::End();
+
 	}
 
 	void OnEvent(Snow::Event& event) override
@@ -143,11 +106,9 @@ private:
 
 	Snow::Ref<Snow::VertexArray> m_SquareVA;
 
-
 	Snow::Ref<Snow::Texture2D> m_Texture;
 
-	glm::vec3 m_Trianglepos;
-
+	float colorval = 0.0f;
 	glm::vec4 m_Color1 = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 	glm::vec4 m_Color2 = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 };

@@ -8,8 +8,6 @@ target_link_libraries(SnowEngineApp
 	SnowEngine
 )
 
-set(CMAKE_BUILD_TYPE Debug)
-
 if(MSVC)
   target_compile_options(SnowEngineApp PRIVATE $<$<CONFIG:Debug>:/Zi /Od /MDd>)
 endif()

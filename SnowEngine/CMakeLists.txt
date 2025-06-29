@@ -107,6 +107,7 @@ target_include_directories(SnowEngine PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/Engine
 )
 
+
 target_include_directories(SnowEngine PUBLIC
 	${CMAKE_SOURCE_DIR}/Libs/GLAD/include
     ${CMAKE_SOURCE_DIR}/Libs/glfw/include
@@ -120,7 +121,7 @@ target_include_directories(SnowEngine PUBLIC
 target_link_libraries (SnowEngine PUBLIC
 		GLAD
 		glfw
-		spdlog::spdlog
+		spdlog::spdlog_header_only
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -138,5 +139,3 @@ add_custom_command(TARGET SnowEngine POST_BUILD
         "${PROJECT_BINARY_DIR}/SnowEngine.lib"
         "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.lib"
 )
-
-message(CMAKE_BINARY_DIR ="${CMAKE_BINARY_DIR}")
