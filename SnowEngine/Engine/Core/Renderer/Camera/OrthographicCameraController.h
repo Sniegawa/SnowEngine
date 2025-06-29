@@ -14,7 +14,7 @@ namespace Snow
 
 		virtual void OnResize(float width, float height) override;
 
-		virtual Camera& GetCamera() override;
+		virtual Camera& GetCamera() override { return m_Camera; }
 
 		inline float GetZoomLevel() const { return m_ZoomLevel; }
 		inline void SetZoomLevel(float level) { m_ZoomLevel = level; }

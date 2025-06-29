@@ -8,7 +8,7 @@ namespace Snow
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
-		case RendererAPI::API::OpenGL:	return std::make_shared<OpenGLTexture2D>(path);
+		case RendererAPI::API::OpenGL:	return CreateRef<OpenGLTexture2D>(path);
 
 		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
 		}

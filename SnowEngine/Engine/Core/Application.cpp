@@ -39,15 +39,12 @@ namespace Snow
 	{
 		SNOW_CORE_INFO("Attaching layer {0}", layer->GetName());
 		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
-
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
 		SNOW_CORE_INFO("Attaching overlay {0}", overlay->GetName());
 		m_LayerStack.PushOverlay(overlay);
-		overlay->OnAttach();
 	}
 
 	void Application::OnEvent(Event& e)

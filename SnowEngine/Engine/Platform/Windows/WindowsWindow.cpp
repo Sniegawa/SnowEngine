@@ -39,6 +39,7 @@ namespace Snow
 		SNOW_CORE_INFO("Creating window: {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
 		if (!s_GLFWInitialized)
 		{
+			SNOW_CORE_INFO("Initializing GLFW");
 			int success = glfwInit();
 			SNOW_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
@@ -47,7 +48,7 @@ namespace Snow
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
-		m_Context = new OpenGLContext(m_Window);
+		m_Context = CreateScope<OpenGLContext>(m_Window);
 
 		m_Context->Init();
 

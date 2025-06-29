@@ -12,7 +12,7 @@ namespace Snow
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
-		case RendererAPI::API::OpenGL:		return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc, isFile);
+		case RendererAPI::API::OpenGL:		return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc, isFile);
 		}
 		SNOW_CORE_ASSERT(false, "Unknown RenderAPI!");
 		return nullptr;

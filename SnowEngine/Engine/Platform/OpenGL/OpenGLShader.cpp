@@ -39,7 +39,7 @@ namespace Snow
 		return success;
 	}
 
-
+	//TODO : Support for more shader types
 	OpenGLShader::OpenGLShader(const std::string& name,const std::string& vertex, const std::string& fragment, bool isFile)
 	{
 		m_Name = name;

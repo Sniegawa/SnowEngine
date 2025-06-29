@@ -7,23 +7,23 @@
 
 namespace Snow
 {
-	VertexBuffer* VertexBuffer::Create(float* vertices, size_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, size_t size)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
-		case RendererAPI::API::OpenGL:	return new OpenGLVertexBuffer(vertices,size);
+		case RendererAPI::API::OpenGL:	return CreateRef<OpenGLVertexBuffer>(vertices,size);
 			
 		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
 		}
 	}
 
-	IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t count)
+	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t count)
 	{
 		switch(Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
-		case RendererAPI::API::OpenGL:	return new OpenGLIndexBuffer(indices, count);
+		case RendererAPI::API::OpenGL:	return CreateRef<OpenGLIndexBuffer>(indices, count);
 
 		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
 		}
