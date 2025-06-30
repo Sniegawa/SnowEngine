@@ -29,30 +29,18 @@ namespace Snow
 		if (Snow::Input::IsKeyPressed(Snow::Key::A))
 		{
 			m_CameraPosition += (glm::vec3(-1.0f, 0.0f, 0.0f) * m_CameraTranslationSpeed * dt);
-
-			//m_CameraPosition.x -= cos(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
-			//m_CameraPosition.y -= sin(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
 		}
 		if (Snow::Input::IsKeyPressed(Snow::Key::D))
 		{
 			m_CameraPosition += (glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraTranslationSpeed * dt);
-
-			//m_CameraPosition.x += cos(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
-			//m_CameraPosition.y += sin(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
 		}
 		if (Snow::Input::IsKeyPressed(Snow::Key::W))
 		{
 			m_CameraPosition +=(glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraTranslationSpeed * dt);
-
-			//m_CameraPosition.x += -sin(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
-			//m_CameraPosition.y += cos(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
 		}
 		if (Snow::Input::IsKeyPressed(Snow::Key::S))
 		{
 			m_CameraPosition += (glm::vec3(0.0f, -1.0f, 0.0f) * m_CameraTranslationSpeed * dt);
-
-			//m_CameraPosition.x -= -sin(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
-			//m_CameraPosition.y -= cos(glm::radians(m_CameraRotationSpeed)) * m_CameraTranslationSpeed * ts;
 		}
 
 

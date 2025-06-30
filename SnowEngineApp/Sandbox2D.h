@@ -17,10 +17,15 @@ public:
 
 private:
 	glm::vec3 m_SquarePosition = glm::vec3(0.0f);
-	float m_speed = 10.0f;
+	float rotation = 0.0f;
+	float m_speed = 2.0f;
 
 	Snow::ShaderLibrary m_ShaderLib;
 	Snow::OrthographicCameraController m_CameraController;
 
 	Snow::Ref<Snow::VertexArray> m_SquareVA;
+
+	Snow::Ref<Snow::Texture> m_Texture;
+
+
 };

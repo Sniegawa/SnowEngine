@@ -4,8 +4,8 @@ Sandbox2D::Sandbox2D()
 	: Layer("Application Example Layer"),
 		m_CameraController(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, (1280.0f / 720.0f), true)
 {
-	m_ShaderLib.Load("PlainColor", "Assets/Shaders/PlainColor.vert", "Assets/Shaders/PlainColor.frag", true);
-	m_ShaderLib.Load("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true);
+
+	m_Texture = Snow::Texture2D::Create("Assets/Textures/pizza.png");
 }
 
 Sandbox2D::~Sandbox2D()
@@ -15,31 +15,7 @@ Sandbox2D::~Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-	m_SquareVA = Snow::VertexArray::Create();
-
-	float verticesSquare[4 * 5] = {
-		-0.5f,-0.5f,0.0f, 0.0f, 0.0f,
-		0.5f,-0.5f,0.0f, 1.0f, 0.0f,
-		0.5f,0.5f,0.0f, 1.0f, 1.0f,
-		-0.5f,0.5f,0.0f, 0.0f, 1.0f
-	};
-
-	Snow::Ref<Snow::VertexBuffer> vb(Snow::VertexBuffer::Create(verticesSquare, sizeof(verticesSquare)));
-
-	Snow::BufferLayout Squarelayout =
-	{
-		{Snow::ShaderDataType::Float3,"a_Position"},
-		{Snow::ShaderDataType::FLoat2,"a_TexCoord"}
-	};
-
-	vb->SetLayout(Squarelayout);
-
-	m_SquareVA->AddVertexBuffer(vb);
-
-	uint32_t indicesSquare[6] = { 0,1,2,2,3,0 };
-	Snow::Ref<Snow::IndexBuffer> ib(Snow::IndexBuffer::Create(indicesSquare, sizeof(indicesSquare) / sizeof(uint32_t)));
-
-	m_SquareVA->SetIndexBuffer(ib);
+	
 }
 
 void Sandbox2D::OnDetach()
@@ -72,18 +48,25 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 	Snow::RenderCommand::Clear();
 
-	Snow::Renderer::BeginScene(m_CameraController.GetCamera());
+	Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_SquarePosition) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
-	Snow::Ref<Snow::Shader> shader = m_ShaderLib.Get("PlainColor");
-	shader->UploadUniformFloat4("u_Color", glm::vec4(0.1f,0.7f,0.3f,1.0f));
-	Snow::Renderer::Submit(m_SquareVA, m_ShaderLib.Get("PlainColor"), transform);
+	//Depth isn't working properly -1.0f z isn't even rendered
+	Snow::Renderer2D::DrawQuad({ 1.0f,1.0f,0.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(1.0f,0.0f,0.0f,1.0f));
+	Snow::Renderer2D::DrawQuad({ -2.0f,2.5f,1.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	Snow::Renderer2D::DrawQuad({ 3.0f,-2.0f,-1.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
-	Snow::Renderer::EndScene();
+	Snow::Renderer2D::DrawQuad(m_SquarePosition, glm::vec2(5.0f,5.0f), rotation, m_Texture);
+
+
+
+	Snow::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnImGuiRender()
 {
+	ImGui::Begin("Rotator");
+	ImGui::DragFloat("ROTATE", &rotation, 1.0f, 0.0f, 360.0f);
+	ImGui::End();
 }
 
 void Sandbox2D::OnEvent(Snow::Event& e)

@@ -33,3 +33,4 @@
 #include "Engine/Core/Renderer/Renderer.h"
 #include "Engine/Core/Renderer/RenderCommand.h"
 #include "Engine/Core/Renderer/RendererAPI.h"
+#include "Engine/Core/Renderer/Renderer2D.h"

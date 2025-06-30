@@ -4,6 +4,7 @@
 
 #include <GLFW/glfw3.h>
 #include "Renderer/Renderer.h"
+#include "Renderer/Renderer2D.h"
 
 namespace Snow 
 {
@@ -31,7 +32,7 @@ namespace Snow
 
 	Application::~Application()
 	{
-		
+		Renderer2D::Shutdown();
 		SNOW_CORE_INFO("Application destruction");
 	}
 
