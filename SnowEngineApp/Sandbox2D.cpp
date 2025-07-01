@@ -47,10 +47,10 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 
 	Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 	Snow::RenderCommand::Clear();
-
 	Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
 	//Depth isn't working properly -1.0f z isn't even rendered
+
 	Snow::Renderer2D::DrawQuad({ 1.0f,1.0f,0.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(1.0f,0.0f,0.0f,1.0f));
 	Snow::Renderer2D::DrawQuad({ -2.0f,2.5f,1.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	Snow::Renderer2D::DrawQuad({ 3.0f,-2.0f,-1.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));

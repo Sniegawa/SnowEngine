@@ -3,12 +3,12 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 namespace Snow
 {
-	Ref<Texture2D> Texture2D::Create(const std::string& path)
+	Ref<Texture2D> Texture2D::Create(const std::string& path, TextureParameters params)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
-		case RendererAPI::API::OpenGL:	return CreateRef<OpenGLTexture2D>(path);
+		case RendererAPI::API::OpenGL:	return CreateRef<OpenGLTexture2D>(path, params);
 
 		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
 		}

@@ -8,7 +8,7 @@
 namespace Snow
 {
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& path,const TextureParameters& params)
 		: m_Path(path)
 	{
 		int width, height,channels;
@@ -38,10 +38,13 @@ namespace Snow
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	
+		//Realy unreadable piece of crap
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, params.MinFilter == SNOW_TEXTURE_NEAREST ? GL_NEAREST : GL_LINEAR); 
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, params.MagFilter == SNOW_TEXTURE_NEAREST ? GL_NEAREST : GL_LINEAR);
 
-
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, params.Wrap == SNOW_TEXTURE_REPEAT ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, params.Wrap == SNOW_TEXTURE_REPEAT ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 

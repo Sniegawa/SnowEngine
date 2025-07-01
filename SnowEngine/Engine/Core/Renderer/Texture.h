@@ -6,6 +6,21 @@
 #include "SnowEngineAPI.h"
 namespace Snow
 {
+
+#define SNOW_TEXTURE_NEAREST 0
+#define SNOW_TEXTURE_LINEAR 1
+#define SNOW_TEXTURE_CLAMP 0
+#define SNOW_TEXTURE_REPEAT 1
+
+	typedef struct TextureParameters
+	{
+		int MagFilter = 0;
+		int MinFilter = 0;
+		int Wrap = 0;
+		TextureParameters(int minFilter = SNOW_TEXTURE_NEAREST,int magFilter = SNOW_TEXTURE_NEAREST,int wrap = SNOW_TEXTURE_REPEAT) : MagFilter(magFilter),MinFilter(minFilter),Wrap(wrap){}
+	} TextureParameters;
+
+
 	class Texture
 	{
 	public:
@@ -19,6 +34,6 @@ namespace Snow
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(const std::string& path);
+		static Ref<Texture2D> Create(const std::string& path, TextureParameters params = TextureParameters());
 	};
 };
