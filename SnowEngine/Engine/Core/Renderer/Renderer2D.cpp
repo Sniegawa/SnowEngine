@@ -67,16 +67,55 @@ namespace Snow
 
 	void Renderer2D::EndScene()
 	{
-		
+
 	}
 
 	//Primitives
-	void Renderer2D::DrawQuad(glm::vec2 pos, const glm::vec2& size, float rotation, const glm::vec4& color)
+	void Renderer2D::DrawQuad(glm::vec2 pos, const glm::vec2& size, const glm::vec4& color)
 	{
-		DrawQuad({ pos.x,pos.y,0.0f }, size, rotation, color);
+		DrawQuad(glm::vec3(pos.x, pos.y, 0.0f), size, color);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, float rotation, const glm::vec4& color)
+	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, const glm::vec4& color)
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos);
+		transform = glm::scale(transform, glm::vec3(size.x, size.y, 1.0f));
+		s_Data->FlatColorShader->Bind();
+		s_Data->FlatColorShader->UploadUniformMat4("u_ModelMatrix", transform);
+		s_Data->FlatColorShader->UploadUniformFloat4("u_Color", color);
+
+		s_Data->QuadVertexArray->Bind();
+
+		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+	}
+
+	void Renderer2D::DrawQuad(glm::vec2 pos, const glm::vec2& size, Ref<Texture>& texture)
+	{
+		DrawQuad(glm::vec3(pos.x, pos.y, 0.0f), size, texture);
+	}
+
+	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, Ref<Texture>& texture)
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
+		transform = glm::scale(transform, glm::vec3(size.x, size.y, 1.0f));
+
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->UploadUniformMat4("u_ModelMatrix", transform);
+		s_Data->TextureShader->UploadUniformFloat3("u_Tint", texture->GetTextureTint());
+		s_Data->TextureShader->UploadUniformInt("u_Texture", 0); // Should be proper texture unit
+		texture->Bind();
+
+		s_Data->QuadVertexArray->Bind();
+
+		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+	}
+
+	void Renderer2D::DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, const glm::vec4& color)
+	{
+		DrawRotatedQuad(glm::vec3(pos.x, pos.y, 0.0f), size, rotation, color);
+	}
+
+	void Renderer2D::DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos);
 		transform = glm::rotate(transform, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -90,12 +129,12 @@ namespace Snow
 		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 pos, const glm::vec2& size, float rotation, Ref<Texture>& texture)
+	void Renderer2D::DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, Ref<Texture>& texture)
 	{
-		DrawQuad({ pos.x,pos.y,0.0f }, size, rotation, texture);
+		DrawRotatedQuad(glm::vec3(pos.x, pos.y, 0.0f), size, rotation, texture);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, float rotation, Ref<Texture>& texture)
+	void Renderer2D::DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size, float rotation, Ref<Texture>& texture)
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
 		transform = glm::rotate(transform, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -103,6 +142,7 @@ namespace Snow
 
 		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->UploadUniformMat4("u_ModelMatrix", transform);
+		s_Data->TextureShader->UploadUniformFloat3("u_Tint", texture->GetTextureTint());
 		s_Data->TextureShader->UploadUniformInt("u_Texture", 0); // Should be proper texture unit
 		texture->Bind();
 

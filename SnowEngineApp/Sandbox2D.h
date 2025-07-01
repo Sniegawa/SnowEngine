@@ -18,6 +18,8 @@ public:
 private:
 	glm::vec3 m_SquarePosition = glm::vec3(0.0f);
 	float rotation = 0.0f;
+	glm::vec2 scale = glm::vec2(1.0f);
+	glm::vec3 tint = glm::vec3(1.0f);
 	float m_speed = 2.0f;
 
 	Snow::ShaderLibrary m_ShaderLib;

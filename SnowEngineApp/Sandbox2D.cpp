@@ -51,11 +51,11 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 
 	//Depth isn't working properly -1.0f z isn't even rendered
 
-	Snow::Renderer2D::DrawQuad({ 1.0f,1.0f,0.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(1.0f,0.0f,0.0f,1.0f));
-	Snow::Renderer2D::DrawQuad({ -2.0f,2.5f,1.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	Snow::Renderer2D::DrawQuad({ 3.0f,-2.0f,-1.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-
-	Snow::Renderer2D::DrawQuad(m_SquarePosition, glm::vec2(5.0f,5.0f), rotation, m_Texture);
+	Snow::Renderer2D::DrawRotatedQuad({ 1.0f,1.0f,0.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(1.0f,0.0f,0.0f,1.0f));
+	Snow::Renderer2D::DrawQuad({ -2.0f,2.5f,1.0f }, { 1.0f,1.0f }, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	Snow::Renderer2D::DrawQuad({ 3.0f,-2.0f,-1.0f }, { 1.0f,1.0f }, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	m_Texture->SetTextureTint(tint);
+	Snow::Renderer2D::DrawRotatedQuad(m_SquarePosition, scale, rotation, m_Texture);
 
 
 
@@ -64,8 +64,10 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 
 void Sandbox2D::OnImGuiRender()
 {
-	ImGui::Begin("Rotator");
-	ImGui::DragFloat("ROTATE", &rotation, 1.0f, 0.0f, 360.0f);
+	ImGui::Begin("PIZZA");
+	ImGui::DragFloat("Rotation", &rotation, 1.0f, 0.0f, 360.0f);
+	ImGui::DragFloat2("Scale", glm::value_ptr(scale), 0.1f, -1.0f, 10.0f);
+	ImGui::ColorPicker3("Tint", glm::value_ptr(tint));
 	ImGui::End();
 }
 

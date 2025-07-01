@@ -4,6 +4,8 @@
 #include <string>
 
 #include "SnowEngineAPI.h"
+#include <glm/glm.hpp>
+
 namespace Snow
 {
 
@@ -29,6 +31,12 @@ namespace Snow
 		virtual uint32_t GetHeight() const = 0;
 
 		virtual void Bind(uint32_t slot = 0) const = 0;
+		
+		//Might need to move it somewhere else in the future
+		glm::vec3& GetTextureTint() { return m_TextureTint; }
+		void SetTextureTint(glm::vec3& tint) { m_TextureTint = tint; }
+	private:
+		glm::vec3 m_TextureTint = glm::vec3(1.0f);
 	};
 
 	class Texture2D : public Texture
