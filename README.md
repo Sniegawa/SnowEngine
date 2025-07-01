@@ -10,7 +10,7 @@ Clone the repository with `git clone --recursive https://github.com/Sniegawa/Sno
 
 ## 2D Renderer checkpoints
 
-- [ ] Basic 2D renderer		
+- [x] Basic 2D renderer		
 - [ ] Batch rendering			
 - [ ] UI						
 - [ ] Texture atlasses		
