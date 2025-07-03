@@ -20,6 +20,11 @@ void Snow::OpenGLContext::Init()
 	SNOW_CORE_INFO(" Vendor : {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
 	SNOW_CORE_INFO(" Renderer : {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 	SNOW_CORE_INFO(" Version : {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+
+	int maxtex;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&maxtex);
+
+	SNOW_CORE_INFO("Max texture slots : {0}", maxtex);
 }
 
 void Snow::OpenGLContext::SwapBuffers()

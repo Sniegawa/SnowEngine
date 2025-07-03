@@ -1,4 +1,3 @@
-#include "Buffer.h"
 
 #include "Renderer.h"
 
@@ -7,6 +6,17 @@
 
 namespace Snow
 {
+	Ref<VertexBuffer> VertexBuffer::Create(size_t size)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
+		case RendererAPI::API::OpenGL:	return CreateRef<OpenGLVertexBuffer>(size);
+
+		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
+		}
+	}
+
 	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, size_t size)
 	{
 		switch (Renderer::GetAPI())

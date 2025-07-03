@@ -6,12 +6,25 @@ namespace Snow
 {
 	//----VERTEX BUFFER----\\
 
+	OpenGLVertexBuffer::OpenGLVertexBuffer(size_t size)
+	{
+		glCreateBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	}
+
+
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, size_t size)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW); // give user an choice in drawing static/dynamic
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+	}
+
+	void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()

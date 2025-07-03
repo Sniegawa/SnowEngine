@@ -48,7 +48,7 @@ namespace Snow
 
 	void OrthographicCamera::RecalculateProjectionMatrix(CameraParams::OrthographicCameraParams params)
 	{
-		m_ProjectionMatrix = glm::ortho(params.left, params.right, params.bottom, params.top,-1.0f,1.0f);
+		m_ProjectionMatrix = glm::ortho(params.left, params.right, params.bottom, params.top,-10.0f,10.0f);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
 

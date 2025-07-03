@@ -9,65 +9,124 @@
 
 namespace Snow
 {
-	struct Renderer2DStorage
+
+	struct QuadVertex
 	{
-		Ref<VertexArray> QuadVertexArray;
-		Ref<Shader> FlatColorShader;
-		Ref<Shader> TextureShader;
+		glm::vec3 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoord;
+		float TexIndex;
 	};
 
-	static Renderer2DStorage* s_Data;
+
+	struct Renderer2DData
+	{
+		const static uint32_t MaxQuads = 10000;
+		const static uint32_t MaxVertices = MaxQuads * 4;
+		const static uint32_t MaxIndices = MaxQuads * 6;
+		const static uint32_t MaxTextureSlots = 32;
+
+		Ref<VertexArray> QuadVertexArray;
+		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<Shader> TextureShader;
+		Ref<Texture2D> DefaultTexture;
+
+		uint32_t QuadIndexCount = 0;
+		QuadVertex* QuadVertexBufferBase = nullptr;
+		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+		uint32_t TextureSlotIndex = 1; // 0 - DefaultTexture
+	};
+
+	static Renderer2DData s_Data;
 
 	void Renderer2D::Init()
 	{
-		s_Data = new Renderer2DStorage();
-		s_Data->QuadVertexArray = VertexArray::Create();
 
-		float verticesSquare[4 * 5] = {
-			-0.5f,-0.5f,0.0f, 0.0f, 0.0f,
-			0.5f,-0.5f,0.0f, 1.0f, 0.0f,
-			0.5f,0.5f,0.0f, 1.0f, 1.0f,
-			-0.5f,0.5f,0.0f, 0.0f, 1.0f
-		};
+		s_Data.QuadVertexArray = VertexArray::Create();
 
-		Ref<VertexBuffer> vb(VertexBuffer::Create(verticesSquare, sizeof(verticesSquare)));
+		s_Data.DefaultTexture = Texture2D::Create(1,1);
+		uint32_t standardTexData = 0xFFFFFFFF;
+		s_Data.DefaultTexture->SetData(&standardTexData, sizeof(uint32_t));
+		s_Data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex));
 
-		BufferLayout Squarelayout =
+		s_Data.QuadVertexBuffer->SetLayout(
 		{
 			{ShaderDataType::Float3,"a_Position"},
-			{ShaderDataType::FLoat2,"a_TexCoord"}
-		};
+			{ShaderDataType::Float4,"a_Color"},
+			{ShaderDataType::FLoat2,"a_TexCoord"},
+			{ShaderDataType::Float,"a_TextureIndex"}
+		});
 
-		vb->SetLayout(Squarelayout);
+		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
-		s_Data->QuadVertexArray->AddVertexBuffer(vb);
+		s_Data.QuadVertexBufferBase = new QuadVertex[Renderer2DData::MaxVertices];
 
-		uint32_t indicesSquare[6] = { 0,1,2,2,3,0 };
-		Ref<IndexBuffer> ib(IndexBuffer::Create(indicesSquare, sizeof(indicesSquare) / sizeof(uint32_t)));
+		std::vector<uint32_t> quadIndices(Renderer2DData::MaxIndices);
 
-		s_Data->QuadVertexArray->SetIndexBuffer(ib);
+		uint32_t offset = 0;
+		for (uint32_t i = 0; i < Renderer2DData::MaxIndices; i+=6)
+		{
+			quadIndices[i + 0] = offset + 0;
+			quadIndices[i + 1] = offset + 1;
+			quadIndices[i + 2] = offset + 2;
 
-		s_Data->FlatColorShader = Shader::Create("PlainColor", "Assets/Shaders/PlainColor.vert", "Assets/Shaders/PlainColor.frag", true);
-		s_Data->TextureShader = Shader::Create("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true);
+			quadIndices[i + 3] = offset + 2;
+			quadIndices[i + 4] = offset + 3;
+			quadIndices[i + 5] = offset + 0;
+			offset += 4;
+		}
 
+		Ref<IndexBuffer> ib(IndexBuffer::Create(quadIndices.data(), Renderer2DData::MaxIndices));
+		s_Data.QuadVertexArray->SetIndexBuffer(ib);
+
+		s_Data.TextureShader = Shader::Create("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true);
+
+		int32_t samplers[s_Data.MaxTextureSlots];
+		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
+		{
+			samplers[i] = i;
+		}
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadUniformIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+		
+		s_Data.TextureSlots[0] = s_Data.DefaultTexture;
 	}
 
 	void Renderer2D::Shutdown()
 	{
-		delete s_Data;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera)
 	{
-		s_Data->FlatColorShader->Bind();
-		s_Data->FlatColorShader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+	}
+
+	void Renderer2D::Flush()
+	{
+		//Future support for bindless texturing
+		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+			s_Data.TextureSlots[i]->Bind(i);
+
+		uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
+
+		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
+
+
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray,s_Data.QuadIndexCount);
+
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 	}
 
 	void Renderer2D::EndScene()
 	{
-
+		Flush();
 	}
 
 	//Primitives
@@ -78,36 +137,112 @@ namespace Snow
 
 	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, const glm::vec4& color)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos);
-		transform = glm::scale(transform, glm::vec3(size.x, size.y, 1.0f));
-		s_Data->FlatColorShader->Bind();
-		s_Data->FlatColorShader->UploadUniformMat4("u_ModelMatrix", transform);
-		s_Data->FlatColorShader->UploadUniformFloat4("u_Color", color);
+		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
+			Flush();
 
-		s_Data->QuadVertexArray->Bind();
+		const float texIndex = 0.0f;//Default texture - for colors
 
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		s_Data.QuadVertexBufferPtr->Position = pos;
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = {pos.x+size.x,pos.y,pos.z};
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y + size.y,pos.z};
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x,pos.y + size.y,pos.z};
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadIndexCount += 6;
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 pos, const glm::vec2& size, Ref<Texture>& texture)
+	void Renderer2D::DrawQuad(glm::vec2 pos, const glm::vec2& size, Ref<Texture2D>& texture)
 	{
 		DrawQuad(glm::vec3(pos.x, pos.y, 0.0f), size, texture);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, Ref<Texture>& texture)
+	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, Ref<Texture2D>& texture)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
+		glm::vec4 color = glm::vec4(texture->GetTextureTint(),texture->GetOpacity());
+
+		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
+			Flush();
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+
+		if (textureIndex == 0.0f)
+		{
+			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+				Flush();
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		s_Data.QuadVertexBufferPtr->Position = pos;
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y,pos.z };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y + size.y,pos.z };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x,pos.y + size.y,pos.z };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadIndexCount += 6;
+
+
+#if 0
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos);
 		transform = glm::scale(transform, glm::vec3(size.x, size.y, 1.0f));
 
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->UploadUniformMat4("u_ModelMatrix", transform);
-		s_Data->TextureShader->UploadUniformFloat3("u_Tint", texture->GetTextureTint());
-		s_Data->TextureShader->UploadUniformInt("u_Texture", 0); // Should be proper texture unit
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadUniformMat4("u_ModelMatrix", transform);
+		s_Data.TextureShader->UploadUniformFloat4("u_Color", glm::vec4(texture->GetTextureTint(), texture->GetOpacity()));
+		s_Data.TextureShader->UploadUniformInt("u_Texture", 0); // Should be proper texture unit
 		texture->Bind();
 
-		s_Data->QuadVertexArray->Bind();
+		s_Data.QuadVertexArray->Bind();
 
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
+#endif
+
 	}
 
 	void Renderer2D::DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, const glm::vec4& color)
@@ -120,35 +255,37 @@ namespace Snow
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos);
 		transform = glm::rotate(transform, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::scale(transform, glm::vec3(size.x, size.y, 1.0f));
-		s_Data->FlatColorShader->Bind();
-		s_Data->FlatColorShader->UploadUniformMat4("u_ModelMatrix", transform);
-		s_Data->FlatColorShader->UploadUniformFloat4("u_Color", color);
+		s_Data.TextureShader->Bind();
+		s_Data.DefaultTexture->Bind();
+		s_Data.TextureShader->UploadUniformInt("u_Texture", 0);
+		s_Data.TextureShader->UploadUniformMat4("u_ModelMatrix", transform);
+		s_Data.TextureShader->UploadUniformFloat4("u_Color", color);
 
-		s_Data->QuadVertexArray->Bind();
+		s_Data.QuadVertexArray->Bind();
 
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 
-	void Renderer2D::DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, Ref<Texture>& texture)
+	void Renderer2D::DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, Ref<Texture2D>& texture)
 	{
 		DrawRotatedQuad(glm::vec3(pos.x, pos.y, 0.0f), size, rotation, texture);
 	}
 
-	void Renderer2D::DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size, float rotation, Ref<Texture>& texture)
+	void Renderer2D::DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size, float rotation, Ref<Texture2D>& texture)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos);
 		transform = glm::rotate(transform, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::scale(transform, glm::vec3(size.x, size.y, 1.0f));
 
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->UploadUniformMat4("u_ModelMatrix", transform);
-		s_Data->TextureShader->UploadUniformFloat3("u_Tint", texture->GetTextureTint());
-		s_Data->TextureShader->UploadUniformInt("u_Texture", 0); // Should be proper texture unit
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadUniformMat4("u_ModelMatrix", transform);
+		s_Data.TextureShader->UploadUniformFloat4("u_Color", glm::vec4(texture->GetTextureTint(), texture->GetOpacity()));
+		s_Data.TextureShader->UploadUniformInt("u_Texture", 0); // Should be proper texture unit
 		texture->Bind();
 
-		s_Data->QuadVertexArray->Bind();
+		s_Data.QuadVertexArray->Bind();
 
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 
 };

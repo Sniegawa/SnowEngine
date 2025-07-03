@@ -284,6 +284,12 @@ namespace Snow
 		glUniform1i(location, value);
 	}
 
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1iv(location, count, values);
+	}
+
 	void OpenGLShader::UploadUniformBool(const std::string& name, const bool& value)
 	{
 		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());

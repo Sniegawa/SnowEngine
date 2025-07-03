@@ -30,6 +30,7 @@ namespace Snow
 		virtual void UploadUniformInt3(const std::string& name, const glm::ivec3& value) = 0;
 		virtual void UploadUniformInt2(const std::string& name, const glm::ivec2& value) = 0;
 		virtual void UploadUniformInt(const std::string& name, const int& value) = 0;
+		virtual void UploadUniformIntArray(const std::string& name, int* values, uint32_t count) = 0;
 
 		virtual void UploadUniformBool(const std::string& name, const bool& value) = 0;
 

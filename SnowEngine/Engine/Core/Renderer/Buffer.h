@@ -139,9 +139,13 @@ namespace Snow
 		virtual const BufferLayout& GetLayout() const = 0;
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 
+		virtual void SetData(const void* data, uint32_t size = 0) = 0;
+
+		static Ref<VertexBuffer> Create(size_t size);
 		static Ref<VertexBuffer> Create(float* vertices, size_t size);
 	};
 
+	//TODO : add support for 16-bit index buffers to save memory
 	class IndexBuffer
 	{
 	public:
