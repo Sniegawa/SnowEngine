@@ -22,18 +22,13 @@ namespace Snow
 	{
 		glViewport(x, y, width, height);
 	}
-
-	static int drawCalls = 0;
 	void OpenGLRendererAPI::Clear()
 	{
-		SNOW_CORE_TRACE("Draw calls : {0}", drawCalls);
-		drawCalls = 0;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //TODO: multiple clear commands needed
 	}
 	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray,uint32_t indexCount)
 	{
 		uint32_t count = indexCount == 0 ? vertexArray->GetIndexBuffer()->GetCount() : indexCount;
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-		drawCalls++;
 	}
 }

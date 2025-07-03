@@ -1,8 +1,8 @@
 ﻿#include "Application.h"
 
-#include "Logging/Log.h"
+#include <chrono>
 
-#include <GLFW/glfw3.h>
+#include "Logging/Log.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Renderer2D.h"
 
@@ -64,12 +64,13 @@ namespace Snow
 	void Application::Run()
 	{
 		SNOW_CORE_INFO("Application running");
-		
+		auto lastTime = std::chrono::high_resolution_clock::now();
 		while (!m_ShouldClose)
 		{
-			auto time = (float)glfwGetTime(); // Temp Platform::GetTime()
-			Timestep timestep = time - m_LastFrameTime;
-			m_LastFrameTime = time;
+			auto now = std::chrono::high_resolution_clock::now();
+			float deltaTimeMs = std::chrono::duration<float>(now - lastTime).count();
+			lastTime = now;
+			Timestep timestep = deltaTimeMs;
 
 			if (!m_Minimized)
 			{

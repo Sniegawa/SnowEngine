@@ -22,6 +22,8 @@ private:
 	glm::vec3 tint = glm::vec3(1.0f);
 	float m_speed = 2.0f;
 
+	float m_testRotation = 0.0f;
+
 	Snow::ShaderLibrary m_ShaderLib;
 	Snow::OrthographicCameraController m_CameraController;
 

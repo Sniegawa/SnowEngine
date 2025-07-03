@@ -1,5 +1,7 @@
 #include "Sandbox2D.h"
 
+#include <format>
+
 Sandbox2D::Sandbox2D()
 	: Layer("Application Example Layer"),
 		m_CameraController(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, (1280.0f / 720.0f), true)
@@ -26,7 +28,9 @@ void Sandbox2D::OnDetach()
 
 void Sandbox2D::OnUpdate(Snow::Timestep ts)
 {
+	Snow::Renderer2D::ResetStats();
 
+	m_testRotation += ts*10.0f;
 	m_CameraController.OnUpdate(ts);
 
 	if (Snow::Input::IsKeyPressed(Snow::Key::Left))
@@ -50,12 +54,12 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	Snow::RenderCommand::Clear();
 	Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	//Snow::Renderer2D::DrawRotatedQuad({ 1.0f,1.0f,0.0f }, { 1.0f,1.0f }, 45.0f, glm::vec4(1.0f,0.0f,0.0f,1.0f));
-	//Snow::Renderer2D::DrawQuad({ -2.0f,-1.0f,1.1f }, { 1.0f,2.0f }, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	//Snow::Renderer2D::DrawQuad({ 0.1f,-0.25f,1.1f }, { 1.0f,1.0f }, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-	//Snow::Renderer2D::DrawQuad({ 0.0f,0.0f,1.0f }, { 1.0f,1.0f }, glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	m_Texture->SetTextureTint(tint);
-	//Snow::Renderer2D::DrawQuad(m_SquarePosition, scale, m_Texture);
+	Snow::Renderer2D::DrawRotatedQuad(m_SquarePosition, scale, rotation, m_Texture);
+	//TODO : fix Transparency doesn't work properly if object is submitted before something that will be below
+	//Possible fix, store each command in batch of draw commands, and then dispatch them at the end
+
+	//multiple objects demo faster in release mode
 	m_Texture->SetTextureTint(glm::vec3(1.0f));
 	int maxX = 100, maxY = 100;
 	for (int x = 0; x < maxX; x++)
@@ -64,23 +68,23 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 		{
 			if (x == y || x == 0 || y == 0 || x == maxX-1 || y == maxY-1)
 			{
-				Snow::Renderer2D::DrawQuad({ x,y }, { 0.5f,0.5f }, m_Texture);
+				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f }, m_testRotation, m_Texture);
 			}
 			else if (abs(x - y) == 1)
 			{
-				Snow::Renderer2D::DrawQuad({ x,y }, { 0.5f,0.5f }, m_Texture2);
+				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f },-m_testRotation, m_Texture2);
 			}
 			else if ((x+y) % 2 == 0)
 			{
-				Snow::Renderer2D::DrawQuad({ x,y }, { 0.5f,0.5f }, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f }, m_testRotation * 5.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.25f));
 			}
 			else
 			{
-				Snow::Renderer2D::DrawQuad({ x,y }, { 0.5f,0.5f }, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f }, -m_testRotation * 5.0f, glm::vec4(0.0f, 0.0f, 1.0f, 0.25f));
 			}
 		}
 	}
-
+	SNOW_CLIENT_TRACE("MS:{0} (fps:{1})", ts.GetMilliseconds(),1000.0f/ts.GetMilliseconds());
 	Snow::Renderer2D::EndScene();
 }
 
@@ -91,6 +95,18 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::DragFloat("Z", &m_SquarePosition.z, 0.05f, -2.0f, 2.0f);
 	ImGui::DragFloat2("Scale", glm::value_ptr(scale), 0.1f, -1.0f, 10.0f);
 	ImGui::ColorPicker3("Tint", glm::value_ptr(tint));
+	ImGui::End();
+	auto stats = Snow::Renderer2D::GetStats();
+	std::stringstream Drawcals;
+	Drawcals << "Drawcalls : " << stats.DrawCalls << std::endl;
+	std::stringstream Quads;
+	Drawcals << "Quads : " << stats.QuadCount << std::endl;
+	std::stringstream Vertices;
+	Drawcals << "Vertices : " << stats.GetTotalVertexCount();
+	ImGui::Begin("Renderer2D Stats");
+	ImGui::Text(Drawcals.str().c_str());
+	ImGui::Text(Quads.str().c_str());
+	ImGui::Text(Vertices.str().c_str());
 	ImGui::End();
 }
 
