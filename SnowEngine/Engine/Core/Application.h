@@ -39,7 +39,6 @@ namespace Snow
 		Ref<IWindow> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
-		float m_LastFrameTime = 0.0f;
 
 		static Application* s_Instance;
 	};
