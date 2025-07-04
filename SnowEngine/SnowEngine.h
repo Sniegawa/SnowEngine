@@ -29,6 +29,7 @@
 #include "Engine/Core/Renderer/Camera/OrthographicCamera.h"
 #include "Engine/Core/Renderer/Camera/OrthographicCameraController.h"
 #include "Engine/Core/Renderer/Texture.h"
+#include "Engine/Core/Renderer/Spritesheet.h"
 
 #include "Engine/Core/Renderer/Renderer.h"
 #include "Engine/Core/Renderer/RenderCommand.h"

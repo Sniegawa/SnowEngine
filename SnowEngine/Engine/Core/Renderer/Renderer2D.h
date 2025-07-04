@@ -5,6 +5,7 @@
 #include "SnowEngineApi.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Spritesheet.h"
 
 namespace Snow
 {
@@ -26,11 +27,18 @@ namespace Snow
 
 		static void DrawQuad(glm::vec2 pos, const glm::vec2& size, Ref<Texture2D>& texture);
 		static void DrawQuad(glm::vec3 pos, const glm::vec2& size, Ref<Texture2D>& texture);
+
+		static void DrawQuad(glm::vec2 pos, const glm::vec2& size, Ref<Subtexture2D>& subTexture);
+		static void DrawQuad(glm::vec3 pos, const glm::vec2& size, Ref<Subtexture2D>& subTexture);
 		
 		static void DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, const glm::vec4& color = glm::vec4(0.8f, 0.2f, 0.7f, 1.0f));
 		static void DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size, float rotation,const glm::vec4& color = glm::vec4(0.8f, 0.2f, 0.7f, 1.0f));
+	
 		static void DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size,float rotation, Ref<Texture2D>& texture);
 		static void DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size,float rotation, Ref<Texture2D>& texture);
+
+		static void DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size,float rotation, Ref<Subtexture2D>& subTexture);
+		static void DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size,float rotation, Ref<Subtexture2D>& subTexture);
 
 		struct Statistics
 		{

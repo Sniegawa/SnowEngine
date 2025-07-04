@@ -12,9 +12,9 @@ Clone the repository with `git clone --recursive https://github.com/Sniegawa/Sno
 
 - [x] Basic 2D renderer		
 - [x] Batch rendering			
-- [ ] UI						
-- [ ] Texture atlasses		
-- [ ] Simple Lighting			
+- [x] Sprite sheets	
 - [ ] Text rendering			
+- [ ] UI						
+- [ ] Simple Lighting			
 - [ ] Animations				
 - [ ] Particle System			

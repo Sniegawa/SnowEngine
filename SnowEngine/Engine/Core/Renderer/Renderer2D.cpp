@@ -244,6 +244,70 @@ namespace Snow
 		s_Data.stats.QuadCount++;
 	}
 
+	void Renderer2D::DrawQuad(glm::vec2 pos, const glm::vec2& size, Ref<Subtexture2D>& subTexture)
+	{
+		DrawQuad(glm::vec3(pos.x, pos.y, 0.0f), size, subTexture);
+	}
+
+	void Renderer2D::DrawQuad(glm::vec3 pos, const glm::vec2& size, Ref<Subtexture2D>& subTexture)
+	{
+		Ref<Texture2D> texture = subTexture->GetTexture();
+		
+		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetOpacity());
+
+		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
+			Flush();
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+
+		if (textureIndex == 0.0f)
+		{
+			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+				Flush();
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		s_Data.QuadVertexBufferPtr->Position = pos;
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[0];
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y,pos.z };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[1];
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y + size.y,pos.z };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[2];
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { pos.x,pos.y + size.y,pos.z };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[3];
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadIndexCount += 6;
+
+		s_Data.stats.QuadCount++;
+	}
+
+
 	void Renderer2D::DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
 		DrawRotatedQuad(glm::vec3(pos.x, pos.y, 0.0f), size, rotation, color);
@@ -323,6 +387,56 @@ namespace Snow
 
 		s_Data.stats.QuadCount++;
 	}
+
+	void Renderer2D::DrawRotatedQuad(glm::vec2 pos, const glm::vec2& size, float rotation, Ref<Subtexture2D>& subTexture)
+	{
+		DrawRotatedQuad(pos, size, rotation, subTexture);
+	}
+
+	void Renderer2D::DrawRotatedQuad(glm::vec3 pos, const glm::vec2& size, float rotation, Ref<Subtexture2D>& subTexture)
+	{
+		Ref<Texture2D> texture = subTexture->GetTexture();
+		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetOpacity());
+
+		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
+			Flush();
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+				Flush();
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 0.0f));
+
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr++;
+		}
+		s_Data.QuadIndexCount += 6;
+
+		s_Data.stats.QuadCount++;
+	}
+
 
 	Renderer2D::Statistics Renderer2D::GetStats()
 	{
