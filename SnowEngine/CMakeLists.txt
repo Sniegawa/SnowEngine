@@ -82,7 +82,10 @@ add_library(SnowEngine STATIC
 	"Engine/Core/Renderer/Spritesheet.h" 
 	"Engine/Core/Renderer/Spritesheet.cpp" 
 	"Engine/Core/Audio/AudioSystem.h" 
-	"Engine/Core/Audio/AudioSystem.cpp" "Engine/Core/Audio/Sound.h" "Engine/Core/Audio/Sound.cpp" "Engine/Core/Audio/MiniAduioBackend.cpp")
+	"Engine/Core/Audio/AudioSystem.cpp" 
+	"Engine/Core/Audio/Sound.h" 
+	"Engine/Core/Audio/Sound.cpp" 
+	"Engine/Core/Audio/MiniAduioBackend.cpp" )
 
 #Export as dll if on Windows
 if (WIN32)
