@@ -75,7 +75,7 @@ add_library(SnowEngine STATIC
 	"ThirdParty/stb/stb_image.cpp" 
 	"Engine/Core/Renderer/Camera/CameraController.h" 
 	"Engine/Core/Renderer/Camera/OrthographicCameraController.h" 
-	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp" "Engine/Core/Renderer/Renderer2D.cpp" "Engine/Core/Renderer/Renderer2D.h" "Engine/Core/Renderer/Spritesheet.h" "Engine/Core/Renderer/Spritesheet.cpp")
+	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp" "Engine/Core/Renderer/Renderer2D.cpp" "Engine/Core/Renderer/Renderer2D.h" "Engine/Core/Renderer/Spritesheet.h" "Engine/Core/Renderer/Spritesheet.cpp" "ThirdParty/miniaudio/miniaudio.h")
 
 #Export as dll if on Windows
 if (WIN32)
