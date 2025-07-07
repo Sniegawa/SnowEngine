@@ -9,9 +9,10 @@ Sandbox2D::Sandbox2D()
 
 	m_Texture = Snow::Texture2D::Create("Assets/Textures/pizza.png");
 	m_Texture2 = Snow::Texture2D::Create("Assets/Textures/BurgerBase.png");
-
 	m_SpriteSheet = Snow::Spritesheet::CreateFromPath("Assets/Spritesheet/RPGpack_sheet_2X.png", glm::vec2(128.0f));
 	m_Grass = Snow::Subtexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 },{1,2});
+
+	m_Sound = Snow::CreateRef<Snow::Sound>("Assets/Sounds/pickupCoin.wav");
 }
 
 Sandbox2D::~Sandbox2D()
@@ -52,6 +53,10 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	{
 		m_SquarePosition.y -= m_speed * ts;
 	}
+	if (Snow::Input::IsKeyPressed(Snow::Key::G))
+	{
+		Snow::AudioSystem::Play(m_Sound);
+	}
 
 	Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 	Snow::RenderCommand::Clear();
@@ -67,7 +72,7 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	//Possible fix, store each command in batch of draw commands, and then dispatch them at the end
 
 	//multiple objects demo faster in release mode
-	/*
+	
 	m_Texture->SetTextureTint(glm::vec3(1.0f));
 	int maxX = 100, maxY = 100;
 	for (int x = 0; x < maxX; x++)
@@ -91,7 +96,7 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f }, -m_testRotation * 5.0f, glm::vec4(0.0f, 0.0f, 1.0f, 0.25f));
 			}
 		}
-	}*/
+	}
 	//SNOW_CLIENT_TRACE("MS:{0} (fps:{1})", ts.GetMilliseconds(),1000.0f/ts.GetMilliseconds());
 	Snow::Renderer2D::EndScene();
 }

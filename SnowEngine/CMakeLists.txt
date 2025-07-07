@@ -16,6 +16,7 @@ set(IMGUI_SOURCES
 
 add_library(SnowEngine STATIC
 	${IMGUI_SOURCES} 
+	"ThirdParty/miniaudio/miniaudio.h" 
 	"Engine/Core/Application.h" 
 	"Engine/Core/Application.cpp" 
 	"Engine/SnowEngineAPI.h"  
@@ -75,7 +76,13 @@ add_library(SnowEngine STATIC
 	"ThirdParty/stb/stb_image.cpp" 
 	"Engine/Core/Renderer/Camera/CameraController.h" 
 	"Engine/Core/Renderer/Camera/OrthographicCameraController.h" 
-	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp" "Engine/Core/Renderer/Renderer2D.cpp" "Engine/Core/Renderer/Renderer2D.h" "Engine/Core/Renderer/Spritesheet.h" "Engine/Core/Renderer/Spritesheet.cpp" "ThirdParty/miniaudio/miniaudio.h")
+	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp" 
+	"Engine/Core/Renderer/Renderer2D.cpp" 
+	"Engine/Core/Renderer/Renderer2D.h" 
+	"Engine/Core/Renderer/Spritesheet.h" 
+	"Engine/Core/Renderer/Spritesheet.cpp" 
+	"Engine/Core/Audio/AudioSystem.h" 
+	"Engine/Core/Audio/AudioSystem.cpp" "Engine/Core/Audio/Sound.h" "Engine/Core/Audio/Sound.cpp" "Engine/Core/Audio/MiniAduioBackend.cpp")
 
 #Export as dll if on Windows
 if (WIN32)
@@ -114,6 +121,7 @@ target_include_directories(SnowEngine PUBLIC
     ${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/miniaudio
 	${IMGUI_DIR}
 
 )

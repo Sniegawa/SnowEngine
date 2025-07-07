@@ -34,4 +34,5 @@ private:
 	Snow::Ref<Snow::Spritesheet> m_SpriteSheet;
 	Snow::Ref<Snow::Subtexture2D> m_Grass;
 
+	Snow::Ref<Snow::Sound> m_Sound;
 };
