@@ -55,8 +55,12 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	}
 	if (Snow::Input::IsKeyPressed(Snow::Key::Minus))
 	{
+		Snow::AudioSystem::SetSoundPitch("PickupCoin", 1.0f);
+		Snow::AudioSystem::Play("PickupCoin");
+		Snow::AudioSystem::SetSoundPitch("PickupCoin", 0.1f);
 		Snow::AudioSystem::Play("PickupCoin");
 	}
+	Snow::AudioSystem::GetSound("PickupCoin")->SetPosition(m_SquarePosition);
 
 	Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 	Snow::RenderCommand::Clear();
