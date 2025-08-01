@@ -10,7 +10,7 @@ namespace Snow
 	{
 		None = 0,
 		Float,
-		FLoat2,
+		Float2,
 		Float3,
 		Float4,
 		Mat3,
@@ -29,7 +29,7 @@ namespace Snow
 			case Snow::ShaderDataType::None:		break;
 
 			case Snow::ShaderDataType::Float:		return 4;
-			case Snow::ShaderDataType::FLoat2:		return 4 * 2;
+			case Snow::ShaderDataType::Float2:		return 4 * 2;
 			case Snow::ShaderDataType::Float3:		return 4 * 3;
 			case Snow::ShaderDataType::Float4:		return 4 * 4;
 
@@ -72,7 +72,7 @@ namespace Snow
 				case Snow::ShaderDataType::None:		break;
 
 				case Snow::ShaderDataType::Float:		return 1;
-				case Snow::ShaderDataType::FLoat2:		return 2;
+				case Snow::ShaderDataType::Float2:		return 2;
 				case Snow::ShaderDataType::Float3:		return 3;
 				case Snow::ShaderDataType::Float4:		return 4;
 

@@ -15,12 +15,12 @@ namespace Snow
 		glm::vec3 Position;
 		glm::vec4 Color;
 		glm::vec2 TexCoord;
-		float TexIndex;
+		int TexIndex;
 	};
 
 	struct Renderer2DData
 	{
-		const static uint32_t MaxQuads = 20000;
+		const static uint32_t MaxQuads = 10000;
 		const static uint32_t MaxVertices = MaxQuads * 4;
 		const static uint32_t MaxIndices = MaxQuads * 6;
 		const static uint32_t MaxTextureSlots = 32;
@@ -52,14 +52,15 @@ namespace Snow
 		s_Data.DefaultTexture = Texture2D::Create(1,1);
 		uint32_t standardTexData = 0xFFFFFFFF;
 		s_Data.DefaultTexture->SetData(&standardTexData, sizeof(uint32_t));
+
 		s_Data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex));
 
 		s_Data.QuadVertexBuffer->SetLayout(
 		{
 			{ShaderDataType::Float3,"a_Position"},
 			{ShaderDataType::Float4,"a_Color"},
-			{ShaderDataType::FLoat2,"a_TexCoord"},
-			{ShaderDataType::Float,"a_TextureIndex"}
+			{ShaderDataType::Float2,"a_TexCoord"},
+			{ShaderDataType::Int,"a_TextureIndex"}
 		});
 
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
@@ -153,31 +154,19 @@ namespace Snow
 			Flush();
 
 		const float texIndex = 0.0f;//Default texture - for colors
+		const glm::vec2 VertexTexCoords[4] = { {0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},{0.0f,1.0f} };
 
-		s_Data.QuadVertexBufferPtr->Position = pos;
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr++;
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
-		s_Data.QuadVertexBufferPtr->Position = {pos.x+size.x,pos.y,pos.z};
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y + size.y,pos.z};
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { pos.x,pos.y + size.y,pos.z};
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr++;
-
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->TexCoord = VertexTexCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+			s_Data.QuadVertexBufferPtr++;
+		}
 		s_Data.QuadIndexCount += 6;
 
 		s_Data.stats.QuadCount++;
@@ -195,50 +184,38 @@ namespace Snow
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
 
-		float textureIndex = 0.0f;
+		int textureIndex = 0;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
 			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
 			{
-				textureIndex = (float)i;
+				textureIndex = i;
 				break;
 			}
 		}
 
+		const glm::vec2 VertexTexCoords[4] = { {0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},{0.0f,1.0f} };
 
-		if (textureIndex == 0.0f)
+		if (textureIndex == 0)
 		{
 			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 				Flush();
-			textureIndex = (float)s_Data.TextureSlotIndex;
+			textureIndex = s_Data.TextureSlotIndex;
 			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
 			s_Data.TextureSlotIndex++;
 		}
 
-		s_Data.QuadVertexBufferPtr->Position = pos;
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
-		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y,pos.z };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y + size.y,pos.z };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { pos.x,pos.y + size.y,pos.z };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
-
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->TexCoord = VertexTexCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr++;
+		}
 		s_Data.QuadIndexCount += 6;
 
 		s_Data.stats.QuadCount++;
@@ -258,52 +235,40 @@ namespace Snow
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
 
-		float textureIndex = 0.0f;
+		int textureIndex = 0;
+		const glm::vec2 VertexTexCoords[4] = { {0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},{0.0f,1.0f} };
+
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
 			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
 			{
-				textureIndex = (float)i;
+				textureIndex = i;
 				break;
 			}
 		}
 
 
-		if (textureIndex == 0.0f)
+		if (textureIndex == 0)
 		{
 			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 				Flush();
-			textureIndex = (float)s_Data.TextureSlotIndex;
+			textureIndex = s_Data.TextureSlotIndex;
 			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
 			s_Data.TextureSlotIndex++;
 		}
 
-		s_Data.QuadVertexBufferPtr->Position = pos;
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[0];
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
-		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y,pos.z };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[1];
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { pos.x + size.x,pos.y + size.y,pos.z };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[2];
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = { pos.x,pos.y + size.y,pos.z };
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[3];
-		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-		s_Data.QuadVertexBufferPtr++;
-
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->TexCoord = VertexTexCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr++;
+		}
 		s_Data.QuadIndexCount += 6;
-
 		s_Data.stats.QuadCount++;
 	}
 
@@ -318,12 +283,12 @@ namespace Snow
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
 
-		const float texIndex = 0.0f;//Default texture - for colors
+		const int texIndex = 0;//Default texture - for colors
 		const glm::vec2 VertexTexCoords[4] = { {0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},{0.0f,1.0f} };
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
-			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 0.0f));
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
 		for (uint32_t i = 0; i < 4; i++)
 		{
@@ -350,22 +315,22 @@ namespace Snow
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
 
-		float textureIndex = 0.0f;
+		int textureIndex = 0;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
 			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
 			{
-				textureIndex = (float)i;
+				textureIndex = i;
 				break;
 			}
 		}
 
 
-		if (textureIndex == 0.0f)
+		if (textureIndex == 0)
 		{
 			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 				Flush();
-			textureIndex = (float)s_Data.TextureSlotIndex;
+			textureIndex = s_Data.TextureSlotIndex;
 			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
 			s_Data.TextureSlotIndex++;
 		}
@@ -373,7 +338,7 @@ namespace Snow
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
-			* glm::scale(glm::mat4(1.0f), glm::vec3(size,0.0f));
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size,1.0f));
 
 		for (uint32_t i = 0; i < 4; i++)
 		{
@@ -401,28 +366,28 @@ namespace Snow
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
 
-		float textureIndex = 0.0f;
+		int textureIndex = 0;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
 			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
 			{
-				textureIndex = (float)i;
+				textureIndex = i;
 				break;
 			}
 		}
 
-		if (textureIndex == 0.0f)
+		if (textureIndex == 0)
 		{
 			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 				Flush();
-			textureIndex = (float)s_Data.TextureSlotIndex;
+			textureIndex = s_Data.TextureSlotIndex;
 			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
 			s_Data.TextureSlotIndex++;
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
-			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 0.0f));
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
 		for (uint32_t i = 0; i < 4; i++)
 		{
