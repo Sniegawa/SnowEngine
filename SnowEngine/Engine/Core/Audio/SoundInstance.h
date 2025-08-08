@@ -3,6 +3,9 @@
 #include <miniaudio.h>
 #include <string>
 #include <glm/glm.hpp>
+#include "SoundAsset.h"
+#include <SnowEngineAPI.h>
+
 namespace Snow
 {
 
@@ -13,10 +16,10 @@ namespace Snow
 		Exponential
 	};
 
-	class Sound
+	class SoundInstance
 	{
 	public:
-		Sound(const std::string& name,const std::string& filepath);
+		SoundInstance(Ref<SoundAsset> asset);
 		ma_sound* GetSoundPointer() { return &m_Sound; }
 
 		void Play();
@@ -38,17 +41,18 @@ namespace Snow
 
 		void SetAttenuationModel(AttenuationModel model);
 
-		const std::string& GetName() const { return m_Name; }
+		const bool& isFinished() const { return m_finished; }
 
-		~Sound();
-
+		~SoundInstance();
+	private:
+		static void OnSoundEnd(void* pUserData, ma_sound* pSound);
 	private:
 		ma_sound m_Sound;
 
-		std::string m_Name;
+		Ref<SoundAsset> m_Asset;
 
 		glm::vec2 m_Position;
 
-		bool m_Loaded = false;
+		bool m_finished = false;
 	};
 };

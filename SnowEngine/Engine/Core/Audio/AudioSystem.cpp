@@ -4,12 +4,13 @@ namespace Snow
 {
 	ma_engine AudioSystem::s_Engine;
 	SoundLibrary AudioSystem::s_SoundLibrary;
+	std::vector<Ref<SoundInstance>> AudioSystem::s_SoundInstances;
 
 	void AudioSystem::Init()
 	{
 		auto Result = ma_engine_init(nullptr, &s_Engine);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't initialize audio engine");
-		
+
 		ma_engine_listener_set_position(&s_Engine, 0, 0.0f, 0.0f, 0.0f); //For now use one listener and setting pos to 0.0f
 		ma_engine_listener_set_direction(&s_Engine, 0, 0.0f, 0.0f, -1.0f);
 		ma_engine_listener_set_world_up(&s_Engine, 0, 0, 1, 0);
@@ -18,68 +19,62 @@ namespace Snow
 	void AudioSystem::Shutdown()
 	{
 		s_SoundLibrary.Shutdown();
+		s_SoundInstances.clear();
 		SNOW_CORE_INFO("Audio system shutdown");
 		ma_engine_uninit(&s_Engine);
 	}
 
-	void AudioSystem::Play(Ref<Sound>& sound)
+	void AudioSystem::Update()
 	{
-		sound->Play();
+		s_SoundInstances.erase(
+			std::remove_if(
+				s_SoundInstances.begin(), s_SoundInstances.end(),
+				[](auto& s) {return s->isFinished(); }),
+			s_SoundInstances.end()
+		);
 	}
 
-	void AudioSystem::Play(const std::string& name)
+	Ref<SoundInstance>& AudioSystem::Play(Ref<SoundAsset>& soundAsset)
 	{
-		s_SoundLibrary.Get(name)->Play();
+		Ref<SoundInstance> instance = CreateRef<SoundInstance>(soundAsset);
+
+		s_SoundInstances.push_back(instance);
+		instance->Play();
+		return instance;
 	}
 
-	void AudioSystem::Stop(Ref<Sound>& sound)
+	Ref<SoundInstance>& AudioSystem::Play(const std::string& name)
+	{
+		Ref<SoundInstance> instance = CreateRef<SoundInstance>(s_SoundLibrary.Get(name));
+
+		s_SoundInstances.push_back(instance);
+		instance->Play();
+		return instance;
+	}
+
+	void AudioSystem::Stop(Ref<SoundInstance>& sound)
 	{
 		sound->Stop();
 	}
 
-	void AudioSystem::Stop(const std::string& name)
-	{
-		s_SoundLibrary.Get(name)->Stop();
-	}
-
-	void AudioSystem::SetSoundPosition(const Ref<Sound>& sound, const glm::vec2 position)
+	void AudioSystem::SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position)
 	{
 		sound->SetPosition(position);
 	}
 
-	void AudioSystem::SetSoundPosition(const std::string& name, const glm::vec2 position)
-	{
-		s_SoundLibrary.Get(name)->SetPosition(position);
-	}
-
-	void AudioSystem::SetSoundPitch(const Ref<Sound>& sound, const float pitch)
+	void AudioSystem::SetSoundPitch(const Ref<SoundInstance>& sound, const float pitch)
 	{
 		sound->SetPitch(pitch);
 	}
 
-	void AudioSystem::SetSoundPitch(const std::string& name, const float pitch)
-	{
-		s_SoundLibrary.Get(name)->SetPitch(pitch);
-	}
-
-	void AudioSystem::SetSoundNearRadius(const Ref<Sound>& sound, const float nearRadius)
+	void AudioSystem::SetSoundNearRadius(const Ref<SoundInstance>& sound, const float nearRadius)
 	{
 		sound->SetNearRadius(nearRadius);
 	}
 
-	void AudioSystem::SetSoundNearRadius(const std::string& name, const float nearRadius)
-	{
-		s_SoundLibrary.Get(name)->SetNearRadius(nearRadius);
-	}
-
-	void AudioSystem::SetSoundFarRadius(const Ref<Sound>& sound, const float FarRadius)
+	void AudioSystem::SetSoundFarRadius(const Ref<SoundInstance>& sound, const float FarRadius)
 	{
 		sound->SetFarRadius(FarRadius);
-	}
-
-	void AudioSystem::SetSoundFarRadius(const std::string& name, const float FarRadius)
-	{
-		s_SoundLibrary.Get(name)->SetFarRadius(FarRadius);
 	}
 
 	void AudioSystem::SetMasterVolume(const float volume)
@@ -92,46 +87,51 @@ namespace Snow
 		return ma_engine_get_volume(&s_Engine);
 	}
 
-	void AudioSystem::SetSoundAttenuationMode(const Ref<Sound>& sound, AttenuationModel model)
+	void AudioSystem::SetSoundAttenuationMode(const Ref<SoundInstance>& sound, AttenuationModel model)
 	{
 		sound->SetAttenuationModel(model);
 	}
 
-	void AudioSystem::SetSoundAttenuationMode(const std::string& name, AttenuationModel model)
+	Ref<SoundAsset> AudioSystem::LoadSound(const std::string& name, const std::string& path)
 	{
-		s_SoundLibrary.Get(name)->SetAttenuationModel(model);
+		return s_SoundLibrary.Load(name, path);
+	}
+
+	Ref<SoundAsset> AudioSystem::GetSound(const std::string& name)
+	{
+		return s_SoundLibrary.Get(name);
 	}
 
 
-	void SoundLibrary::Add(const Ref<Sound>& sound, const std::string& name)
+	void SoundLibrary::Add(const Ref<SoundAsset>& sound, const std::string& name)
 	{
 		if (m_Sounds.find(name) != m_Sounds.end())
 		{
-			SNOW_CORE_ERROR("Sound with given name already exists : {0}", name);
+			SNOW_CORE_ERROR("SoundInstance with given name already exists : {0}", name);
 			return;
 		}
 		m_Sounds[name] = sound;
 	}
 
-	Ref<Sound> SoundLibrary::Load(const std::string& name, const std::string& path)
+	Ref<SoundAsset> SoundLibrary::Load(const std::string& name, const std::string& path)
 	{
 		auto it = m_Sounds.find(name);
 		if (it != m_Sounds.end())
 		{
-			SNOW_CORE_WARN("Sound with given name already exists : {0}", name);
+			SNOW_CORE_WARN("SoundInstance with given name already exists : {0}", name);
 			return it->second;
 		}
-		auto sound = CreateRef<Sound>(name,path);
-		Add(sound,name);
+		auto sound = CreateRef<SoundAsset>(path);
+		Add(sound, name);
 		return sound;
 	}
 
-	Ref<Sound> SoundLibrary::Get(const std::string& name)
+	Ref<SoundAsset> SoundLibrary::Get(const std::string& name)
 	{
 		auto it = m_Sounds.find(name);
 		if (it == m_Sounds.end())
 		{
-			SNOW_CORE_ERROR("Sound with given name not found : {0}", name);
+			SNOW_CORE_ERROR("SoundInstance with given name not found : {0}", name);
 			return nullptr;
 		}
 		return it->second;
@@ -143,11 +143,11 @@ namespace Snow
 		auto it = m_Sounds.find(name);
 		if (it == m_Sounds.end())
 		{
-			SNOW_CORE_WARN("No sound with given name found for deletion {0}",name);
+			SNOW_CORE_WARN("No sound with given name found for deletion {0}", name);
 			return false;
 		}
 		m_Sounds.erase(it);
-		SNOW_CORE_INFO("Sound {0} deleted succesfully", name);
+		SNOW_CORE_INFO("SoundInstance {0} deleted succesfully", name);
 		return true;
 	}
 

@@ -37,4 +37,4 @@
 #include "Engine/Core/Renderer/Renderer2D.h"
 
 #include "Engine/Core/Audio/AudioSystem.h"
-#include "Engine/Core/Audio/Sound.h"
+#include "Engine/Core/Audio/SoundInstance.h"

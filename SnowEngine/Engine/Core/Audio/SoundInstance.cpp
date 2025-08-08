@@ -1,74 +1,76 @@
-#include "Sound.h"
+#include "SoundInstance.h"
 #include "AudioSystem.h"
 namespace Snow
 {
 
-	Sound::Sound(const std::string& name, const std::string& filepath)
-		: m_Name(name)
+	SoundInstance::SoundInstance(Ref<SoundAsset> asset)
+		: m_Asset(asset)
 	{
-		auto Result = ma_sound_init_from_file(&AudioSystem::GetEngine(), filepath.c_str(), MA_SOUND_FLAG_DECODE, nullptr, nullptr, &m_Sound);
+		auto Result = ma_sound_init_from_file(&AudioSystem::GetEngine(), m_Asset->filePath.c_str(), MA_SOUND_FLAG_DECODE, nullptr, nullptr, &m_Sound);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load sound from file");
-		m_Loaded = true;
 	}
 
-	void Sound::Play()
+	void SoundInstance::Play()
 	{
 		auto Result = ma_sound_start(&m_Sound);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play sound");
+
+		ma_sound_set_end_callback(&m_Sound, SoundInstance::OnSoundEnd, this);
+
 	}
 
-	void Sound::Stop()
+	void SoundInstance::Stop()
 	{
 		ma_sound_stop(&m_Sound);
 	}
 
-	float Sound::GetVolume()
+	float SoundInstance::GetVolume()
 	{
+		
 		return ma_sound_get_volume(&m_Sound);
 	}
 
-	void Sound::SetVolume(const float volume)
+	void SoundInstance::SetVolume(const float volume)
 	{
 		ma_sound_set_volume(&m_Sound, volume);
 	}
 
-	void Sound::SetPosition(const glm::vec2& position)
+	void SoundInstance::SetPosition(const glm::vec2& position)
 	{
 		ma_sound_set_position(&m_Sound, position.x, position.y, 0.0f);
 	}
 
-	void Sound::SetPitch(const float pitch)
+	void SoundInstance::SetPitch(const float pitch)
 	{
 		ma_sound_set_pitch(&m_Sound, pitch);
-		
 	}
 
-	float Sound::GetPitch()
+	float SoundInstance::GetPitch()
 	{
 		return ma_sound_get_pitch(&m_Sound);
 	}
 
-	void Sound::SetNearRadius(const float NearRadius)
+	void SoundInstance::SetNearRadius(const float NearRadius)
 	{
 		ma_sound_set_min_distance(&m_Sound, NearRadius);
 	}
 
-	float Sound::GetNearRadius()
+	float SoundInstance::GetNearRadius()
 	{
 		return ma_sound_get_min_distance(&m_Sound);
 	}
 
-	void Sound::SetFarRadius(const float FarRadius)
+	void SoundInstance::SetFarRadius(const float FarRadius)
 	{
 		ma_sound_set_min_distance(&m_Sound, FarRadius);
 	}
 
-	float Sound::GetFarRadius()
+	float SoundInstance::GetFarRadius()
 	{
 		return ma_sound_get_max_distance(&m_Sound);
 	}
 
-	void Sound::SetAttenuationModel(AttenuationModel model)
+	void SoundInstance::SetAttenuationModel(AttenuationModel model)
 	{
 		switch (model)
 		{
@@ -87,11 +89,14 @@ namespace Snow
 		}
 	}
 
-	Sound::~Sound()
+	SoundInstance::~SoundInstance()
 	{
-		if (m_Loaded)
-		{
-			ma_sound_uninit(&m_Sound);
-		}
+		ma_sound_uninit(&m_Sound);
+	}
+
+	void SoundInstance::OnSoundEnd(void* pUserData, ma_sound* pSound)
+	{
+		auto* instance = static_cast<SoundInstance*>(pUserData);
+		instance->m_finished = true;
 	}
 };

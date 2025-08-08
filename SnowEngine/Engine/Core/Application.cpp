@@ -86,7 +86,7 @@ namespace Snow
 
 			m_ImGuiLayer->End();
 			m_Window->OnUpdate();
-		
+			AudioSystem::Update();
 		}
 	}
 
