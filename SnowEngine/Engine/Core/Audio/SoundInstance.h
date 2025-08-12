@@ -41,7 +41,7 @@ namespace Snow
 
 		void SetAttenuationModel(AttenuationModel model);
 
-		const bool& isFinished() const { return m_finished; }
+		const bool& isFinished() const { return m_Finished; }
 
 		~SoundInstance();
 	private:
@@ -53,6 +53,6 @@ namespace Snow
 
 		glm::vec2 m_Position;
 
-		bool m_finished = false;
+		bool m_Finished = false;
 	};
 };

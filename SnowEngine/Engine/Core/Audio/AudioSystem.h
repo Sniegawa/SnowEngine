@@ -6,24 +6,28 @@
 #include "SoundInstance.h"
 #include "SoundAsset.h"
 
+#include "MusicInstance.h"
+#include "MusicAsset.h"
+
 namespace Snow
 {
-	class SoundLibrary
+	template<typename T>
+	class AudioAssetLibrary
 	{
 	public:
-		void Add(const Ref<SoundAsset>& sound, const std::string& name);
-		Ref<SoundAsset> Load(const std::string& name, const std::string& path);
-		Ref<SoundAsset> Get(const std::string& name);
+		void Add(const Ref<T>& sound, const std::string& name);
+		Ref<T> Load(const std::string& name, const std::string& path);
+		Ref<T> Get(const std::string& name);
 
 		bool Unload(const std::string& name);
 
 		void Shutdown();
 
 	private:
-		std::unordered_map<std::string, Ref<SoundAsset>> m_Sounds;
+		std::unordered_map<std::string, Ref<T>> m_Assets;
 	};
 
-
+	//Static Api class used to controlling audio in engine
 	class AudioSystem
 	{
 	public:
@@ -32,34 +36,45 @@ namespace Snow
 
 		static void Update();
 
-		static Ref<SoundInstance>& Play(Ref<SoundAsset>& soundAsset);
-		static Ref<SoundInstance>& Play(const std::string& name);
+		
+		static Ref<SoundInstance>& SoundPlay(Ref<SoundAsset>& soundAsset);
+		static Ref<SoundInstance>& SoundPlay(const std::string& name);
 
+		static Ref<MusicInstance>& MusicPlay(Ref<MusicAsset>& musicAsset,bool Loop = false);
+		static Ref<MusicInstance>& MusicPlay(const std::string& name,bool Loop = false);
+
+		//Dunno how to handle stops
 		static void Stop(Ref<SoundInstance>& sound);
 
+		//For all of this i'll put it into some struct that handles all of that while calling Play
+		//because for sounds there's no need to change the settings mid playtime
+		//might just leave it but will not support it
 		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position);
-
 		static void SetSoundPitch(const Ref<SoundInstance>& sound, const float pitch);
-
 		static void SetSoundNearRadius(const Ref<SoundInstance>& sound, const float nearRadius);
-		
 		static void SetSoundFarRadius(const Ref<SoundInstance>& sound, const float FarRadius);
+		static void SetSoundAttenuationMode(const Ref<SoundInstance>& sound,AttenuationModel model);
 
 		static void SetMasterVolume(const float volume);
 		static float GetMasterVolume();
 
-		static void SetSoundAttenuationMode(const Ref<SoundInstance>& sound,AttenuationModel model);
 
 		static Ref<SoundAsset> LoadSound(const std::string& name, const std::string& path);
 		static Ref<SoundAsset> GetSound(const std::string& name);
 
+		static Ref<MusicAsset> LoadMusic(const std::string& name, const std::string& path);
+		static Ref<MusicAsset> GetMusic(const std::string& name);
+
 		static ma_engine& GetEngine() { return s_Engine; }
 
-		static size_t GetInstanceCount() { return s_SoundInstances.size(); }
+		static size_t GetInstanceCount() { return s_SoundInstances.size() + s_MusicInstances.size(); }
+
 	private:
 		static ma_engine s_Engine;
-		static SoundLibrary s_SoundLibrary;
+		static AudioAssetLibrary<SoundAsset> s_SoundLibrary;
+		static AudioAssetLibrary<MusicAsset> s_MusicLibrary;
 		static std::vector<Ref<SoundInstance>> s_SoundInstances;
+		static std::vector<Ref<MusicInstance>> s_MusicInstances;
 	};
 
 };

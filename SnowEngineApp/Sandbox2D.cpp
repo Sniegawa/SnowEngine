@@ -13,6 +13,7 @@ Sandbox2D::Sandbox2D()
 	m_Grass = Snow::Subtexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 },{1,2});
 
 	Snow::AudioSystem::LoadSound("PickupCoin", "Assets/Sounds/pickupCoin.wav");
+	Snow::AudioSystem::LoadMusic("MusicTest", "Assets/Sounds/musicTest.mp3");
 }
 
 Sandbox2D::~Sandbox2D()
@@ -22,7 +23,7 @@ Sandbox2D::~Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-	
+
 }
 
 void Sandbox2D::OnDetach()
@@ -30,10 +31,13 @@ void Sandbox2D::OnDetach()
 
 }
 
+float d = 0.0f;
+
 void Sandbox2D::OnUpdate(Snow::Timestep ts)
 {
 	Snow::Renderer2D::ResetStats();
 	m_testRotation += ts*10.0f;
+	d -= ts;
 	m_CameraController.OnUpdate(ts);
 
 	if (Snow::Input::IsKeyPressed(Snow::Key::Left))
@@ -54,7 +58,12 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	}
 	if (Snow::Input::IsKeyPressed(Snow::Key::Minus))
 	{
-		Snow::AudioSystem::Play("PickupCoin");
+		Snow::AudioSystem::SoundPlay("PickupCoin");
+	}
+	if (Snow::Input::IsKeyPressed(Snow::Key::Z) && d <= 0.0f)
+	{
+		Snow::AudioSystem::MusicPlay("MusicTest");
+		d = 10.0f;
 	}
 
 	SNOW_CLIENT_TRACE(Snow::AudioSystem::GetInstanceCount());

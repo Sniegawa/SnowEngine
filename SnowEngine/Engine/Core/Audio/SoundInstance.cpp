@@ -1,12 +1,21 @@
 #include "SoundInstance.h"
 #include "AudioSystem.h"
+#include "MusicInstance.h"
+
 namespace Snow
 {
 
 	SoundInstance::SoundInstance(Ref<SoundAsset> asset)
 		: m_Asset(asset)
 	{
-		auto Result = ma_sound_init_from_file(&AudioSystem::GetEngine(), m_Asset->filePath.c_str(), MA_SOUND_FLAG_DECODE, nullptr, nullptr, &m_Sound);
+		auto Result = ma_sound_init_from_file(
+			&AudioSystem::GetEngine(), 
+			m_Asset->filePath.c_str(), 
+			MA_SOUND_FLAG_DECODE, 
+			nullptr, 
+			nullptr, 
+			&m_Sound
+		);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load sound from file");
 	}
 
@@ -26,7 +35,6 @@ namespace Snow
 
 	float SoundInstance::GetVolume()
 	{
-		
 		return ma_sound_get_volume(&m_Sound);
 	}
 
@@ -97,6 +105,6 @@ namespace Snow
 	void SoundInstance::OnSoundEnd(void* pUserData, ma_sound* pSound)
 	{
 		auto* instance = static_cast<SoundInstance*>(pUserData);
-		instance->m_finished = true;
+		instance->m_Finished = true;
 	}
 };
