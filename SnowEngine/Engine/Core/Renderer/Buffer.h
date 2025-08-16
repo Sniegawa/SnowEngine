@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "../Logging/Log.h"
+#include <SnowEngineAPI.h>
 
 namespace Snow
 {

@@ -61,29 +61,39 @@ namespace Snow
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.Width = width;
 			data.Height = height;
-			data.EventCallback(WindowResizeEvent(width, height));
+			WindowResizeEvent e(width,height);
+			data.EventCallback(e);
 			});
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			data.EventCallback(WindowCloseEvent());
+			WindowCloseEvent e;
+			data.EventCallback(e);
 			});
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-
+				
 				switch (action)
 				{
 				case GLFW_PRESS:
-					data.EventCallback(KeyPressedEvent(key, 0));
+					{
+					KeyPressedEvent e(key,0);
+					data.EventCallback(e);
 					break;
-				case GLFW_RELEASE:
-					data.EventCallback(KeyReleasedEvent(key));
-					break;
+					}
+		     		case GLFW_RELEASE:
+		     			{
+					KeyReleasedEvent e(key);
+		     			data.EventCallback(e);
+		     			}
+		     			break;
 				case GLFW_REPEAT:
-					//Glfw doesn't p[rovide repeat count, so we use 1 for simplicity, in future can fork glfw to add this feature
-					data.EventCallback(KeyPressedEvent(key, 1));
-					break;
+		     			{
+		     			//Glfw doesn't provide repeat count, so we use 1 for simplicity, in future can fork glfw to add this feature
+					KeyPressedEvent e(key,1);
+		     			data.EventCallback(e);
+		     			}
+		     			break;
 				default:
 					SNOW_CORE_ERROR("Unknown key action: {0}", action);
 					break;
@@ -102,10 +112,16 @@ namespace Snow
 				switch (action)
 				{
 				case GLFW_PRESS:
-					data.EventCallback(MouseButtonPressedEvent(button));
-					break;
+			     		{
+					MouseButtonPressedEvent e(button);
+			     		data.EventCallback(e);
+			     		}
+			     		break;
 				case GLFW_RELEASE:
-					data.EventCallback(MouseButtonReleasedEvent(button));
+					{
+					MouseButtonReleasedEvent e(button);	
+			     		data.EventCallback(e);
+					}
 					break;
 				default:
 					SNOW_CORE_ERROR("Unknown MouseButton action: {0}", action);
@@ -116,8 +132,8 @@ namespace Snow
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				data.EventCallback(MouseScrolledEvent((float)xoffset, (float)yoffset));
+				MouseScrolledEvent e((float)xoffset,(float)yoffset);
+				data.EventCallback(e);
 			});
 		glfwSetWindowFocusCallback(m_Window, [](GLFWwindow* window, int focused)
 			{
@@ -125,11 +141,13 @@ namespace Snow
 
 				if (focused == GLFW_TRUE)
 				{
-					data.EventCallback(WindowFocusEvent());
+					WindowFocusEvent e;
+					data.EventCallback(e);
 				}
 				else if (focused == GLFW_FALSE)
 				{
-					data.EventCallback(WindowLostFocusEvent());
+			     		WindowLostFocusEvent e;
+					data.EventCallback(e);
 				}
 				else
 				{
@@ -139,8 +157,8 @@ namespace Snow
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) 
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				
-				data.EventCallback(MouseMovedEvent((float)xPos, (float)yPos));
+				MouseMovedEvent e((float)xPos,(float)yPos);
+				data.EventCallback(e);
 			});
 	}
 

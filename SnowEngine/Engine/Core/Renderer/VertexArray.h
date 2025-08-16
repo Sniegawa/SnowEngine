@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Buffer.h"
-
+#include <SnowEngineAPI.h>
 namespace Snow
 {
 	class VertexArray

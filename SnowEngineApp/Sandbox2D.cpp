@@ -70,8 +70,9 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	
 	Snow::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 0.5f,0.5f }, { 1.0f,0.0f,0.0f,1.0f });
 	Snow::Renderer2D::DrawRotatedQuad({ 0.0f,0.0f }, { 0.5f,0.5f },1.0f ,{ 0.0f,1.0f,0.0f,1.0f });
+	glm::vec3 tintzero(1.0f);
+	m_Texture->SetTextureTint(tintzero);
 
-	m_Texture->SetTextureTint(glm::vec3(1.0f));
 	int maxX = 100, maxY = 100;
 	for (int x = 0; x < maxX; x++)
 	{

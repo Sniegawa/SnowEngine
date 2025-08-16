@@ -98,24 +98,23 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL 
 endif()
 
 target_compile_options(SnowEngine PRIVATE
-    $<$<CONFIG:Debug>:/Zi /Od /MDd> # MSVC debug flags for Debug config
+	 $<$<CONFIG:Debug>:/Zi /Od /MDd> # MSVC debug flags for Debug config
 )
 
 
 target_include_directories(SnowEngine PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
+	${CMAKE_CURRENT_SOURCE_DIR}/..
 	${CMAKE_CURRENT_SOURCE_DIR}/Engine
 )
 
 
 target_include_directories(SnowEngine PUBLIC
 	${CMAKE_SOURCE_DIR}/Libs/GLAD/include
-    ${CMAKE_SOURCE_DIR}/Libs/glfw/include
-    ${CMAKE_SOURCE_DIR}/Libs/glm
+	${CMAKE_SOURCE_DIR}/Libs/glfw/include
+	${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb
 	${IMGUI_DIR}
-
 )
 
 target_link_libraries (SnowEngine PUBLIC
@@ -133,9 +132,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/Release)
 
-
+if(MSVC)
 add_custom_command(TARGET SnowEngine POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${PROJECT_BINARY_DIR}/SnowEngine.lib"
         "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.lib"
 )
+endif()
