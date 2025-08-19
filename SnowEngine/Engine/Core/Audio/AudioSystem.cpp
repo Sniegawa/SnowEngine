@@ -3,8 +3,8 @@
 namespace Snow
 {
 	ma_engine AudioSystem::s_Engine;
-	AudioAssetLibrary<SoundAsset> AudioSystem::s_SoundLibrary;
-	AudioAssetLibrary<MusicAsset> AudioSystem::s_MusicLibrary;
+	AudioAssetLibrary<SoundAsset,SoundConfig> AudioSystem::s_SoundLibrary;
+	AudioAssetLibrary<MusicAsset,MusicConfig> AudioSystem::s_MusicLibrary;
 	std::vector<Ref<SoundInstance>> AudioSystem::s_SoundInstances;
 	std::vector<Ref<MusicInstance>> AudioSystem::s_MusicInstances;
 
@@ -63,19 +63,54 @@ namespace Snow
 		return instance;
 	}
 
-	Ref<MusicInstance>& AudioSystem::MusicPlay(Ref<MusicAsset>& musicAsset, bool Loop)
+	Ref<MusicInstance>& AudioSystem::MusicPlay(Ref<MusicAsset>& musicAsset)
 	{
-		Ref<MusicInstance> instance = CreateRef<MusicInstance>(musicAsset,Loop);
+		Ref<MusicInstance> instance = CreateRef<MusicInstance>(musicAsset);
 		s_MusicInstances.push_back(instance);
 
 		instance->Play();
 		return instance;
 	}
 
-	Ref<MusicInstance>& AudioSystem::MusicPlay(const std::string& name, bool Loop)
+	Ref<MusicInstance>& AudioSystem::MusicPlay(const std::string& name)
 	{
-		
-		Ref<MusicInstance> instance = CreateRef<MusicInstance>(s_MusicLibrary.Get(name),Loop);
+		Ref<MusicInstance> instance = CreateRef<MusicInstance>(s_MusicLibrary.Get(name));
+		s_MusicInstances.push_back(instance);
+
+		instance->Play();
+		return instance;
+	}
+
+	Ref<SoundInstance>& AudioSystem::SoundPlay(Ref<SoundAsset>& soundAsset, SoundConfig& config)
+	{
+		Ref<SoundInstance> instance = CreateRef<SoundInstance>(soundAsset,config);
+		s_SoundInstances.push_back(instance);
+
+		instance->Play();
+		return instance;
+	}
+
+	Ref<SoundInstance>& AudioSystem::SoundPlay(const std::string& name,SoundConfig& config)
+	{
+		Ref<SoundInstance> instance = CreateRef<SoundInstance>(s_SoundLibrary.Get(name),config);
+		s_SoundInstances.push_back(instance);
+
+		instance->Play();
+		return instance;
+	}
+
+	Ref<MusicInstance>& AudioSystem::MusicPlay(Ref<MusicAsset>& musicAsset,MusicConfig& config)
+	{
+		Ref<MusicInstance> instance = CreateRef<MusicInstance>(musicAsset, config);
+		s_MusicInstances.push_back(instance);
+
+		instance->Play();
+		return instance;
+	}
+
+	Ref<MusicInstance>& AudioSystem::MusicPlay(const std::string& name,MusicConfig& config)
+	{
+		Ref<MusicInstance> instance = CreateRef<MusicInstance>(s_MusicLibrary.Get(name),config);
 		s_MusicInstances.push_back(instance);
 
 		instance->Play();
@@ -188,6 +223,11 @@ namespace Snow
 		return s_SoundLibrary.Load(name, path);
 	}
 
+	Ref<SoundAsset> AudioSystem::LoadSound(const std::string& name, const std::string& path, SoundConfig& config)
+	{
+		return s_SoundLibrary.Load(name, path, config);
+	}
+
 	Ref<SoundAsset> AudioSystem::GetSound(const std::string& name)
 	{
 		return s_SoundLibrary.Get(name);
@@ -198,23 +238,29 @@ namespace Snow
 		return s_MusicLibrary.Load(name, path);
 	}
 
+	Ref<MusicAsset> AudioSystem::LoadMusic(const std::string& name, const std::string& path,MusicConfig& config)
+	{
+		return s_MusicLibrary.Load(name, path,config);
+	}
+
 	Ref<MusicAsset> AudioSystem::GetMusic(const std::string& name)
 	{
 		return s_MusicLibrary.Get(name);
 	}
 
-	template<typename T>
-	void AudioAssetLibrary<T>::Add(const Ref<T>& sound, const std::string& name)
+	template<typename T, typename C>
+	void AudioAssetLibrary<T,C>::Add(const Ref<T>& audio, const std::string& name)
 	{
 		if (m_Assets.find(name) != m_Assets.end())
 		{
 			SNOW_CORE_ERROR("SoundInstance with given name already exists : {0}", name);
 			return;
 		}
-		m_Assets[name] = sound;
+		m_Assets[name] = audio;
 	}
-	template<typename T>
-	Ref<T> AudioAssetLibrary<T>::Load(const std::string& name, const std::string& path)
+
+	template<typename T, typename C>
+	Ref<T> AudioAssetLibrary<T,C>::Load(const std::string& name, const std::string& path)
 	{
 		auto it = m_Assets.find(name);
 		if (it != m_Assets.end())
@@ -222,12 +268,27 @@ namespace Snow
 			SNOW_CORE_WARN("SoundInstance with given name already exists : {0}", name);
 			return it->second;
 		}
-		auto sound = CreateRef<T>(path);
-		Add(sound, name);
-		return sound;
+		auto audio = CreateRef<T>(path);
+		Add(audio, name);
+		return audio;
 	}
-	template<typename T>
-	Ref<T> AudioAssetLibrary<T>::Get(const std::string& name)
+
+	template<typename T, typename C>
+	Ref<T> AudioAssetLibrary<T, C>::Load(const std::string& name, const std::string& path, C& config)
+	{
+		auto it = m_Assets.find(name);
+		if (it != m_Assets.end())
+		{
+			SNOW_CORE_WARN("SoundInstance with given name already exists : {0}", name);
+			return it->second;
+		}
+		auto audio = CreateRef<T>(path,config);
+		Add(audio, name);
+		return audio;
+	}
+
+	template<typename T, typename C>
+	Ref<T> AudioAssetLibrary<T,C>::Get(const std::string& name)
 	{
 		auto it = m_Assets.find(name);
 		if (it == m_Assets.end())
@@ -238,8 +299,9 @@ namespace Snow
 		return it->second;
 
 	}
-	template<typename T>
-	bool AudioAssetLibrary<T>::Unload(const std::string& name)
+
+	template<typename T, typename C>
+	bool AudioAssetLibrary<T,C>::Unload(const std::string& name)
 	{
 		auto it = m_Assets.find(name);
 		if (it == m_Assets.end())
@@ -251,8 +313,9 @@ namespace Snow
 		SNOW_CORE_INFO("SoundInstance {0} deleted succesfully", name);
 		return true;
 	}
-	template<typename T>
-	void AudioAssetLibrary<T>::Shutdown()
+
+	template<typename T, typename C>
+	void AudioAssetLibrary<T,C>::Shutdown()
 	{
 		m_Assets.clear();
 	}

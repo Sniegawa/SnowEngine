@@ -13,6 +13,7 @@ namespace Snow
 	{
 	public:
 		SoundInstance(Ref<SoundAsset> asset);
+		SoundInstance(Ref<SoundAsset> asset,SoundConfig& config);
 		ma_sound* GetSoundPointer() { return &m_Sound; }
 
 		void Play();
@@ -38,10 +39,11 @@ namespace Snow
 		const bool& isFinished() const { return m_Finished; }
 
 		void ApplyConfig(SoundConfig& config);
+		void ApplyConfig();
 
 		~SoundInstance();
 	public:
-		SoundConfig config;
+		SoundConfig m_Config;
 	private:
 		static void OnSoundEnd(void* pUserData, ma_sound* pSound);
 	private:

@@ -22,6 +22,24 @@ namespace Snow
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load sound from file");
 	}
 
+	SoundInstance::SoundInstance(Ref<SoundAsset> asset, SoundConfig& config)
+		: m_Asset(asset)
+	{
+		auto Result = ma_sound_init_from_file(
+			&AudioSystem::GetEngine(),
+			m_Asset->filePath.c_str(),
+			MA_SOUND_FLAG_DECODE,
+			nullptr,
+			nullptr,
+			&m_Sound
+		);
+
+		ApplyConfig(config);
+
+		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load sound from file");
+
+	}
+
 	void SoundInstance::Play()
 	{
 		auto Result = ma_sound_start(&m_Sound);
@@ -53,6 +71,16 @@ namespace Snow
 		SetNearRadius(config.minDistance);
 		SetFarRadius(config.maxDistance);
 		SetAttenuationModel(config.attenuation);
+		m_Config = config;
+	}
+
+	void SoundInstance::ApplyConfig()
+	{
+		SetVolume(m_Config.volume);
+		SetPitch(m_Config.pitch);
+		SetNearRadius(m_Config.minDistance);
+		SetFarRadius(m_Config.maxDistance);
+		SetAttenuationModel(m_Config.attenuation);
 	}
 
 	float SoundInstance::GetVolume()

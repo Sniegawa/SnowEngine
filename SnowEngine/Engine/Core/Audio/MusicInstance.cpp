@@ -4,8 +4,8 @@
 namespace Snow
 {
 
-	MusicInstance::MusicInstance(Ref<MusicAsset> asset, bool loop)
-		: m_Asset(asset), m_Loop(loop)
+	MusicInstance::MusicInstance(Ref<MusicAsset> asset)
+		: m_Asset(asset)
 	{
 		auto Result = ma_sound_init_from_file(
 			&AudioSystem::GetEngine(),
@@ -17,6 +17,23 @@ namespace Snow
 		);
 
 		ApplyConfig(asset->defaultConfig);
+
+		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load music from file");
+	}
+
+	MusicInstance::MusicInstance(Ref<MusicAsset> asset, MusicConfig& config)
+		: m_Asset(asset)
+	{
+		auto Result = ma_sound_init_from_file(
+			&AudioSystem::GetEngine(),
+			asset->filePath.c_str(),
+			MA_SOUND_FLAG_STREAM,
+			nullptr,
+			nullptr,
+			&m_Music
+		);
+
+		ApplyConfig(config);
 
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load music from file");
 	}
@@ -72,6 +89,17 @@ namespace Snow
 		SetFarRadius(config.maxDistance);
 		SetAttenuationModel(config.attenuation);
 		m_Loop = config.looping;
+		m_Config = config;
+	}
+
+	void MusicInstance::ApplyConfig()
+	{
+		SetVolume(m_Config.volume);
+		SetPitch(m_Config.pitch);
+		SetNearRadius(m_Config.minDistance);
+		SetFarRadius(m_Config.maxDistance);
+		SetAttenuationModel(m_Config.attenuation);
+		m_Loop = m_Config.looping;
 	}
 
 	float MusicInstance::GetVolume()

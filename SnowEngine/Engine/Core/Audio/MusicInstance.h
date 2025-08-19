@@ -12,7 +12,8 @@ namespace Snow
 	class MusicInstance
 	{
 	public:
-		MusicInstance(Ref<MusicAsset> asset, bool loop = false);
+		MusicInstance(Ref<MusicAsset> asset);
+		MusicInstance(Ref<MusicAsset> asset,MusicConfig& config);
 		~MusicInstance();
 
 		void Play();
@@ -40,8 +41,9 @@ namespace Snow
 		const bool& isFinished() const { return m_Finished; }
 
 		void ApplyConfig(MusicConfig& config);
+		void ApplyConfig();
 	public:
-		MusicConfig config;
+		MusicConfig m_Config;
 	private:
 		static void OnMusicEnd(void* pUserData, ma_sound* pMusic);
 

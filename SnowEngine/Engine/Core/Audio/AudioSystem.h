@@ -10,12 +10,13 @@
 
 namespace Snow
 {
-	template<typename T>
+	template<typename T, typename C>
 	class AudioAssetLibrary
 	{
 	public:
 		void Add(const Ref<T>& sound, const std::string& name);
 		Ref<T> Load(const std::string& name, const std::string& path);
+		Ref<T> Load(const std::string& name, const std::string& path, C& config);
 		Ref<T> Get(const std::string& name);
 
 		bool Unload(const std::string& name);
@@ -38,9 +39,13 @@ namespace Snow
 		
 		static Ref<SoundInstance>& SoundPlay(Ref<SoundAsset>& soundAsset);
 		static Ref<SoundInstance>& SoundPlay(const std::string& name);
+		static Ref<SoundInstance>& SoundPlay(Ref<SoundAsset>& soundAsset, SoundConfig& config);
+		static Ref<SoundInstance>& SoundPlay(const std::string& name, SoundConfig& config);
 
-		static Ref<MusicInstance>& MusicPlay(Ref<MusicAsset>& musicAsset,bool Loop = false);
-		static Ref<MusicInstance>& MusicPlay(const std::string& name,bool Loop = false);
+		static Ref<MusicInstance>& MusicPlay(Ref<MusicAsset>& musicAsset);
+		static Ref<MusicInstance>& MusicPlay(const std::string& name);
+		static Ref<MusicInstance>& MusicPlay(Ref<MusicAsset>& musicAsset, MusicConfig& config);
+		static Ref<MusicInstance>& MusicPlay(const std::string& name, MusicConfig& config);
 
 		//Dunno how to handle stops
 		static void Stop(Ref<SoundInstance>& sound);
@@ -68,9 +73,11 @@ namespace Snow
 
 
 		static Ref<SoundAsset> LoadSound(const std::string& name, const std::string& path);
+		static Ref<SoundAsset> LoadSound(const std::string& name, const std::string& path, SoundConfig& config);
 		static Ref<SoundAsset> GetSound(const std::string& name);
 
 		static Ref<MusicAsset> LoadMusic(const std::string& name, const std::string& path);
+		static Ref<MusicAsset> LoadMusic(const std::string& name, const std::string& path, MusicConfig& config);
 		static Ref<MusicAsset> GetMusic(const std::string& name);
 
 		static ma_engine& GetEngine() { return s_Engine; }
@@ -79,8 +86,8 @@ namespace Snow
 
 	private:
 		static ma_engine s_Engine;
-		static AudioAssetLibrary<SoundAsset> s_SoundLibrary;
-		static AudioAssetLibrary<MusicAsset> s_MusicLibrary;
+		static AudioAssetLibrary<SoundAsset,SoundConfig> s_SoundLibrary;
+		static AudioAssetLibrary<MusicAsset,MusicConfig> s_MusicLibrary;
 		static std::vector<Ref<SoundInstance>> s_SoundInstances;
 		static std::vector<Ref<MusicInstance>> s_MusicInstances;
 	};

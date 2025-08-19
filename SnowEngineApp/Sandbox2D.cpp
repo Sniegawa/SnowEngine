@@ -12,7 +12,11 @@ Sandbox2D::Sandbox2D()
 	m_SpriteSheet = Snow::Spritesheet::CreateFromPath("Assets/Spritesheet/RPGpack_sheet_2X.png", glm::vec2(128.0f));
 	m_Grass = Snow::Subtexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 },{1,2});
 
+	Snow::SoundConfig config;
+	config.volume = 0.15;
+
 	Snow::AudioSystem::LoadSound("PickupCoin", "Assets/Sounds/pickupCoin.wav");
+	Snow::AudioSystem::LoadSound("PickupCoin2", "Assets/Sounds/pickupCoin.wav",config);
 	Snow::AudioSystem::LoadMusic("MusicTest", "Assets/Sounds/musicTest.mp3");
 }
 
@@ -57,6 +61,17 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	{
 		Snow::AudioSystem::SoundPlay("PickupCoin");
 	}
+	if (Snow::Input::IsKeyPressed(Snow::Key::Equal))
+	{
+		Snow::AudioSystem::SoundPlay("PickupCoin2");
+	}
+	if (Snow::Input::IsKeyPressed(Snow::Key::D0))
+	{
+		Snow::SoundConfig config;
+		config.pitch = 0.5f;
+		Snow::AudioSystem::SoundPlay("PickupCoin",config);
+	}
+	
 
 	SNOW_CLIENT_TRACE(Snow::AudioSystem::GetInstanceCount());
 
