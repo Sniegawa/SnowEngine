@@ -4,10 +4,9 @@
 #include <SnowEngineAPI.h>
 
 #include "SoundInstance.h"
-#include "SoundAsset.h"
+#include "AudioAssets.h"
 
 #include "MusicInstance.h"
-#include "MusicAsset.h"
 
 namespace Snow
 {
