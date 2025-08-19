@@ -93,6 +93,16 @@ namespace Snow
 		);
 	}
 
+	void AudioSystem::Stop(Ref<MusicInstance>& music)
+	{
+		music->Stop();
+	}
+
+	void AudioSystem::SetSoundVolume(const Ref<MusicInstance>& sound, const float volume)
+	{
+		sound->SetVolume(volume);
+	}
+
 	void AudioSystem::SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position)
 	{
 		sound->SetPosition(position);
@@ -108,9 +118,9 @@ namespace Snow
 		sound->SetNearRadius(nearRadius);
 	}
 
-	void AudioSystem::SetSoundFarRadius(const Ref<SoundInstance>& sound, const float FarRadius)
+	void AudioSystem::SetSoundFarRadius(const Ref<SoundInstance>& sound, const float farRadius)
 	{
-		sound->SetFarRadius(FarRadius);
+		sound->SetFarRadius(farRadius);
 	}
 
 	void AudioSystem::SetMasterVolume(const float volume)
@@ -126,6 +136,51 @@ namespace Snow
 	void AudioSystem::SetSoundAttenuationMode(const Ref<SoundInstance>& sound, AttenuationModel model)
 	{
 		sound->SetAttenuationModel(model);
+	}
+
+	void AudioSystem::SetSoundConfig(const Ref<SoundInstance>& sound, SoundConfig& config)
+	{
+		sound->ApplyConfig(config);
+	}
+
+	void AudioSystem::SetMusicVolume(const Ref<MusicInstance>& music, const float volume)
+	{
+		music->SetVolume(volume);
+	}
+
+	void AudioSystem::SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2 position)
+	{
+		music->SetPosition(position);
+	}
+
+	void AudioSystem::SetMusicPitch(const Ref<MusicInstance>& music, const float pitch)
+	{
+		music->SetPitch(pitch);
+	}
+
+	void AudioSystem::SetMusicNearRadius(const Ref<MusicInstance>& music, const float nearRadius)
+	{
+		music->SetNearRadius(nearRadius);
+	}
+
+	void AudioSystem::SetMusicFarRadius(const Ref<MusicInstance>& music, const float farRadius)
+	{
+		music->SetFarRadius(farRadius);
+	}
+
+	void AudioSystem::SetMusicAttenuationMode(const Ref<MusicInstance>& music, AttenuationModel model)
+	{
+		music->SetAttenuationModel(model);
+	}
+
+	void AudioSystem::SetMusicLooping(const Ref<MusicInstance>& music, bool loop)
+	{
+		music->SetLooping(loop);
+	}
+
+	void AudioSystem::SetMusicConfig(const Ref<MusicInstance>& music, MusicConfig& config)
+	{
+		music->ApplyConfig(config);
 	}
 
 	Ref<SoundAsset> AudioSystem::LoadSound(const std::string& name, const std::string& path)

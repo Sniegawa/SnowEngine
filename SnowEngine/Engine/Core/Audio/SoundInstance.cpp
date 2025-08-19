@@ -16,6 +16,9 @@ namespace Snow
 			nullptr, 
 			&m_Sound
 		);
+
+		ApplyConfig(asset->defaultConfig);
+
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load sound from file");
 	}
 
@@ -28,9 +31,28 @@ namespace Snow
 
 	}
 
+	void SoundInstance::Play(SoundConfig& config)
+	{
+		auto Result = ma_sound_start(&m_Sound);
+		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play sound");
+
+		ma_sound_set_end_callback(&m_Sound, SoundInstance::OnSoundEnd, this);
+
+		ApplyConfig(config);
+	}
+
 	void SoundInstance::Stop()
 	{
 		ma_sound_stop(&m_Sound);
+	}
+
+	void SoundInstance::ApplyConfig(SoundConfig& config)
+	{
+		SetVolume(config.volume);
+		SetPitch(config.pitch);
+		SetNearRadius(config.minDistance);
+		SetFarRadius(config.maxDistance);
+		SetAttenuationModel(config.attenuation);
 	}
 
 	float SoundInstance::GetVolume()

@@ -45,15 +45,24 @@ namespace Snow
 
 		//Dunno how to handle stops
 		static void Stop(Ref<SoundInstance>& sound);
+		static void Stop(Ref<MusicInstance>& music);
 
-		//For all of this i'll put it into some struct that handles all of that while calling Play
-		//because for sounds there's no need to change the settings mid playtime
-		//might just leave it but will not support it
+		static void SetSoundVolume(const Ref<MusicInstance>& music, const float volume);
 		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position);
 		static void SetSoundPitch(const Ref<SoundInstance>& sound, const float pitch);
 		static void SetSoundNearRadius(const Ref<SoundInstance>& sound, const float nearRadius);
-		static void SetSoundFarRadius(const Ref<SoundInstance>& sound, const float FarRadius);
+		static void SetSoundFarRadius(const Ref<SoundInstance>& sound, const float farRadius);
 		static void SetSoundAttenuationMode(const Ref<SoundInstance>& sound,AttenuationModel model);
+		static void SetSoundConfig(const Ref<SoundInstance>& sound, SoundConfig& config);
+
+		static void SetMusicVolume(const Ref<MusicInstance>& music, const float volume);
+		static void SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2 position);
+		static void SetMusicPitch(const Ref<MusicInstance>& music, const float pitch);
+		static void SetMusicNearRadius(const Ref<MusicInstance>& music, const float nearRadius);
+		static void SetMusicFarRadius(const Ref<MusicInstance>& music, const float farRadius);
+		static void SetMusicAttenuationMode(const Ref<MusicInstance>& music, AttenuationModel model);
+		static void SetMusicLooping(const Ref<MusicInstance>& music, bool loop);
+		static void SetMusicConfig(const Ref<MusicInstance>& music, MusicConfig& config);
 
 		static void SetMasterVolume(const float volume);
 		static float GetMasterVolume();

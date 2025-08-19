@@ -3,18 +3,11 @@
 #include <miniaudio.h>
 #include <string>
 #include <glm/glm.hpp>
-#include "SoundAsset.h"
+#include "AudioAssets.h"
 #include <SnowEngineAPI.h>
 
 namespace Snow
 {
-
-	enum class AttenuationModel
-	{
-		Inverse,
-		Linear,
-		Exponential
-	};
 
 	class SoundInstance
 	{
@@ -23,6 +16,7 @@ namespace Snow
 		ma_sound* GetSoundPointer() { return &m_Sound; }
 
 		void Play();
+		void Play(SoundConfig& config);
 		void Stop();
 
 		float GetVolume();
@@ -43,7 +37,11 @@ namespace Snow
 
 		const bool& isFinished() const { return m_Finished; }
 
+		void ApplyConfig(SoundConfig& config);
+
 		~SoundInstance();
+	public:
+		SoundConfig config;
 	private:
 		static void OnSoundEnd(void* pUserData, ma_sound* pSound);
 	private:
