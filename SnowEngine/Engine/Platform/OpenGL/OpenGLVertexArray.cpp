@@ -11,7 +11,7 @@ namespace Snow
 		case Snow::ShaderDataType::None:		break;
 
 		case Snow::ShaderDataType::Float:		return GL_FLOAT;
-		case Snow::ShaderDataType::FLoat2:		return GL_FLOAT;
+		case Snow::ShaderDataType::Float2:		return GL_FLOAT;
 		case Snow::ShaderDataType::Float3:		return GL_FLOAT;
 		case Snow::ShaderDataType::Float4:		return GL_FLOAT;
 
@@ -23,7 +23,7 @@ namespace Snow
 		case Snow::ShaderDataType::Int3:		return GL_INT;
 		case Snow::ShaderDataType::Int4:		return GL_INT;
 
-		case Snow::ShaderDataType::Bool:		return GL_BOOL;
+		case Snow::ShaderDataType::Bool:		return GL_INT;
 		}
 
 		SNOW_CORE_ASSERT(false, "Unknown shaderdatatype");
@@ -64,12 +64,26 @@ namespace Snow
 		for (const auto& element : layout)
 		{
 			glEnableVertexAttribArray(index + m_VertexBufferIndexOffset);
-			glVertexAttribPointer(index + m_VertexBufferIndexOffset,
-				element.GetComponentCount(), 
-				ShaderDataTypeToOpenGLBaseType(element.Type), 
-				element.Normalized ? GL_TRUE : GL_FALSE, 
-				layout.GetStride(), 
-				(const void*)element.Offset);
+			switch (ShaderDataTypeToOpenGLBaseType(element.Type))
+			{
+			case GL_FLOAT:
+				glVertexAttribPointer(index + m_VertexBufferIndexOffset,
+					element.GetComponentCount(),
+					GL_FLOAT,
+					element.Normalized ? GL_TRUE : GL_FALSE,
+					layout.GetStride(),
+					(const void*)element.Offset);
+				break;
+			case GL_INT:
+				glVertexAttribIPointer(index + m_VertexBufferIndexOffset,
+					element.GetComponentCount(),
+					ShaderDataTypeToOpenGLBaseType(element.Type),
+					layout.GetStride(),
+					(const void*)element.Offset);
+				break;
+			default:
+				SNOW_CORE_ASSERT(0, "Unsupported shader data type given");
+			}
 			index++;
 		}
 		glBindVertexArray(0);

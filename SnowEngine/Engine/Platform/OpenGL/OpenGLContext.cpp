@@ -1,8 +1,9 @@
 #include "OpenGLContext.h"
 
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "SnowEngine/Engine/SnowEngineAPI.h"
+#include <SnowEngineAPI.h>
 #include "SnowEngine/Engine/Core/Logging/Log.h"
 
 Snow::OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)

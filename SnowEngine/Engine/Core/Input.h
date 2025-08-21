@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SnowEngine/Engine/SnowEngineAPI.h"
+#include <SnowEngineAPI.h>
 #include "SnowEngine/Engine/Core/KeyCode.h"
 #include "SnowEngine/Engine/Core/MouseCode.h"
 #include <utility>

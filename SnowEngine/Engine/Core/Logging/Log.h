@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "SnowEngine/Engine/SnowEngineAPI.h"
+//#include "SnowEngine/Engine/SnowEngineAPI.h"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>

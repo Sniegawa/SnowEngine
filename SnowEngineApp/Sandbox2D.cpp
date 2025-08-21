@@ -85,16 +85,21 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 
 
 
-	Snow::Renderer2D::DrawQuad({ 0,0 }, { 1,2 }, m_Grass);
+	//Snow::Renderer2D::DrawQuad({ 0,0 }, { 1,2 }, m_Grass);
 
 	m_Texture->SetTextureTint(tint);
-	Snow::Renderer2D::DrawRotatedQuad(m_SquarePosition, scale, rotation, m_Texture);
+	//Snow::Renderer2D::DrawRotatedQuad(m_SquarePosition, scale, rotation, m_Texture);
 	//TODO : fix Transparency doesn't work properly if object is submitted before something that will be below
 	//Possible fix, store each command in batch of draw commands, and then dispatch them at the end
 
 	//multiple objects demo faster in release mode
 	
-	/*m_Texture->SetTextureTint(glm::vec3(1.0f));
+
+	Snow::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 0.5f,0.5f }, { 1.0f,0.0f,0.0f,1.0f });
+	Snow::Renderer2D::DrawRotatedQuad({ 0.0f,0.0f }, { 0.5f,0.5f },1.0f ,{ 0.0f,1.0f,0.0f,1.0f });
+	glm::vec3 tintzero(1.0f);
+	m_Texture->SetTextureTint(tintzero);
+
 	int maxX = 100, maxY = 100;
 	for (int x = 0; x < maxX; x++)
 	{
@@ -106,18 +111,18 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 			}
 			else if (abs(x - y) == 1)
 			{
-				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f },-m_testRotation, m_Texture2);
+				Snow::Renderer2D::DrawQuad({ x,y }, { 0.5f,0.5f }, m_Texture2);
 			}
 			else if ((x+y) % 2 == 0)
 			{
-				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f }, m_testRotation * 5.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.25f));
+				Snow::Renderer2D::DrawRotatedQuad({ x,y }, glm::vec2((glm::sin(m_testRotation*0.25f)+1.0f)*0.5f), m_testRotation * 5.0f, glm::vec4(1.0f, 0.0f, 0.0f, 0.25f));
 			}
 			else
 			{
 				Snow::Renderer2D::DrawRotatedQuad({ x,y }, { 0.5f,0.5f }, -m_testRotation * 5.0f, glm::vec4(0.0f, 0.0f, 1.0f, 0.25f));
 			}
 		}
-	}*/
+	}
 	//SNOW_CLIENT_TRACE("MS:{0} (fps:{1})", ts.GetMilliseconds(),1000.0f/ts.GetMilliseconds());
 
 	Snow::Renderer2D::EndScene();

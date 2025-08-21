@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "Camera/Camera.h"
-#include "SnowEngineApi.h"
+#include "SnowEngineAPI.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Spritesheet.h"
