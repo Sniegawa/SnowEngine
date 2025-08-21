@@ -75,10 +75,6 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 		config.pitch = 0.5f;
 		Snow::AudioSystem::SoundPlay("PickupCoin",config);
 	}
-	
-
-	SNOW_CLIENT_TRACE(Snow::AudioSystem::GetInstanceCount());
-
 	Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 	Snow::RenderCommand::Clear();
 	Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());

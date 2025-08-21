@@ -85,8 +85,6 @@ namespace Snow
 
 		static ma_engine& GetEngine() { return s_Engine; }
 
-		static size_t GetInstanceCount() { return s_SoundInstances.size() + s_MusicInstances.size(); }
-
 	private:
 		static ma_engine s_Engine;
 		static AudioAssetLibrary<SoundAsset,SoundConfig> s_SoundLibrary;
