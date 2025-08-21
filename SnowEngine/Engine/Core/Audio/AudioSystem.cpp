@@ -95,7 +95,7 @@ namespace Snow
 		Ref<SoundInstance> instance = CreateRef<SoundInstance>(s_SoundLibrary.Get(name),config);
 		s_SoundInstances.push_back(instance);
 
-		instance->Play();
+		instance->Play(config);
 		return instance;
 	}
 
@@ -110,7 +110,7 @@ namespace Snow
 
 	Ref<MusicInstance>& AudioSystem::MusicPlay(const std::string& name,MusicConfig& config)
 	{
-		Ref<MusicInstance> instance = CreateRef<MusicInstance>(s_MusicLibrary.Get(name),config);
+		Ref<MusicInstance> instance = CreateRef<MusicInstance>(s_MusicLibrary.Get(name), config);
 		s_MusicInstances.push_back(instance);
 
 		instance->Play();

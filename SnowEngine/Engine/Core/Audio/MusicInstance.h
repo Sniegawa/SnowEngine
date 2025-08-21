@@ -20,7 +20,7 @@ namespace Snow
 		void Play(MusicConfig& config);
 		void Stop();
 
-		void SetLooping(bool loop) { m_Loop = loop; }
+		void SetLooping(bool loop);
 
 		float GetVolume();
 		void SetVolume(const float volume);

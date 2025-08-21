@@ -15,9 +15,8 @@ namespace Snow
 			nullptr,
 			&m_Music
 		);
-
+		
 		ApplyConfig(asset->defaultConfig);
-
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load music from file");
 	}
 
@@ -46,23 +45,13 @@ namespace Snow
 	void MusicInstance::OnMusicEnd(void* pUserData, ma_sound* pMusic)
 	{
 		auto* self = static_cast<MusicInstance*>(pUserData);
-		if (self->m_Loop)
-		{
-			//Restart streamed audio
-			ma_sound_seek_to_pcm_frame(pMusic, 0);
-			ma_sound_start(pMusic);
-		}
-		else
-		{
-			self->m_Finished = true;
-		}
+		self->m_Finished = true;
 	}
 
 	void MusicInstance::Play()
 	{
 		auto Result = ma_sound_start(&m_Music);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play music");
-		ma_sound_set_pitch(&m_Music, 2.0f);
 		ma_sound_set_end_callback(&m_Music, &MusicInstance::OnMusicEnd, this);
 	}
 
@@ -70,7 +59,6 @@ namespace Snow
 	{
 		auto Result = ma_sound_start(&m_Music);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play music");
-		ma_sound_set_pitch(&m_Music, 2.0f);
 		ma_sound_set_end_callback(&m_Music, &MusicInstance::OnMusicEnd, this);
 
 		ApplyConfig(config);
@@ -88,7 +76,7 @@ namespace Snow
 		SetNearRadius(config.minDistance);
 		SetFarRadius(config.maxDistance);
 		SetAttenuationModel(config.attenuation);
-		m_Loop = config.looping;
+		SetLooping(config.looping);
 		m_Config = config;
 	}
 
@@ -99,7 +87,12 @@ namespace Snow
 		SetNearRadius(m_Config.minDistance);
 		SetFarRadius(m_Config.maxDistance);
 		SetAttenuationModel(m_Config.attenuation);
-		m_Loop = m_Config.looping;
+		SetLooping(m_Config.looping);
+	}
+
+	void MusicInstance::SetLooping(bool loop)
+	{
+		ma_sound_set_looping(&m_Music, loop);
 	}
 
 	float MusicInstance::GetVolume()
