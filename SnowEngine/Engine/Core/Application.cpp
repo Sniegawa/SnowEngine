@@ -5,7 +5,7 @@
 #include "Logging/Log.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Renderer2D.h"
-
+#include "Audio/AudioSystem.h"
 namespace Snow 
 {
 	Application* Application::s_Instance = nullptr;
@@ -22,7 +22,7 @@ namespace Snow
 		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent, 1));
 
 		m_ImGuiLayer = new ImGuiLayer();
-
+		AudioSystem::Init();
 		Renderer::Init();
 
 		PushOverlay(m_ImGuiLayer);
@@ -33,6 +33,7 @@ namespace Snow
 	Application::~Application()
 	{
 		Renderer2D::Shutdown();
+		AudioSystem::Shutdown();
 		SNOW_CORE_INFO("Application destruction");
 	}
 
@@ -85,7 +86,7 @@ namespace Snow
 
 			m_ImGuiLayer->End();
 			m_Window->OnUpdate();
-		
+			AudioSystem::Update(timestep);
 		}
 	}
 

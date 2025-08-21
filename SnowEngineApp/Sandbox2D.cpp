@@ -9,9 +9,15 @@ Sandbox2D::Sandbox2D()
 
 	m_Texture = Snow::Texture2D::Create("Assets/Textures/pizza.png");
 	m_Texture2 = Snow::Texture2D::Create("Assets/Textures/BurgerBase.png");
-
 	m_SpriteSheet = Snow::Spritesheet::CreateFromPath("Assets/Spritesheet/RPGpack_sheet_2X.png", glm::vec2(128.0f));
 	m_Grass = Snow::Subtexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 },{1,2});
+
+	Snow::SoundConfig config;
+	config.volume = 0.15f;
+
+	Snow::AudioSystem::LoadSound("PickupCoin", "Assets/Sounds/pickupCoin.wav");
+	Snow::AudioSystem::LoadSound("PickupCoin2", "Assets/Sounds/pickupCoin.wav",config);
+	Snow::AudioSystem::LoadMusic("MusicTest", "Assets/Sounds/musicTest.mp3");
 }
 
 Sandbox2D::~Sandbox2D()
@@ -21,7 +27,11 @@ Sandbox2D::~Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-	
+	Snow::MusicConfig config;
+	config.pitch = 5.0f;
+	config.volume = 0.25f;
+	config.looping = true;
+	Snow::AudioSystem::MusicPlay("MusicTest",config);
 }
 
 void Sandbox2D::OnDetach()
@@ -32,7 +42,6 @@ void Sandbox2D::OnDetach()
 void Sandbox2D::OnUpdate(Snow::Timestep ts)
 {
 	Snow::Renderer2D::ResetStats();
-
 	m_testRotation += ts*10.0f;
 	m_CameraController.OnUpdate(ts);
 
@@ -52,6 +61,23 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	{
 		m_SquarePosition.y -= m_speed * ts;
 	}
+	if (Snow::Input::IsKeyPressed(Snow::Key::Minus))
+	{
+		Snow::AudioSystem::SoundPlay("PickupCoin");
+	}
+	if (Snow::Input::IsKeyPressed(Snow::Key::Equal))
+	{
+		Snow::AudioSystem::SoundPlay("PickupCoin2");
+	}
+	if (Snow::Input::IsKeyPressed(Snow::Key::D0))
+	{
+		Snow::SoundConfig config;
+		config.pitch = 0.5f;
+		Snow::AudioSystem::SoundPlay("PickupCoin",config);
+	}
+	
+
+	SNOW_CLIENT_TRACE(Snow::AudioSystem::GetInstanceCount());
 
 	Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 	Snow::RenderCommand::Clear();
@@ -68,6 +94,7 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 
 	//multiple objects demo faster in release mode
 	
+
 	Snow::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 0.5f,0.5f }, { 1.0f,0.0f,0.0f,1.0f });
 	Snow::Renderer2D::DrawRotatedQuad({ 0.0f,0.0f }, { 0.5f,0.5f },1.0f ,{ 0.0f,1.0f,0.0f,1.0f });
 	glm::vec3 tintzero(1.0f);
@@ -97,6 +124,7 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 		}
 	}
 	//SNOW_CLIENT_TRACE("MS:{0} (fps:{1})", ts.GetMilliseconds(),1000.0f/ts.GetMilliseconds());
+
 	Snow::Renderer2D::EndScene();
 }
 

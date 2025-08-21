@@ -33,5 +33,4 @@ private:
 	Snow::Ref<Snow::Texture2D> m_Texture2;
 	Snow::Ref<Snow::Spritesheet> m_SpriteSheet;
 	Snow::Ref<Snow::Subtexture2D> m_Grass;
-
 };

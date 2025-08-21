@@ -35,3 +35,7 @@
 #include "Engine/Core/Renderer/RenderCommand.h"
 #include "Engine/Core/Renderer/RendererAPI.h"
 #include "Engine/Core/Renderer/Renderer2D.h"
+
+#include "Engine/Core/Audio/AudioSystem.h"
+#include "Engine/Core/Audio/SoundInstance.h"
+#include "Engine/Core/Audio/AudioAssets.h"

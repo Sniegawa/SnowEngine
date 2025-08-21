@@ -63,3 +63,6 @@
 #*.RTF   diff=astextplain
 
 Libs/* linguist-vendored
+
+SnowEngine/ThirdParty/miniaudio/miniaudio.h linguist-generated=true
+SnowEngine/ThirdParty/miniaudio/miniaudio.h linguist-vendored
