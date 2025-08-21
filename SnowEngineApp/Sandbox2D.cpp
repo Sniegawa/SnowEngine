@@ -13,7 +13,7 @@ Sandbox2D::Sandbox2D()
 	m_Grass = Snow::Subtexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 },{1,2});
 
 	Snow::SoundConfig config;
-	config.volume = 0.15;
+	config.volume = 0.15f;
 
 	Snow::AudioSystem::LoadSound("PickupCoin", "Assets/Sounds/pickupCoin.wav");
 	Snow::AudioSystem::LoadSound("PickupCoin2", "Assets/Sounds/pickupCoin.wav",config);

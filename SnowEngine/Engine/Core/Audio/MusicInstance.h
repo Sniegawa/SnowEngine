@@ -18,6 +18,7 @@ namespace Snow
 
 		void Play();
 		void Play(MusicConfig& config);
+
 		void Stop();
 
 		void SetLooping(bool loop);
@@ -49,8 +50,10 @@ namespace Snow
 
 
 	private:
+		//miniaudio sound handle
 		ma_sound m_Music;
 
+		//MusicAsset Handle
 		Ref<MusicAsset> m_Asset;
 
 		glm::vec2 m_Position;

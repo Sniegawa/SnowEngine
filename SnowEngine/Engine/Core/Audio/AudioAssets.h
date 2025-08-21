@@ -30,12 +30,15 @@ namespace Snow
 	{
 		std::string filePath;
 		MusicConfig defaultConfig;
-		MusicAsset(const std::string& path) : filePath(path) {}
+
+		MusicAsset(const std::string& path) : 
+			filePath(path) {}
+
 		MusicAsset(const std::string& path, MusicConfig config)
-			: filePath(path), defaultConfig(config)
-		{
-		}
-		MusicAsset() : filePath(""), defaultConfig() {}
+			: filePath(path), defaultConfig(config) {}
+
+		MusicAsset() 
+			: filePath(""), defaultConfig() {}
 	};
 	
 	struct SoundConfig
@@ -52,10 +55,14 @@ namespace Snow
 	{
 		std::string filePath;
 		SoundConfig defaultConfig;
+
 		SoundAsset(const std::string& path) 
-			: filePath(path) , defaultConfig() {}
+			: filePath(path) , defaultConfig(SoundConfig()) {}
+
 		SoundAsset(const std::string& path,SoundConfig config)
 			: filePath(path), defaultConfig(config) {}
-		SoundAsset() : filePath("") {}
+
+		SoundAsset()
+			 : filePath(""), defaultConfig(SoundConfig()) {}
 	};
 };

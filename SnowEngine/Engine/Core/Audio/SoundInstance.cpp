@@ -8,6 +8,7 @@ namespace Snow
 	SoundInstance::SoundInstance(Ref<SoundAsset> asset)
 		: m_Asset(asset)
 	{
+		//Create sound on audio engine
 		auto Result = ma_sound_init_from_file(
 			&AudioSystem::GetEngine(), 
 			m_Asset->filePath.c_str(), 
@@ -16,7 +17,7 @@ namespace Snow
 			nullptr, 
 			&m_Sound
 		);
-
+		//Apply assets config
 		ApplyConfig(asset->defaultConfig);
 
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load sound from file");
@@ -25,6 +26,7 @@ namespace Snow
 	SoundInstance::SoundInstance(Ref<SoundAsset> asset, SoundConfig& config)
 		: m_Asset(asset)
 	{
+		//Create sound on audio engine
 		auto Result = ma_sound_init_from_file(
 			&AudioSystem::GetEngine(),
 			m_Asset->filePath.c_str(),
@@ -33,7 +35,7 @@ namespace Snow
 			nullptr,
 			&m_Sound
 		);
-
+		//Apply given config
 		ApplyConfig(config);
 
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load sound from file");
@@ -42,30 +44,34 @@ namespace Snow
 
 	void SoundInstance::Play()
 	{
+		//Play sound
 		auto Result = ma_sound_start(&m_Sound);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play sound");
-
+		//Retrieve callback from miniaudio to function
 		ma_sound_set_end_callback(&m_Sound, SoundInstance::OnSoundEnd, this);
 
 	}
 
 	void SoundInstance::Play(SoundConfig& config)
 	{
+		//Apply given config
+		ApplyConfig(config);
+		//Play sound
 		auto Result = ma_sound_start(&m_Sound);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play sound");
-
+		//Retrieve callback from miniaudio to function
 		ma_sound_set_end_callback(&m_Sound, SoundInstance::OnSoundEnd, this);
-
-		ApplyConfig(config);
 	}
 
 	void SoundInstance::Stop()
 	{
+		//Stop sound NOT PAUSE!!
 		ma_sound_stop(&m_Sound);
 	}
 
 	void SoundInstance::ApplyConfig(SoundConfig& config)
 	{
+		//Apply given config and set is as member variable
 		SetVolume(config.volume);
 		SetPitch(config.pitch);
 		SetNearRadius(config.minDistance);
@@ -76,6 +82,7 @@ namespace Snow
 
 	void SoundInstance::ApplyConfig()
 	{
+		//Apply given config
 		SetVolume(m_Config.volume);
 		SetPitch(m_Config.pitch);
 		SetNearRadius(m_Config.minDistance);
@@ -90,9 +97,11 @@ namespace Snow
 
 	void SoundInstance::SetVolume(const float volume)
 	{
-		ma_sound_set_volume(&m_Sound, volume);
+		
+		ma_sound_set_volume(&m_Sound, std::clamp(volume,0.0f,1.0f));
 	}
 
+	//Set Sound Origin for spatialized audio
 	void SoundInstance::SetPosition(const glm::vec2& position)
 	{
 		ma_sound_set_position(&m_Sound, position.x, position.y, 0.0f);
@@ -155,6 +164,7 @@ namespace Snow
 	void SoundInstance::OnSoundEnd(void* pUserData, ma_sound* pSound)
 	{
 		auto* instance = static_cast<SoundInstance*>(pUserData);
-		instance->m_Finished = true;
+		//Set bool flag to finished so AudioSystem can delete it
+		instance->m_Finished = true; 
 	}
 };

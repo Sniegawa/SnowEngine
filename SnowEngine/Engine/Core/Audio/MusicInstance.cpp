@@ -7,6 +7,7 @@ namespace Snow
 	MusicInstance::MusicInstance(Ref<MusicAsset> asset)
 		: m_Asset(asset)
 	{
+		//Create sound asset on miniaudio
 		auto Result = ma_sound_init_from_file(
 			&AudioSystem::GetEngine(),
 			asset->filePath.c_str(),
@@ -16,13 +17,16 @@ namespace Snow
 			&m_Music
 		);
 		
+		//Apply default config
 		ApplyConfig(asset->defaultConfig);
+		
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load music from file");
 	}
 
 	MusicInstance::MusicInstance(Ref<MusicAsset> asset, MusicConfig& config)
 		: m_Asset(asset)
 	{
+		//Create sound asset on miniaudio
 		auto Result = ma_sound_init_from_file(
 			&AudioSystem::GetEngine(),
 			asset->filePath.c_str(),
@@ -32,6 +36,7 @@ namespace Snow
 			&m_Music
 		);
 
+		//Apply given config
 		ApplyConfig(config);
 
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't load music from file");
@@ -45,32 +50,39 @@ namespace Snow
 	void MusicInstance::OnMusicEnd(void* pUserData, ma_sound* pMusic)
 	{
 		auto* self = static_cast<MusicInstance*>(pUserData);
+		//Set bool flag to finished so AudioSystem can delete it
 		self->m_Finished = true;
 	}
 
 	void MusicInstance::Play()
 	{
+		//Play music
 		auto Result = ma_sound_start(&m_Music);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play music");
+		//Set end callback to function
 		ma_sound_set_end_callback(&m_Music, &MusicInstance::OnMusicEnd, this);
 	}
 
 	void MusicInstance::Play(MusicConfig& config)
 	{
+		//Apply config
+		ApplyConfig(config);
+		//Play music
 		auto Result = ma_sound_start(&m_Music);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't play music");
+		//Set end callback to function
 		ma_sound_set_end_callback(&m_Music, &MusicInstance::OnMusicEnd, this);
-
-		ApplyConfig(config);
 	}
 
 	void MusicInstance::Stop()
 	{
+		//Stop music NOT PAUSE!!
 		ma_sound_stop(&m_Music);
 	}
 
 	void MusicInstance::ApplyConfig(MusicConfig& config)
 	{
+		//Apply given config and set it as member variable
 		SetVolume(config.volume);
 		SetPitch(config.pitch);
 		SetNearRadius(config.minDistance);
@@ -82,6 +94,7 @@ namespace Snow
 
 	void MusicInstance::ApplyConfig()
 	{
+		//Apply given config
 		SetVolume(m_Config.volume);
 		SetPitch(m_Config.pitch);
 		SetNearRadius(m_Config.minDistance);
@@ -92,7 +105,10 @@ namespace Snow
 
 	void MusicInstance::SetLooping(bool loop)
 	{
-		ma_sound_set_looping(&m_Music, loop);
+		//Set music looping
+		//This will be viable only at the end of current playtrough of music
+		//This won't stop or restart just tell audio engine what to do on end
+		ma_sound_set_looping(&m_Music, loop); 
 	}
 
 	float MusicInstance::GetVolume()
@@ -102,7 +118,7 @@ namespace Snow
 
 	void MusicInstance::SetVolume(const float volume)
 	{
-		ma_sound_set_volume(&m_Music, volume);
+		ma_sound_set_volume(&m_Music, std::clamp(volume, 0.0f, 1.0f));
 	}
 
 	void MusicInstance::SetPosition(const glm::vec2& position)

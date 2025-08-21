@@ -14,6 +14,7 @@ namespace Snow
 	public:
 		SoundInstance(Ref<SoundAsset> asset);
 		SoundInstance(Ref<SoundAsset> asset,SoundConfig& config);
+
 		ma_sound* GetSoundPointer() { return &m_Sound; }
 
 		void Play();
@@ -47,8 +48,10 @@ namespace Snow
 	private:
 		static void OnSoundEnd(void* pUserData, ma_sound* pSound);
 	private:
+		//Handle to miniaudio sound
 		ma_sound m_Sound;
 
+		//Handle to Sound asset
 		Ref<SoundAsset> m_Asset;
 
 		glm::vec2 m_Position;

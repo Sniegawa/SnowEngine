@@ -8,13 +8,14 @@
 
 #include "MusicInstance.h"
 
+#include "../Timestep.h"
+
 namespace Snow
 {
 	template<typename T, typename C>
 	class AudioAssetLibrary
 	{
 	public:
-		void Add(const Ref<T>& sound, const std::string& name);
 		Ref<T> Load(const std::string& name, const std::string& path);
 		Ref<T> Load(const std::string& name, const std::string& path, C& config);
 		Ref<T> Get(const std::string& name);
@@ -24,6 +25,7 @@ namespace Snow
 		void Shutdown();
 
 	private:
+		void Add(const Ref<T>& audioAsset, const std::string& name);
 		std::unordered_map<std::string, Ref<T>> m_Assets;
 	};
 
@@ -34,8 +36,7 @@ namespace Snow
 		static void Init();
 		static void Shutdown();
 
-		static void Update();
-
+		static void Update(Timestep ts);
 		
 		static Ref<SoundInstance>& SoundPlay(Ref<SoundAsset>& soundAsset);
 		static Ref<SoundInstance>& SoundPlay(const std::string& name);
@@ -51,6 +52,7 @@ namespace Snow
 		static void Stop(Ref<SoundInstance>& sound);
 		static void Stop(Ref<MusicInstance>& music);
 
+		//Clamped [0-1]
 		static void SetSoundVolume(const Ref<MusicInstance>& music, const float volume);
 		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position);
 		static void SetSoundPitch(const Ref<SoundInstance>& sound, const float pitch);
@@ -59,6 +61,7 @@ namespace Snow
 		static void SetSoundAttenuationMode(const Ref<SoundInstance>& sound,AttenuationModel model);
 		static void SetSoundConfig(const Ref<SoundInstance>& sound, SoundConfig& config);
 
+		//Clamped [0-1]
 		static void SetMusicVolume(const Ref<MusicInstance>& music, const float volume);
 		static void SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2 position);
 		static void SetMusicPitch(const Ref<MusicInstance>& music, const float pitch);
