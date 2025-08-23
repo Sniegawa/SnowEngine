@@ -14,9 +14,7 @@ set(IMGUI_SOURCES
 	${IMGUI_DIR}/imgui_impl_opengl3.cpp
 )
 
-add_library(SnowEngine STATIC
-	${IMGUI_SOURCES} 
-	"ThirdParty/miniaudio/miniaudio.h" 
+set(SNOW_SOURCES
 	"Engine/Core/Application.h" 
 	"Engine/Core/Application.cpp" 
 	"Engine/SnowEngineAPI.h"  
@@ -72,8 +70,6 @@ add_library(SnowEngine STATIC
 	"Engine/Core/Renderer/Texture.cpp"   
 	"Engine/Platform/OpenGL/OpenGLTexture.h" 
 	"Engine/Platform/OpenGL/OpenGLTexture.cpp" 
-	"ThirdParty/stb/stb_image.h"
-	"ThirdParty/stb/stb_image.cpp" 
 	"Engine/Core/Renderer/Camera/CameraController.h" 
 	"Engine/Core/Renderer/Camera/OrthographicCameraController.h" 
 	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp" 
@@ -88,7 +84,20 @@ add_library(SnowEngine STATIC
 	"Engine/Core/Audio/MiniAduioBackend.cpp"
 	"Engine/Core/Audio/MusicInstance.h"
 	"Engine/Core/Audio/MusicInstance.cpp"
-	"Engine/Core/Audio/AudioAssets.h")
+	"Engine/Core/Audio/AudioAssets.h"
+)
+
+set(THIRD_PARTY_SOURCES
+	"ThirdParty/miniaudio/miniaudio.h" 
+	"ThirdParty/stb/stb_image.h"
+	"ThirdParty/stb/stb_image.cpp" 
+)
+
+add_library(SnowEngine STATIC
+	${IMGUI_SOURCES} 
+	${THIRD_PARTY_SOURCES}
+	${SNOW_SOURCES}
+)
 
 #Export as dll if on Windows
 if (WIN32)
@@ -146,10 +155,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/Release)
 
-if(MSVC)
-add_custom_command(TARGET SnowEngine POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_BINARY_DIR}/SnowEngine.lib"
-        "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.lib"
-)
-endif()
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/" FILES ${SNOW_SOURCES})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty" FILES ${THIRD_PARTY_SOURCES})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/" FILES ${IMGUI_SOURCES})
+
+#if(MSVC)
+#add_custom_command(TARGET SnowEngine POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#        "${PROJECT_BINARY_DIR}/SnowEngine.lib"
+#        "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.lib"
+#)
+#endif()

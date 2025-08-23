@@ -52,22 +52,20 @@ namespace Snow
 		static void Stop(Ref<SoundInstance>& sound);
 		static void Stop(Ref<MusicInstance>& music);
 
-		//Clamped [0-1]
-		static void SetSoundVolume(const Ref<MusicInstance>& music, const float volume);
+		static void SetSoundVolume(const Ref<SoundInstance>& music, const float volume);
 		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position);
 		static void SetSoundPitch(const Ref<SoundInstance>& sound, const float pitch);
 		static void SetSoundNearRadius(const Ref<SoundInstance>& sound, const float nearRadius);
 		static void SetSoundFarRadius(const Ref<SoundInstance>& sound, const float farRadius);
-		static void SetSoundAttenuationMode(const Ref<SoundInstance>& sound,AttenuationModel model);
+		static void SetSoundAttenuationModel(const Ref<SoundInstance>& sound,AttenuationModel model);
 		static void SetSoundConfig(const Ref<SoundInstance>& sound, SoundConfig& config);
 
-		//Clamped [0-1]
 		static void SetMusicVolume(const Ref<MusicInstance>& music, const float volume);
 		static void SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2 position);
 		static void SetMusicPitch(const Ref<MusicInstance>& music, const float pitch);
 		static void SetMusicNearRadius(const Ref<MusicInstance>& music, const float nearRadius);
 		static void SetMusicFarRadius(const Ref<MusicInstance>& music, const float farRadius);
-		static void SetMusicAttenuationMode(const Ref<MusicInstance>& music, AttenuationModel model);
+		static void SetMusicAttenuationModel(const Ref<MusicInstance>& music, AttenuationModel model);
 		static void SetMusicLooping(const Ref<MusicInstance>& music, bool loop);
 		static void SetMusicConfig(const Ref<MusicInstance>& music, MusicConfig& config);
 

@@ -3,7 +3,7 @@
 
 namespace Snow
 {
-
+	
 	MusicInstance::MusicInstance(Ref<MusicAsset> asset)
 		: m_Asset(asset)
 	{
