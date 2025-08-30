@@ -28,16 +28,12 @@ set(SNOW_SOURCES
 	"Engine/Core/MouseCode.h" 
 	"Engine/Core/Events/ApplicationEvent.h"
 	"Engine/Core/IWindow.h" 
-	"Engine/Platform/Windows/WindowsWindow.h" 
-	"Engine/Platform/Windows/WindowsWindow.cpp" 
 	"Engine/Core/Layers/Layer.h" 
 	"Engine/Core/Layers/LayerStack.h" 
 	"Engine/Core/Layers/LayerStack.cpp" 
 	"Engine/Core/ImGui/ImGuiLayer.h" 
 	"Engine/Core/ImGui/ImGuiLayer.cpp"
 	"Engine/Core/Input.h" 
-	"Engine/Platform/Windows/WindowsInput.h" 
-	"Engine/Platform/Windows/WindowsInput.cpp" 
 	"EntryPoint.h" 
 	"Engine/Core/Renderer/GraphicsContext.h" 
 	"Engine/Platform/OpenGL/OpenGLContext.h" 
@@ -87,7 +83,8 @@ set(SNOW_SOURCES
 	"Engine/Core/Audio/AudioAssets.h"
 	"Engine/Core/Renderer/Framebuffer.h"
 	"Engine/Core/Renderer/Framebuffer.cpp"
- "Engine/Platform/OpenGL/OpenGLFramebuffer.h" "Engine/Platform/OpenGL/OpenGLFramebuffer.cpp")
+	"Engine/Platform/OpenGL/OpenGLFramebuffer.h" 
+	"Engine/Platform/OpenGL/OpenGLFramebuffer.cpp")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 
@@ -95,17 +92,33 @@ set(THIRD_PARTY_SOURCES
 	"ThirdParty/stb/stb_image.cpp" 
 )
 
+if(WIN32)
+	set(PLATFORM_SOURCES
+		"Engine/Platform/Windows/WindowsInput.cpp" 
+		"Engine/Platform/Windows/WindowsWindow.h" 
+		"Engine/Platform/Windows/WindowsWindow.cpp" 
+	)
+elseif(UNIX)
+	set(PLATFORM_SOURCES
+		 "Engine/Platform/Linux/LinuxInput.cpp" 
+		 "Engine/Platform/Linux/LinuxWindow.h" 
+		 "Engine/Platform/Linux/LinuxWindow.cpp"
+	)
+endif()
+
+
 add_library(SnowEngine STATIC
 	${IMGUI_SOURCES} 
 	${THIRD_PARTY_SOURCES}
 	${SNOW_SOURCES}
+	${PLATFORM_SOURCES}
 )
 
 #Export as dll if on Windows
 if (WIN32)
     #target_compile_definitions(SnowEngine PRIVATE SNOW_BUILD_DLL)
 	target_compile_definitions(SnowEngine PUBLIC SNOW_WINDOWS)
-else()
+elseif(UNIX)
     target_compile_definitions(SnowEngine PUBLIC SNOW_LINUX)
 endif()
 
