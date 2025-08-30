@@ -4,6 +4,7 @@ class Sandbox : public Snow::Application
 {
 public:
 	Sandbox()
+		:Application("Sandbox")
 	{
 		PushLayer(new Sandbox2D());
 	}

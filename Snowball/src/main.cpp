@@ -6,6 +6,7 @@ class Editor : public Snow::Application
 {
 public:
 	Editor()
+		:Application("Snowball")
 	{
 		PushLayer(new Snow::EditorLayer());
 	}

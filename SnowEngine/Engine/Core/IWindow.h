@@ -9,11 +9,11 @@ namespace Snow
 {
 	struct WindowProperties
 	{
-		unsigned int Width;
-		unsigned int Height;
 		std::string Title;
+		uint32_t Width;
+		uint32_t Height;
 		bool VSync = true;
-		WindowProperties(unsigned int width = 1280, unsigned int height = 720, const std::string& title = "SnowEngine")
+		WindowProperties(const std::string& title = "SnowEngine",uint32_t width = 1280, uint32_t height = 720)
 			: Width(width), Height(height), Title(title) {
 		}
 	};
@@ -36,8 +36,8 @@ namespace Snow
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
 		
 		static Ref<IWindow> Create();
 		virtual void Init(const WindowProperties& props = WindowProperties()) = 0;

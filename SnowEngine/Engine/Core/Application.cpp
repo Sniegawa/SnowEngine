@@ -10,7 +10,7 @@ namespace Snow
 {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		SNOW_ASSERT(!s_Instance, "App already exists!");
 		s_Instance = this;
@@ -18,7 +18,7 @@ namespace Snow
 		Log::Init();
 
 		m_Window = IWindow::Create();
-		m_Window->Init(WindowProperties(1280, 720, "SnowEngine"));
+		m_Window->Init(WindowProperties(name, 1280, 720));
 		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent, 1));
 
 		m_ImGuiLayer = new ImGuiLayer();

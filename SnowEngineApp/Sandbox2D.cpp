@@ -28,8 +28,8 @@ Sandbox2D::~Sandbox2D()
 void Sandbox2D::OnAttach()
 {
 	Snow::MusicConfig config;
-	config.pitch = 5.0f;
-	config.volume = 0.25f;
+	config.pitch = 1.0f;
+	config.volume = 0.125f;
 	config.looping = true;
 	Snow::AudioSystem::MusicPlay("MusicTest",config);
 }

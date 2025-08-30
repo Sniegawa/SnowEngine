@@ -20,7 +20,7 @@ namespace Snow
 	class Application
 	{
 	public:
-		Application();
+		Application(const std::string& name);
 		~Application();
 		void Run();
 		void Close();
