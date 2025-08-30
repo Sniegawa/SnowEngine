@@ -96,7 +96,7 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	glm::vec3 tintzero(1.0f);
 	m_Texture->SetTextureTint(tintzero);
 
-	int maxX = 100, maxY = 100;
+	int maxX = 10, maxY = 10;
 	for (int x = 0; x < maxX; x++)
 	{
 		for (int y = 0; y < maxY; y++)

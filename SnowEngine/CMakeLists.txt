@@ -85,7 +85,9 @@ set(SNOW_SOURCES
 	"Engine/Core/Audio/MusicInstance.h"
 	"Engine/Core/Audio/MusicInstance.cpp"
 	"Engine/Core/Audio/AudioAssets.h"
-)
+	"Engine/Core/Renderer/Framebuffer.h"
+	"Engine/Core/Renderer/Framebuffer.cpp"
+ "Engine/Platform/OpenGL/OpenGLFramebuffer.h" "Engine/Platform/OpenGL/OpenGLFramebuffer.cpp")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 
@@ -159,10 +161,10 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/" FILES ${SNOW_SOURCES})
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty" FILES ${THIRD_PARTY_SOURCES})
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/" FILES ${IMGUI_SOURCES})
 
-#if(MSVC)
-#add_custom_command(TARGET SnowEngine POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#        "${PROJECT_BINARY_DIR}/SnowEngine.lib"
-#        "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.lib"
-#)
-#endif()
+if(MSVC)
+add_custom_command(TARGET SnowEngine POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_BINARY_DIR}/SnowEngine.lib"
+        "${CMAKE_BINARY_DIR}/SnowEngineApp/SnowEngine.lib"
+)
+endif()

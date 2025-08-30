@@ -85,7 +85,7 @@ namespace Snow
 		Ref<IndexBuffer> ib(IndexBuffer::Create(quadIndices.data(), Renderer2DData::MaxIndices));
 		s_Data.QuadVertexArray->SetIndexBuffer(ib);
 
-		s_Data.TextureShader = Shader::Create("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true);
+		s_Data.TextureShader = Shader::Create("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true); // Todo : don't staticly link path
 
 		int32_t samplers[s_Data.MaxTextureSlots];
 		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)

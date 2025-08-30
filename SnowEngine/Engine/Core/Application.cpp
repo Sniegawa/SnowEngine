@@ -90,6 +90,11 @@ namespace Snow
 		}
 	}
 
+	void Application::Close()
+	{
+		m_ShouldClose = true;
+	}
+
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_ShouldClose = true;

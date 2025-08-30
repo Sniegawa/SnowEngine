@@ -35,12 +35,15 @@ namespace Snow
 		virtual void Bind(uint32_t slot = 0) const = 0;
 		virtual void SetData(void* data, uint32_t size) = 0;
 
+		virtual const uint32_t GetRendererID() const = 0;
+
 		//Might need to move it somewhere else in the future
 		const glm::vec3& GetTextureTint() const { return m_TextureTint; }
 		void SetTextureTint(glm::vec3& tint) { m_TextureTint = tint; }
 
 		const float& GetOpacity() const { return m_Opacity; }
 		void SetTextureOpacity(float& opacity) { m_Opacity = opacity; }
+
 	private:
 		glm::vec3 m_TextureTint = glm::vec3(1.0f);
 		float m_Opacity = 1.0f;

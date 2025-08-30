@@ -18,6 +18,9 @@ add_subdirectory(SnowEngine)
 # App
 add_subdirectory(SnowEngineApp)
 
+# Editor
+add_subdirectory(Snowball)
+
 if(MSVC)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Zi /Od /MDd")
 else()
