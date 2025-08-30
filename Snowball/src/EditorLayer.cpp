@@ -108,13 +108,25 @@ namespace Snow
 			ImGui::EndMenuBar();
 		}
 
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
+
 		ImGui::Begin("Viewport");
+
+		glm::ivec2 viewportSize = { ImGui::GetContentRegionAvail().x,ImGui::GetContentRegionAvail().y };
+
+		if (m_ViewportSize != viewportSize)
+		{
+			m_ViewportSize = viewportSize;
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+
+			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+		}
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID();
-		auto specs = m_Framebuffer->GetSpecification();
-		ImGui::Image(textureID, ImVec2(specs.Width / 2, specs.Height / 2), ImVec2{ 0,1 }, ImVec2{ 1,0 });
+		ImGui::Image(textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0,1 }, ImVec2{ 1,0 });
+
 
 		ImGui::End();
-
+		ImGui::PopStyleVar();
 		auto stats = Snow::Renderer2D::GetStats();
 		std::stringstream Drawcals;
 		Drawcals << "Drawcalls : " << stats.DrawCalls << std::endl;

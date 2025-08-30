@@ -20,5 +20,7 @@ namespace Snow
 	private:
 		Ref<Framebuffer>m_Framebuffer;
 		OrthographicCameraController m_CameraController;
+
+		glm::ivec2 m_ViewportSize = { 0,0 };
 	};
 };
