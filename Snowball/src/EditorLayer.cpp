@@ -46,7 +46,7 @@ namespace Snow
 		m_Framebuffer->Bind();
 		Snow::Renderer2D::ResetStats();
 
-		Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
+		Snow::RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.7f, 1.0f });
 		Snow::RenderCommand::Clear();
 
 		for (size_t i = 0; i < m_Entities.size(); ++i)
@@ -116,6 +116,28 @@ namespace Snow
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Exit")) Snow::Application::Get().Close();
+				ImGui::EndMenu();
+			}
+			
+			if (ImGui::BeginMenu("Editor"))
+			{
+				if (ImGui::BeginMenu("Themes"))
+				{
+					static int currentTheme = 0; // 0 = Dark, 1 = Light
+
+					if (ImGui::MenuItem("Dark", NULL, currentTheme == 0))
+					{
+						currentTheme = 0;
+						ImGuiLayer::SetTheme(ImGuiTheme::DeepIce);
+					}
+
+					if (ImGui::MenuItem("Light", NULL, currentTheme == 1))
+					{
+						currentTheme = 1;
+						ImGuiLayer::SetTheme(ImGuiTheme::WhiteSnow);
+					}
+					ImGui::EndMenu();
+				}
 				ImGui::EndMenu();
 			}
 

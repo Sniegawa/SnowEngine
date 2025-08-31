@@ -10,6 +10,12 @@
 
 namespace Snow
 {
+	enum ImGuiTheme
+	{
+		DeepIce = 0,
+		WhiteSnow = 1
+	};
+
 	class ImGuiLayer : public Layer
 	{
 	public:
@@ -20,6 +26,8 @@ namespace Snow
 		virtual	void OnDetach() override;
 		void Begin();
 		void End();
+
+		static void SetTheme(ImGuiTheme theme);
 
 	private:
 
