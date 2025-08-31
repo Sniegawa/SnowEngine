@@ -15,7 +15,7 @@ namespace Snow
 		SNOW_ASSERT(!s_Instance, "App already exists!");
 		s_Instance = this;
 
-		Log::Init();
+		Log::Init(name);
 
 		m_Window = IWindow::Create();
 		m_Window->Init(WindowProperties(name, 1280, 720));

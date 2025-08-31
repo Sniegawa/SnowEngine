@@ -31,7 +31,7 @@ namespace Snow
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
-		m_CameraController.OnUpdate(ts);
+		if(m_IsViewportFocused)	m_CameraController.OnUpdate(ts);
 
 		m_Framebuffer->Bind();
 		Snow::Renderer2D::ResetStats();
@@ -112,9 +112,11 @@ namespace Snow
 
 		ImGui::Begin("Viewport");
 
+		m_IsViewportFocused = ImGui::IsWindowFocused();
+		m_IsViewportHovered = ImGui::IsWindowHovered();
 		glm::ivec2 viewportSize = { ImGui::GetContentRegionAvail().x,ImGui::GetContentRegionAvail().y };
 
-		if (m_ViewportSize != viewportSize)
+		if (m_ViewportSize != viewportSize && (viewportSize.x > 0 && viewportSize.y > 0))
 		{
 			m_ViewportSize = viewportSize;
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -145,7 +147,7 @@ namespace Snow
 
 	void EditorLayer::OnEvent(Event& e)
 	{
-		m_CameraController.OnEvent(e);
+		if (m_IsViewportHovered)	m_CameraController.OnEvent(e);
 	}
 
 };

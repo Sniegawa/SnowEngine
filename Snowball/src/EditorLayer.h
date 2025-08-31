@@ -21,6 +21,8 @@ namespace Snow
 		Ref<Framebuffer>m_Framebuffer;
 		OrthographicCameraController m_CameraController;
 
+		bool m_IsViewportFocused = false;
+		bool m_IsViewportHovered = false;
 		glm::ivec2 m_ViewportSize = { 0,0 };
 	};
 };
