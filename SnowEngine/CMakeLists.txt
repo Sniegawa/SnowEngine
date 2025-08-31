@@ -145,14 +145,19 @@ target_include_directories(SnowEngine PUBLIC
 )
 
 
-target_include_directories(SnowEngine PUBLIC
+target_include_directories(SnowEngine PRIVATE
 	${CMAKE_SOURCE_DIR}/Libs/GLAD/include
 	${CMAKE_SOURCE_DIR}/Libs/glfw/include
 	${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb
-	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/miniaudio
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/entt
+)
+
+target_include_directories(SnowEngine PUBLIC
 	${IMGUI_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/miniaudio
 )
 
 target_link_libraries (SnowEngine PUBLIC
