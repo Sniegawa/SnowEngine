@@ -24,5 +24,7 @@ namespace Snow
 		bool m_IsViewportFocused = false;
 		bool m_IsViewportHovered = false;
 		glm::ivec2 m_ViewportSize = { 0,0 };
+
+		Ref<Scene> m_ActiveScene;
 	};
 };

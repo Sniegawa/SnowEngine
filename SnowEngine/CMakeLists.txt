@@ -84,10 +84,11 @@ set(SNOW_SOURCES
 	"Engine/Core/Renderer/Framebuffer.h"
 	"Engine/Core/Renderer/Framebuffer.cpp"
 	"Engine/Platform/OpenGL/OpenGLFramebuffer.h" 
-	"Engine/Platform/OpenGL/OpenGLFramebuffer.cpp")
+	"Engine/Platform/OpenGL/OpenGLFramebuffer.cpp" "Engine/Core/Scene/Scene.h" "Engine/Core/Scene/Scene.cpp" "Engine/Core/Scene/Components.h")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 
+	"ThirdParty/entt/entt.hpp"
 	"ThirdParty/stb/stb_image.h"
 	"ThirdParty/stb/stb_image.cpp" 
 )
@@ -145,7 +146,7 @@ target_include_directories(SnowEngine PUBLIC
 )
 
 
-target_include_directories(SnowEngine PRIVATE
+target_include_directories(SnowEngine PUBLIC
 	${CMAKE_SOURCE_DIR}/Libs/GLAD/include
 	${CMAKE_SOURCE_DIR}/Libs/glfw/include
 	${CMAKE_SOURCE_DIR}/Libs/glm

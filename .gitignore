@@ -364,3 +364,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 bin
+/SnowEngine/cmake_install.cmake

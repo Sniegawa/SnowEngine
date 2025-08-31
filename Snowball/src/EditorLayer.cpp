@@ -7,11 +7,6 @@ namespace Snow
 		:	Layer("Snowball"),
 			m_CameraController(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, (1280.0f / 720.0f), true)
 	{
-		FramebufferSpecification specs;
-		specs.Width = Application::Get().GetWindow().GetWidth();
-		specs.Height = Application::Get().GetWindow().GetHeight();
-
-		m_Framebuffer = Framebuffer::Create(specs);
 	}
 
 	EditorLayer::~EditorLayer()
@@ -21,7 +16,17 @@ namespace Snow
 
 	void EditorLayer::OnAttach()
 	{
+		FramebufferSpecification specs;
+		specs.Width = Application::Get().GetWindow().GetWidth();
+		specs.Height = Application::Get().GetWindow().GetHeight();
 
+		m_Framebuffer = Framebuffer::Create(specs);
+
+		m_ActiveScene = CreateRef<Scene>();
+
+		auto square = m_ActiveScene->CreateEntity();
+		m_ActiveScene->Reg().emplace<TransformComponent>(square);
+		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square,glm::vec4(0.0f,1.0f,0.0f,1.0f));
 	}
 
 	void EditorLayer::OnDetach()
@@ -41,9 +46,7 @@ namespace Snow
 
 		Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-		Snow::Renderer2D::DrawQuad({1.0f,1.0f}, { 0.5f,0.5f }, { 1.0f,0.0f,0.0f,1.0f });
-
-		Snow::Renderer2D::DrawRotatedQuad({ 0.0f,0.0f }, { 0.5f,0.5f }, 1.0f, { 0.0f,1.0f,0.0f,1.0f });
+		m_ActiveScene->OnUpdate(ts);
 
 		Snow::Renderer2D::EndScene();
 
