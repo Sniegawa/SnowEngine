@@ -14,9 +14,14 @@ namespace Snow
 
 	}
 
-	entt::entity Scene::CreateEntity()
+	Entity Scene::CreateEntity(const std::string& name)
 	{
-		return m_Registry.create();
+		Entity entity = Entity(m_Registry.create(), this);
+		entity.AddComponent<TransformComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag = name;
+		
+		return entity;
 	}
 
 	void Scene::OnUpdate(Timestep ts)
@@ -26,7 +31,7 @@ namespace Snow
 		{
 			auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Renderer2D::DrawQuad(transform, sprite);
+			Renderer2D::DrawQuad(transform.Transform, sprite.Color);
 		}
 	}
 };

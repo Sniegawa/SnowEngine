@@ -4,6 +4,18 @@
 
 namespace Snow
 {
+	struct TagComponent
+	{
+		std::string Tag;
+
+		TagComponent() = default;
+		TagComponent(const TagComponent&) = default; //Default copy constructor
+		TagComponent(const std::string& tag)
+			: Tag(tag) { }
+
+		operator std::string() { return Tag; }
+	};
+
 	struct TransformComponent
 	{
 		glm::mat4 Transform = glm::mat4(1.0f);
@@ -24,8 +36,7 @@ namespace Snow
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default; //Default copy constructor
 		SpriteRendererComponent(const glm::vec4& color)
-			: Color(color) {
-		}
+			: Color(color) { }
 
 		operator glm::vec4& () { return Color; }
 		operator const glm::vec4& () { return Color; }

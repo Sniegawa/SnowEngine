@@ -1,24 +1,26 @@
 #pragma once
 
+#include <string>
 #include <entt.hpp>
 
 #include "Components.h"
 #include "Core/Timestep.h"
+#include "Entity.h"
 
 namespace Snow
 {
+
 	class Scene
 	{
 	public:
 		Scene();
 		~Scene();
 
-		entt::entity CreateEntity();
-
-		entt::registry& Reg() { return m_Registry; }
+		Entity CreateEntity(const std::string& name = "New Entity");
 
 		void OnUpdate(Timestep ts);
 	private:
+		friend class Entity;
 		entt::registry m_Registry;
 	};
 }

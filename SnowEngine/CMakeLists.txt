@@ -84,7 +84,7 @@ set(SNOW_SOURCES
 	"Engine/Core/Renderer/Framebuffer.h"
 	"Engine/Core/Renderer/Framebuffer.cpp"
 	"Engine/Platform/OpenGL/OpenGLFramebuffer.h" 
-	"Engine/Platform/OpenGL/OpenGLFramebuffer.cpp" "Engine/Core/Scene/Scene.h" "Engine/Core/Scene/Scene.cpp" "Engine/Core/Scene/Components.h")
+	"Engine/Platform/OpenGL/OpenGLFramebuffer.cpp" "Engine/Core/Scene/Scene.h" "Engine/Core/Scene/Scene.cpp" "Engine/Core/Scene/Components.h" "Engine/Core/Scene/Entity.h")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 

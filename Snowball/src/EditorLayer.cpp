@@ -24,9 +24,14 @@ namespace Snow
 
 		m_ActiveScene = CreateRef<Scene>();
 
-		auto square = m_ActiveScene->CreateEntity();
-		m_ActiveScene->Reg().emplace<TransformComponent>(square);
-		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square,glm::vec4(0.0f,1.0f,0.0f,1.0f));
+		m_Entities.resize(4);
+
+		for (size_t i = 0; i < m_Entities.size(); ++i)
+		{
+			m_Entities[i] = { m_ActiveScene->CreateEntity("Square " + std::to_string(i)), glm::vec2(i+(0.25f*i),0.0f)};
+			m_Entities[i].first.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		}
+	
 	}
 
 	void EditorLayer::OnDetach()
@@ -43,6 +48,12 @@ namespace Snow
 
 		Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 		Snow::RenderCommand::Clear();
+
+		for (size_t i = 0; i < m_Entities.size(); ++i)
+		{
+			glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(m_Entities[i].second.x, m_Entities[i].second.y, 0.0f));
+			m_Entities[i].first.GetComponent<TransformComponent>().Transform = transform;
+		}
 
 		Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
@@ -132,6 +143,25 @@ namespace Snow
 
 		ImGui::End();
 		ImGui::PopStyleVar();
+
+		ImGui::Begin("Inspector");
+		for (size_t i = 0; i < m_Entities.size(); ++i)
+		{
+			ImGui::Text(m_Entities[i].first.GetComponent<TagComponent>().Tag.c_str());
+			if (m_Entities[i].first.HasComponent<SpriteRendererComponent>())
+			{
+				ImGui::PushID(i);
+				ImGui::Text("Transform");
+				ImGui::DragFloat2("Position", &m_Entities[i].second[0],0.01f);
+				ImGui::Text("SpriteRenderer");
+				ImGui::DragFloat4("", &m_Entities[i].first.GetComponent<SpriteRendererComponent>().Color[0], 0.025f, 0.0f, 1.0f);
+				ImGui::PopID();
+			}
+			ImGui::Spacing();
+			ImGui::Spacing();
+		}
+		ImGui::End();
+
 		auto stats = Snow::Renderer2D::GetStats();
 		std::stringstream Drawcals;
 		Drawcals << "Drawcalls : " << stats.DrawCalls << std::endl;
