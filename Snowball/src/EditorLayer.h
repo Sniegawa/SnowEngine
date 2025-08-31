@@ -26,7 +26,7 @@ namespace Snow
 		glm::ivec2 m_ViewportSize = { 0,0 };
 
 		Ref<Scene> m_ActiveScene;
-		std::vector<std::pair<Entity,glm::vec2>> m_Entities;
-		
+		std::vector<Entity> m_Entities;
+		Entity m_CameraEntity;
 	};
 };

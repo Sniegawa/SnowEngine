@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Renderer2D.h"
 
+
 namespace Snow
 {
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
@@ -16,7 +17,7 @@ namespace Snow
 		RenderCommand::SetViewport(0, 0, width, height);
 	}
 
-	void Renderer::BeginScene(Camera& camera)
+	void Renderer::BeginScene(OrthographicCamera& camera)
 	{
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "Core/Renderer/Camera/Camera.h"
+
 namespace Snow
 {
 	struct TagComponent
@@ -40,5 +42,18 @@ namespace Snow
 
 		operator glm::vec4& () { return Color; }
 		operator const glm::vec4& () { return Color; }
+	};
+
+	struct CameraComponent
+	{
+		Camera Cam;
+		bool Primary = false;
+
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const glm::mat4& projection, bool primary = false)
+			: Cam(projection), Primary(primary) { }
+
 	};
 }

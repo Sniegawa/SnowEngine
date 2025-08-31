@@ -1,27 +1,32 @@
 #pragma once
-#include "CameraController.h"
+
+#include "Core/Timestep.h"
+#include "Core/Events/Event.h"
+#include "Core/Events/MouseEvent.h"
+#include "Core/Events/ApplicationEvent.h"
+
 #include "OrthographicCamera.h"
 
 namespace Snow
 {
-	class OrthographicCameraController : CameraController
+	class OrthographicCameraController
 	{
 	public:
 		OrthographicCameraController(glm::vec3 pos, float rotation, float aspectRatio, bool allowRotation);
 		~OrthographicCameraController();
-		virtual void OnUpdate(Timestep ts) override;
-		virtual void OnEvent(Event& e) override;
+		void OnUpdate(Timestep ts);
+		void OnEvent(Event& e);
 
-		virtual void OnResize(float width, float height) override;
+		void OnResize(float width, float height);
 
-		virtual Camera& GetCamera() override { return m_Camera; }
+		OrthographicCamera& GetCamera() { return m_Camera; }
 
 		inline float GetZoomLevel() const { return m_ZoomLevel; }
 		inline void SetZoomLevel(float level) { m_ZoomLevel = level; }
 
 	private:
-		virtual bool OnMouseScrolledEvent(MouseScrolledEvent& e) override;
-		virtual bool OnWindowResizeEvent(WindowResizeEvent& e) override;
+		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
+		bool OnWindowResizeEvent(WindowResizeEvent& e);
 	
 	private:
 		OrthographicCamera m_Camera;

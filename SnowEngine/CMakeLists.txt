@@ -66,7 +66,7 @@ set(SNOW_SOURCES
 	"Engine/Core/Renderer/Texture.cpp"   
 	"Engine/Platform/OpenGL/OpenGLTexture.h" 
 	"Engine/Platform/OpenGL/OpenGLTexture.cpp" 
-	"Engine/Core/Renderer/Camera/CameraController.h" 
+	 
 	"Engine/Core/Renderer/Camera/OrthographicCameraController.h" 
 	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp" 
 	"Engine/Core/Renderer/Renderer2D.cpp" 

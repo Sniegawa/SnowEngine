@@ -108,7 +108,17 @@ namespace Snow
 	{
 	}
 
-	void Renderer2D::BeginScene(const Camera& camera)
+	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		glm::mat4 viewProje = camera.GetProjectionMatrix() * glm::inverse(transform);
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection", viewProje);
+
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+	}
+
+	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());

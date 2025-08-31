@@ -7,7 +7,7 @@
 namespace Snow
 {
 	OrthographicCamera::OrthographicCamera(glm::vec3 position, float rotation, CameraParams::OrthographicCameraParams params)
-		: Camera(), m_Position(position), m_Rotation(rotation)
+		: m_Position(position), m_Rotation(rotation)
 	{
 		RecalculateProjectionMatrix(params);
 		RecalculateViewMatrix();

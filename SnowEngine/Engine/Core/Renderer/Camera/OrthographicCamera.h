@@ -18,24 +18,33 @@ namespace Snow
 		};
 	};
 
-	class OrthographicCamera : public Camera
+	//Todo : remove
+	//Deprecated code
+	class OrthographicCamera
 	{
 	public:
 		OrthographicCamera(glm::vec3 position = glm::vec3(0.0f), float rotation = 0.0f, CameraParams::OrthographicCameraParams params = CameraParams::OrthographicCameraParams());
 		~OrthographicCamera() {};
 
-		virtual void SetPosition(const glm::vec3& position) override;
-		virtual const glm::vec3& GetPosition() const override;
+		void SetPosition(const glm::vec3& position);
+		const glm::vec3& GetPosition() const;
 
-		virtual void SetRotation(const glm::vec3& rotation) override;
-		virtual const glm::vec3& GetRotation() const override;
+		void SetRotation(const glm::vec3& rotation);
+		const glm::vec3& GetRotation() const;
 
 		void RecalculateProjectionMatrix(CameraParams::OrthographicCameraParams params);
 
+		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
+		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+
 	private:
-		virtual void RecalculateViewMatrix() override;
+		void RecalculateViewMatrix();
 	private:
 		glm::vec3 m_Position;
 		float m_Rotation;
+		glm::mat4 m_ViewMatrix;
+		glm::mat4 m_ProjectionMatrix;
+		glm::mat4 m_ViewProjectionMatrix;
 	};
 };

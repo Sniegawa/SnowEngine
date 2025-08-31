@@ -26,12 +26,42 @@ namespace Snow
 
 	void Scene::OnUpdate(Timestep ts)
 	{
-		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
+		Camera* MainCamera = nullptr;
+		glm::mat4* MainCameraTransform = nullptr;
 		{
-			auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-			Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+			auto view = m_Registry.view<TransformComponent,CameraComponent>();
+			for (auto entity : view)
+			{
+				auto& camera = view.get<CameraComponent>(entity);
+				auto& transform = view.get<TransformComponent>(entity);
+				
+				if (camera.Primary)
+				{
+					MainCamera = &camera.Cam;
+					MainCameraTransform = &transform.Transform;
+					break;
+				}
+			}
 		}
+
+		if (MainCamera)
+		{
+			Renderer2D::BeginScene(MainCamera->GetProjectionMatrix(), *MainCameraTransform);
+
+			//Render
+			{
+				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+				for (auto entity : group)
+				{
+					auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+
+					Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+				}
+			}
+
+			Renderer2D::EndScene();
+		}
+
+		
 	}
 };

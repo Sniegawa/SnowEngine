@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 #include "Camera/Camera.h"
+#include "Camera/OrthographicCamera.h"
+
 #include "SnowEngineAPI.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -17,8 +19,9 @@ namespace Snow
 		static void Init();
 		static void Shutdown();
 		
-		static void BeginScene(const Camera& camera);
-		static void EndScene(); // End collecting data and render in batch
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
+		static void BeginScene(const OrthographicCamera& camera);
+		static void EndScene();
 		static void Flush();
 		
 		//Primitives
