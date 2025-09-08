@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "Core/Renderer/Camera/Camera.h"
+#include "SceneCamera.h"
 
 namespace Snow
 {
@@ -46,14 +46,11 @@ namespace Snow
 
 	struct CameraComponent
 	{
-		Camera Cam;
+		SceneCamera Camera = SceneCamera();
 		bool Primary = false;
-
+		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
-		CameraComponent(const glm::mat4& projection, bool primary = false)
-			: Cam(projection), Primary(primary) { }
-
 	};
 }

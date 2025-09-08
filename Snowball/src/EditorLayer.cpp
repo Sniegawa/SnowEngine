@@ -33,7 +33,8 @@ namespace Snow
 		}
 		
 		m_CameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
-		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f),true);
+		auto& camComponent = m_CameraEntity.AddComponent<CameraComponent>();
+		camComponent.Primary = true;
 	}
 
 	void EditorLayer::OnDetach()
@@ -62,6 +63,7 @@ namespace Snow
 
 	void EditorLayer::OnImGuiRender()
 	{
+		//Todo : Strip out unnecesary code from this imgui demo
 		static bool p_open = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = true;
@@ -154,6 +156,8 @@ namespace Snow
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
 			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID();
 		ImGui::Image(textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0,1 }, ImVec2{ 1,0 });
@@ -179,7 +183,14 @@ namespace Snow
 			ImGui::Spacing();
 		}
 		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]),0.125f);
-		ImGui::End();
+		ImGui::Checkbox("Camera Fixed Aspectratio", &m_CameraEntity.GetComponent<CameraComponent>().FixedAspectRatio);
+		{
+			auto& camera = m_CameraEntity.GetComponent<CameraComponent>().Camera;
+			float orthoSize = camera.GetOrthographicSize();
+			ImGui::DragFloat("Camera OrthoSize", &orthoSize, 0.125f, 0.25f, 100.0f);
+			camera.SetOrthographicSize(orthoSize);
+
+		}ImGui::End();
 
 		auto stats = Snow::Renderer2D::GetStats();
 		std::stringstream Drawcals;
