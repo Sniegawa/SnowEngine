@@ -38,15 +38,15 @@ namespace Snow
 
 		static void Update(Timestep ts);
 		
-		static Ref<SoundInstance>& SoundPlay(Ref<SoundAsset>& soundAsset);
-		static Ref<SoundInstance>& SoundPlay(const std::string& name);
-		static Ref<SoundInstance>& SoundPlay(Ref<SoundAsset>& soundAsset, SoundConfig& config);
-		static Ref<SoundInstance>& SoundPlay(const std::string& name, SoundConfig& config);
+		static Ref<SoundInstance> SoundPlay(Ref<SoundAsset>& soundAsset);
+		static Ref<SoundInstance> SoundPlay(const std::string& name);
+		static Ref<SoundInstance> SoundPlay(Ref<SoundAsset>& soundAsset, SoundConfig& config);
+		static Ref<SoundInstance> SoundPlay(const std::string& name, SoundConfig& config);
 
-		static Ref<MusicInstance>& MusicPlay(Ref<MusicAsset>& musicAsset);
-		static Ref<MusicInstance>& MusicPlay(const std::string& name);
-		static Ref<MusicInstance>& MusicPlay(Ref<MusicAsset>& musicAsset, MusicConfig& config);
-		static Ref<MusicInstance>& MusicPlay(const std::string& name, MusicConfig& config);
+		static Ref<MusicInstance> MusicPlay(Ref<MusicAsset>& musicAsset);
+		static Ref<MusicInstance> MusicPlay(const std::string& name);
+		static Ref<MusicInstance> MusicPlay(Ref<MusicAsset>& musicAsset, MusicConfig& config);
+		static Ref<MusicInstance> MusicPlay(const std::string& name, MusicConfig& config);
 
 		//Dunno how to handle stops
 		static void Stop(Ref<SoundInstance>& sound);
@@ -82,6 +82,8 @@ namespace Snow
 		static Ref<MusicAsset> GetMusic(const std::string& name);
 
 		static ma_engine& GetEngine() { return s_Engine; }
+
+		static void SetListenerPosition(const glm::vec3& position, uint32_t listenerID);
 
 	private:
 		static ma_engine s_Engine;

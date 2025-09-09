@@ -55,4 +55,13 @@ namespace Snow
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
+
+	template<typename T>
+	using WeakRef = std::weak_ptr<T>;
+
+	template<typename T>
+	constexpr WeakRef<T> CreateWeakRef(const Ref<T>& ref)
+	{
+		return WeakRef<T>(ref);
+	}
 };

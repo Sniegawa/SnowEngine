@@ -2,6 +2,8 @@
 
 #include "Core/Renderer/Renderer2D.h"
 
+#include "Core/Audio/AudioSystem.h"
+
 namespace Snow
 {
 	Scene::Scene()
@@ -82,7 +84,38 @@ namespace Snow
 			}
 		}
 
-		
+		//Update audio listener
+		{
+			auto view = m_Registry.view<TransformComponent, AudioListenerComponent>();
+			for (auto entity : view)
+			{
+				const auto& [transform, listener] = view.get<TransformComponent, AudioListenerComponent>(entity);
+
+				AudioSystem::SetListenerPosition(glm::vec3(transform.Transform[3][0], transform.Transform[3][1], transform.Transform[3][2]),listener.ListenerID);
+				AudioSystem::SetMasterVolume(listener.masterVolume);
+			}
+		}
+
+
+		//Update audio emitters
+		{
+			{
+				auto group = m_Registry.group<SoundEmitterComponent>(entt::get<TransformComponent>);
+				for (auto entity : group)
+				{
+					const auto& [transform, emitter] = group.get<TransformComponent, SoundEmitterComponent>(entity);
+					if (!emitter.Instance.expired())
+					{
+						auto Instance = emitter.Instance.lock();
+						AudioSystem::SetSoundPosition(Instance, glm::vec2(transform.Transform[3][0], transform.Transform[3][1]));
+						AudioSystem::SetSoundConfig(Instance, emitter.Config);
+					}
+					//else emitter.isPlaying = false;
+					
+				}
+			}
+		}
+			
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)

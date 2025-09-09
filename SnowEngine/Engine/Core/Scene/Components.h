@@ -2,9 +2,17 @@
 
 #include <glm/glm.hpp>
 #include "Core/Timestep.h"
+#include "SnowEngineAPI.h"
+#include "Core/Logging/Log.h"
 
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+
+#include "Core/Audio/AudioAssets.h"
+#include "Core/Audio/SoundInstance.h"
+#include "Core/Audio/MusicInstance.h"
+
+#include "Core/Audio/AudioSystem.h"
 
 namespace Snow
 {
@@ -61,7 +69,6 @@ namespace Snow
 		ScriptableEntity* Instance = nullptr;
 
 		// Function pointers
-
 		ScriptableEntity* (*InstantiateScript)(); 
 		void (*DestroyScript)(NativeScriptComponent*);
 
@@ -72,5 +79,56 @@ namespace Snow
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 
 		}
+	};
+
+	struct AudioListenerComponent
+	{
+		uint32_t ListenerID = 0; // For now i support only 1 listener leave this for possible splitscreen
+		float masterVolume = 1.0f;
+
+		AudioListenerComponent() = default;
+	};
+
+	struct SoundEmitterComponent
+	{
+		Ref<SoundAsset> Sound = nullptr;
+		SoundConfig Config = SoundConfig();
+		
+		void Play()
+		{
+			if (!Sound)
+			{
+				SNOW_CORE_WARN("Tried playing sound with no asset");
+				return;
+			}
+			if (!isPlaying || Instance.expired())
+			{
+				Instance = CreateWeakRef<SoundInstance>(AudioSystem::SoundPlay(Sound, Config));
+				isPlaying = true;
+			}
+		}
+
+		void Stop()
+		{
+			auto instance = Instance.lock();
+			AudioSystem::Stop(instance);
+			isPlaying = false;
+		}
+
+		WeakRef<SoundInstance> Instance;
+		bool isPlaying = false;
+
+		SoundEmitterComponent() = default;
+		SoundEmitterComponent(Ref<SoundAsset>& sound)
+			: Sound(sound) {}
+	};
+
+	struct MusicEmitterComponent
+	{
+		Ref<MusicAsset> Music;
+		MusicConfig config;
+
+		MusicEmitterComponent(Ref<MusicAsset>& music, MusicConfig& cfg = MusicConfig())
+			: Music(music), config(cfg) {}
 	};
 }

@@ -57,6 +57,9 @@ namespace Snow
 
 	void EditorLayer::OnAttach()
 	{
+		AudioSystem::LoadSound("Coin", "Assets/Audio/pickupCoin.wav");
+
+
 		FramebufferSpecification specs;
 		specs.Width = Application::Get().GetWindow().GetWidth();
 		specs.Height = Application::Get().GetWindow().GetHeight();
@@ -73,6 +76,10 @@ namespace Snow
 			m_Entities[i].AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		}
 		
+		m_Entities[0].AddComponent<AudioListenerComponent>();
+
+		m_Entities[1].AddComponent<SoundEmitterComponent>().Sound = AudioSystem::GetSound("Coin");
+
 		m_CameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
 		auto& camComponent = m_CameraEntity.AddComponent<CameraComponent>();
 		camComponent.Primary = true;
@@ -88,17 +95,18 @@ namespace Snow
 	{
 		if(m_IsViewportFocused)	m_CameraController.OnUpdate(ts);
 
+		if (Input::IsKeyPressed(Key::Space))
+		{
+			m_Entities[1].GetComponent<SoundEmitterComponent>().Play();
+		}
+
 		m_Framebuffer->Bind();
 		Renderer2D::ResetStats();
 
 		RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.7f, 1.0f });
 		RenderCommand::Clear();
 
-		//Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
-
 		m_ActiveScene->OnUpdate(ts);
-
-		
 
 		m_Framebuffer->Unbind();
 	}

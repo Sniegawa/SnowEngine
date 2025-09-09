@@ -72,7 +72,7 @@ namespace Snow
 	/// </summary>
 	/// <param name="soundAsset">A ref to the sound asset to be played.</param>
 	/// <returns>A ref to the created and playing sound instance.</returns>
-	Ref<SoundInstance>& AudioSystem::SoundPlay(Ref<SoundAsset>& soundAsset)
+	Ref<SoundInstance> AudioSystem::SoundPlay(Ref<SoundAsset>& soundAsset)
 	{
 		//Create Sound instance by given asset
 		Ref<SoundInstance> instance = CreateRef<SoundInstance>(soundAsset);
@@ -89,7 +89,7 @@ namespace Snow
 	/// </summary>
 	/// <param name="name">The name of the sound to play.</param>
 	/// <returns>A ref to the SoundInstance representing the currently playing sound.</returns>
-	Ref<SoundInstance>& AudioSystem::SoundPlay(const std::string& name)
+	Ref<SoundInstance> AudioSystem::SoundPlay(const std::string& name)
 	{
 		//Create sound instance by given name
 		Ref<SoundInstance> instance = CreateRef<SoundInstance>(s_SoundLibrary.Get(name));
@@ -107,7 +107,7 @@ namespace Snow
 	/// <param name="soundAsset">Ref to the sound asset to be played.</param>
 	/// <param name="config">Configuration settings for the sound playback.</param>
 	/// <returns>Ref to the created and playing SoundInstance.</returns>
-	Ref<SoundInstance>& AudioSystem::SoundPlay(Ref<SoundAsset>& soundAsset, SoundConfig& config)
+	Ref<SoundInstance> AudioSystem::SoundPlay(Ref<SoundAsset>& soundAsset, SoundConfig& config)
 	{
 		//Create Sound instance by given asset and config
 		Ref<SoundInstance> instance = CreateRef<SoundInstance>(soundAsset, config);
@@ -125,7 +125,7 @@ namespace Snow
 	/// <param name="name">The name of the sound to play.</param>
 	/// <param name="config">The configuration settings for the sound playback.</param>
 	/// <returns>A ref to the created and playing SoundInstance.</returns>
-	Ref<SoundInstance>& AudioSystem::SoundPlay(const std::string& name, SoundConfig& config)
+	Ref<SoundInstance> AudioSystem::SoundPlay(const std::string& name, SoundConfig& config)
 	{
 		//Create sound instance by given name and config
 		Ref<SoundInstance> instance = CreateRef<SoundInstance>(s_SoundLibrary.Get(name), config);
@@ -142,7 +142,7 @@ namespace Snow
 	/// </summary>
 	/// <param name="musicAsset">A ref to the music asset to be played.</param>
 	/// <returns>A ref to the created and playing MusicInstance.</returns>
-	Ref<MusicInstance>& AudioSystem::MusicPlay(Ref<MusicAsset>& musicAsset)
+	Ref<MusicInstance> AudioSystem::MusicPlay(Ref<MusicAsset>& musicAsset)
 	{
 		//Create music instance by given asset
 		Ref<MusicInstance> instance = CreateRef<MusicInstance>(musicAsset);
@@ -159,7 +159,7 @@ namespace Snow
 	/// </summary>
 	/// <param name="name">The name of the music track to play.</param>
 	/// <returns>A ref to the MusicInstance representing the playing music.</returns>
-	Ref<MusicInstance>& AudioSystem::MusicPlay(const std::string& name)
+	Ref<MusicInstance> AudioSystem::MusicPlay(const std::string& name)
 	{
 		//Create music instance by given name
 		Ref<MusicInstance> instance = CreateRef<MusicInstance>(s_MusicLibrary.Get(name));
@@ -177,7 +177,7 @@ namespace Snow
 	/// <param name="musicAsset">Ref to the music asset to be played.</param>
 	/// <param name="config">Configuration settings for music playback.</param>
 	/// <returns>Ref to the created and playing music instance.</returns>
-	Ref<MusicInstance>& AudioSystem::MusicPlay(Ref<MusicAsset>& musicAsset,MusicConfig& config)
+	Ref<MusicInstance> AudioSystem::MusicPlay(Ref<MusicAsset>& musicAsset,MusicConfig& config)
 	{
 		//Create music instance by given asset and config
 		Ref<MusicInstance> instance = CreateRef<MusicInstance>(musicAsset, config);
@@ -195,7 +195,7 @@ namespace Snow
 	/// <param name="name">The name of the music track to play.</param>
 	/// <param name="config">The configuration settings for the music instance.</param>
 	/// <returns>A ref to the created and playing MusicInstance.</returns>
-	Ref<MusicInstance>& AudioSystem::MusicPlay(const std::string& name,MusicConfig& config)
+	Ref<MusicInstance> AudioSystem::MusicPlay(const std::string& name,MusicConfig& config)
 	{
 		//Create music instance by given name and config
 		Ref<MusicInstance> instance = CreateRef<MusicInstance>(s_MusicLibrary.Get(name), config);
@@ -405,6 +405,10 @@ namespace Snow
 		return ma_engine_get_volume(&s_Engine);
 	}
 
+	void AudioSystem::SetListenerPosition(const glm::vec3& position, uint32_t listenerID)
+	{
+		ma_engine_listener_set_position(&s_Engine, listenerID, position.x, position.y, position.z);
+	}
 
 	/*
 	======================================
