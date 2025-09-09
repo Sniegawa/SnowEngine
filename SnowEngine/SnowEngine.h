@@ -26,6 +26,8 @@
 #include "Engine/Core/Scene/Scene.h"
 #include "Engine/Core/Scene/Components.h"
 #include "Engine/Core/Scene/Entity.h"
+#include "Engine/Core/Scene/SceneCamera.h"
+#include "Engine/Core/Scene/ScriptableEntity.h"
 
 #include "Engine/Core/Renderer/Shader.h"
 #include "Engine/Core/Renderer/VertexArray.h"

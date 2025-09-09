@@ -3,6 +3,47 @@
 namespace Snow
 {
 
+	class CameraController : public ScriptableEntity
+	{
+	public:
+		void OnUpdate(Timestep ts)
+		{
+			glm::mat4& transform = GetComponent<TransformComponent>().Transform;
+
+			glm::vec2 MoveVector = glm::vec2(0.0f);
+			float RotationAmount = 0.0f;
+
+			if (Input::IsKeyPressed(Key::A))
+			{
+				MoveVector.x -= m_MoveSpeed * ts;
+			}
+			if (Input::IsKeyPressed(Key::D))
+			{
+				MoveVector.x += m_MoveSpeed * ts;
+			}
+			if (Input::IsKeyPressed(Key::W))
+			{
+				MoveVector.y += m_MoveSpeed * ts;
+			}
+			if (Input::IsKeyPressed(Key::S))
+			{
+				MoveVector.y -= m_MoveSpeed * ts;
+			}
+			
+			if (Input::IsKeyPressed(Key::Q))
+				RotationAmount += m_RotationSpeed * ts;
+			if (Input::IsKeyPressed(Key::E))
+				RotationAmount -= m_RotationSpeed * ts;
+
+			transform = glm::rotate(transform, RotationAmount, glm::vec3(0.0f, 0.0f, 1.0f));
+			transform = glm::translate(transform, glm::vec3(MoveVector.x, MoveVector.y, 0.0f));
+		}
+	private:
+		float m_MoveSpeed = 2.0f;
+		float m_RotationSpeed = 5.0f;
+	};
+
+
 	EditorLayer::EditorLayer()
 		:	Layer("Snowball"),
 			m_CameraController(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, (1280.0f / 720.0f), true)
@@ -35,6 +76,7 @@ namespace Snow
 		m_CameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
 		auto& camComponent = m_CameraEntity.AddComponent<CameraComponent>();
 		camComponent.Primary = true;
+		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	}
 
 	void EditorLayer::OnDetach()
