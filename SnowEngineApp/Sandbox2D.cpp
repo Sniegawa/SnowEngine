@@ -1,6 +1,5 @@
 #include "Sandbox2D.h"
 
-#include <format>
 
 Sandbox2D::Sandbox2D()
 	: Layer("Application Example Layer"),

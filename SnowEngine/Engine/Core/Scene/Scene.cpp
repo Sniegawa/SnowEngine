@@ -3,6 +3,7 @@
 #include "Core/Renderer/Renderer2D.h"
 
 #include "Core/Audio/AudioSystem.h"
+#include "Core/Scene/Components.h"
 
 namespace Snow
 {
@@ -110,10 +111,24 @@ namespace Snow
 						AudioSystem::SetSoundPosition(Instance, glm::vec2(transform.Transform[3][0], transform.Transform[3][1]));
 						AudioSystem::SetSoundConfig(Instance, emitter.Config);
 					}
-					//else emitter.isPlaying = false;
+          else emitter.isPlaying = false;
 					
 				}
 			}
+      {
+        auto group = m_Registry.group<MusicEmitterComponent>(entt::get<TransformComponent>);
+        for(auto entity : group)
+        {
+          const auto& [transform,emitter] = group.get<TransformComponent,MusicEmitterComponent>(entity);
+          if(!emitter.Instance.expired())
+          {
+            auto Instance = emitter.Instance.lock();
+            AudioSystem::SetMusicPosition(Instance,glm::vec2(transform.Transform[3][0],transform.Transform[3][1]));
+            AudioSystem::SetMusicConfig(Instance,emitter.Config);
+          }
+          else emitter.isPlaying = false;
+        }
+      }
 		}
 			
 	}

@@ -1,4 +1,7 @@
 #include "EditorLayer.h"
+#include "Core/Audio/AudioSystem.h"
+#include "Core/KeyCode.h"
+#include "Core/Scene/Components.h"
 
 namespace Snow
 {
@@ -58,7 +61,7 @@ namespace Snow
 	void EditorLayer::OnAttach()
 	{
 		AudioSystem::LoadSound("Coin", "Assets/Audio/pickupCoin.wav");
-
+    AudioSystem::LoadMusic("Music","Assets/Audio/musicTest.mp3");
 
 		FramebufferSpecification specs;
 		specs.Width = Application::Get().GetWindow().GetWidth();
@@ -80,6 +83,8 @@ namespace Snow
 
 		m_Entities[1].AddComponent<SoundEmitterComponent>().Sound = AudioSystem::GetSound("Coin");
 
+    m_Entities[2].AddComponent<MusicEmitterComponent>().Music = AudioSystem::GetMusic("Music");
+
 		m_CameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
 		auto& camComponent = m_CameraEntity.AddComponent<CameraComponent>();
 		camComponent.Primary = true;
@@ -99,7 +104,11 @@ namespace Snow
 		{
 			m_Entities[1].GetComponent<SoundEmitterComponent>().Play();
 		}
-
+    
+    if (Input::IsKeyPressed(Key::M))
+    {
+      m_Entities[2].GetComponent<MusicEmitterComponent>().Play();
+    }
 		m_Framebuffer->Bind();
 		Renderer2D::ResetStats();
 
@@ -219,7 +228,8 @@ namespace Snow
 		ImGui::Begin("Properties");
 		for (size_t i = 0; i < m_Entities.size(); ++i)
 		{
-			ImGui::Text(m_Entities[i].GetComponent<TagComponent>().Tag.c_str());
+    std::string tag = m_Entities[i].GetComponent<TagComponent>().Tag;
+			ImGui::Text(tag.c_str());
 			if (m_Entities[i].HasComponent<SpriteRendererComponent>())
 			{
 				ImGui::PushID(i);

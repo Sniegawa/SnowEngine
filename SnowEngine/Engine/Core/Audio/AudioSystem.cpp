@@ -229,6 +229,11 @@ namespace Snow
 	void AudioSystem::Stop(Ref<MusicInstance>& music)
 	{
 		music->Stop();
+    //Since i would need to implement pausing myself and pausing != stoping ill delete it as in above
+    s_MusicInstances.erase(
+      std::remove(s_MusicInstances.begin(), s_MusicInstances.end(),music),
+      s_MusicInstances.end()
+    );
 	}
 
 	/* 

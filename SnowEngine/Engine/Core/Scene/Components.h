@@ -115,6 +115,8 @@ namespace Snow
 			isPlaying = false;
 		}
 
+    constexpr bool IsPlaying() const { return isPlaying; }
+
 		WeakRef<SoundInstance> Instance;
 		bool isPlaying = false;
 
@@ -125,10 +127,42 @@ namespace Snow
 
 	struct MusicEmitterComponent
 	{
-		Ref<MusicAsset> Music;
-		MusicConfig config;
+		Ref<MusicAsset> Music = nullptr;
+		MusicConfig Config = MusicConfig();
 
-		MusicEmitterComponent(Ref<MusicAsset>& music, MusicConfig& cfg = MusicConfig())
-			: Music(music), config(cfg) {}
+    void Play()
+    {
+      if(!Music)
+      {
+        SNOW_CORE_WARN("Tried playing sound with no asset");
+        return;
+      }
+      if(!isPlaying || Instance.expired())
+      {
+        Instance = CreateWeakRef<MusicInstance>(AudioSystem::MusicPlay(Music,Config));
+        isPlaying = true;
+      }
+    }
+
+    void Stop()
+    {
+      if(!Instance.expired())
+      {
+        isPlaying = false;
+        return;
+      }
+      auto instance = Instance.lock();
+      AudioSystem::Stop(instance);
+      isPlaying = false;
+    }
+
+    bool IsPlaying() const { return isPlaying; }
+
+    WeakRef<MusicInstance> Instance;
+    bool isPlaying = false;
+
+    MusicEmitterComponent() = default;
+		MusicEmitterComponent(Ref<MusicAsset>& music)
+			: Music(music) {}
 	};
 }
