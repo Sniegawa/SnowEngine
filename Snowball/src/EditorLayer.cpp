@@ -89,6 +89,9 @@ namespace Snow
 		auto& camComponent = m_CameraEntity.AddComponent<CameraComponent>();
 		camComponent.Primary = true;
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+
+		m_Hierarchy.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -228,7 +231,7 @@ namespace Snow
 		ImGui::Begin("Properties");
 		for (size_t i = 0; i < m_Entities.size(); ++i)
 		{
-    std::string tag = m_Entities[i].GetComponent<TagComponent>().Tag;
+		std::string tag = m_Entities[i].GetComponent<TagComponent>().Tag;
 			ImGui::Text(tag.c_str());
 			if (m_Entities[i].HasComponent<SpriteRendererComponent>())
 			{
@@ -264,6 +267,8 @@ namespace Snow
 		ImGui::Text(Quads.str().c_str());
 		ImGui::Text(Vertices.str().c_str());
 		ImGui::End();
+
+		m_Hierarchy.OnImGuiRender();
 
 		ImGui::End();
 	}

@@ -24,6 +24,7 @@ namespace Snow
 
 	private:
 		friend class Entity;
+		friend class SceneHierarchyPanel;
 		entt::registry m_Registry;
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;

@@ -2,6 +2,8 @@
 
 #include <SnowEngine/SnowEngine.h>
 
+#include "Panels/SceneHierarchyPanel.h"
+
 namespace Snow
 {
 	class EditorLayer : public Layer
@@ -28,5 +30,8 @@ namespace Snow
 		Ref<Scene> m_ActiveScene;
 		std::vector<Entity> m_Entities;
 		Entity m_CameraEntity;
+
+		//Panels
+		SceneHierarchyPanel m_Hierarchy;
 	};
 };
