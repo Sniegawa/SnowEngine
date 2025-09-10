@@ -10,8 +10,8 @@ namespace Snow
 {
 	enum class AttenuationModel
 	{
-		Inverse,
 		Linear,
+		Inverse,
 		Exponential
 	};
 
@@ -48,7 +48,7 @@ namespace Snow
 		float spatialBlend = 1.0f; // 2D->3D blend
 		float minDistance = 1.0f;
 		float maxDistance = 100.0f;
-		AttenuationModel attenuation = AttenuationModel::Linear;
+		AttenuationModel attenuation = AttenuationModel::Exponential;
 	};
 
 	struct SoundAsset

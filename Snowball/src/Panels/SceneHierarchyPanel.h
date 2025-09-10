@@ -12,6 +12,8 @@ namespace Snow
 
 		void SetContext(const Ref<Scene>& context);
 
+		void DrawComponents(Entity entity);
+
 		void OnImGuiRender();
 	private:
 		void DrawEntityNode(Entity entity);

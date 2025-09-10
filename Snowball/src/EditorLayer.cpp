@@ -228,33 +228,6 @@ namespace Snow
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		ImGui::Begin("Properties");
-		for (size_t i = 0; i < m_Entities.size(); ++i)
-		{
-		std::string tag = m_Entities[i].GetComponent<TagComponent>().Tag;
-			ImGui::Text(tag.c_str());
-			if (m_Entities[i].HasComponent<SpriteRendererComponent>())
-			{
-				ImGui::PushID(i);
-				ImGui::Text("Transform");
-				ImGui::DragFloat3("Position", glm::value_ptr(m_Entities[i].GetComponent<TransformComponent>().Transform[3]), 0.01f);
-				ImGui::Text("SpriteRenderer");
-				ImGui::DragFloat4("", &m_Entities[i].GetComponent<SpriteRendererComponent>().Color[0], 0.025f, 0.0f, 1.0f);
-				ImGui::PopID();
-			}
-			ImGui::Spacing();
-			ImGui::Spacing();
-		}
-		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]),0.125f);
-		ImGui::Checkbox("Camera Fixed Aspectratio", &m_CameraEntity.GetComponent<CameraComponent>().FixedAspectRatio);
-		{
-			auto& camera = m_CameraEntity.GetComponent<CameraComponent>().Camera;
-			float orthoSize = camera.GetOrthographicSize();
-			ImGui::DragFloat("Camera OrthoSize", &orthoSize, 0.125f, 0.25f, 100.0f);
-			camera.SetOrthographicSize(orthoSize);
-
-		}ImGui::End();
-
 		auto stats = Snow::Renderer2D::GetStats();
 		std::stringstream Drawcals;
 		Drawcals << "Drawcalls : " << stats.DrawCalls << std::endl;

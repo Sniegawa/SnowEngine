@@ -84,7 +84,7 @@ namespace Snow
 	struct AudioListenerComponent
 	{
 		uint32_t ListenerID = 0; // For now i support only 1 listener leave this for possible splitscreen
-		float masterVolume = 1.0f;
+		float masterVolume = 0.5f;
 
 		AudioListenerComponent() = default;
 	};

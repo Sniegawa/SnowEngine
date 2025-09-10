@@ -18,7 +18,7 @@ namespace Snow
 		Log::Init(name);
 
 		m_Window = IWindow::Create();
-		m_Window->Init(WindowProperties(name, 1280, 720));
+		m_Window->Init(WindowProperties(name, 1600, 900));
 		m_Window->SetEventCallback(SNOW_BIND_EVENT_FN(Application::OnEvent, 1));
 
 		m_ImGuiLayer = new ImGuiLayer();
