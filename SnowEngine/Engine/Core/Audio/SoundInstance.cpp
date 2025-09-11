@@ -101,10 +101,16 @@ namespace Snow
 		ma_sound_set_volume(&m_Sound, std::clamp(volume,0.0f,1.0f));
 	}
 
+	void SoundInstance::SetPosition(const glm::vec3& position)
+	{
+		m_Position = position;
+		ma_sound_set_position(&m_Sound, position.x, position.y, position.z);
+	}
+
 	//Set Sound Origin for spatialized audio
 	void SoundInstance::SetPosition(const glm::vec2& position)
 	{
-		ma_sound_set_position(&m_Sound, position.x, position.y, 0.0f);
+		SetPosition(glm::vec3(position.x,position.y,m_Position.z));
 	}
 
 	void SoundInstance::SetPitch(const float pitch)

@@ -24,8 +24,9 @@ namespace Snow
 		float GetVolume();
 		void SetVolume(const float volume);
 
+		void SetPosition(const glm::vec3& position);
 		void SetPosition(const glm::vec2& position);
-		const glm::vec2& GetPosition() const { return m_Position; }
+		const glm::vec3& GetPosition() const { return m_Position; }
 
 		void SetPitch(const float pitch);
 		float GetPitch();
@@ -54,7 +55,7 @@ namespace Snow
 		//Handle to Sound asset
 		Ref<SoundAsset> m_Asset;
 
-		glm::vec2 m_Position;
+		glm::vec3 m_Position;
 
 		bool m_Finished = false;
 	};

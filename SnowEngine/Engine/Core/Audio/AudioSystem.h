@@ -53,7 +53,8 @@ namespace Snow
 		static void Stop(Ref<MusicInstance>& music);
 
 		static void SetSoundVolume(const Ref<SoundInstance>& music, const float volume);
-		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position);
+		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2& position);
+		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec3& position);
 		static void SetSoundPitch(const Ref<SoundInstance>& sound, const float pitch);
 		static void SetSoundNearRadius(const Ref<SoundInstance>& sound, const float nearRadius);
 		static void SetSoundFarRadius(const Ref<SoundInstance>& sound, const float farRadius);
@@ -61,7 +62,8 @@ namespace Snow
 		static void SetSoundConfig(const Ref<SoundInstance>& sound, SoundConfig& config);
 
 		static void SetMusicVolume(const Ref<MusicInstance>& music, const float volume);
-		static void SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2 position);
+		static void SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2& position);
+		static void SetMusicPosition(const Ref<MusicInstance>& sound, const glm::vec3& position);
 		static void SetMusicPitch(const Ref<MusicInstance>& music, const float pitch);
 		static void SetMusicNearRadius(const Ref<MusicInstance>& music, const float nearRadius);
 		static void SetMusicFarRadius(const Ref<MusicInstance>& music, const float farRadius);

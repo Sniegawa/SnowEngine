@@ -49,7 +49,7 @@ namespace Snow
 		//Render2D
 		{
 			Camera* MainCamera = nullptr;
-			glm::mat4* MainCameraTransform = nullptr;
+			glm::mat4 MainCameraTransform;
 			{
 				auto view = m_Registry.view<TransformComponent, CameraComponent>();
 				for (auto entity : view)
@@ -60,7 +60,7 @@ namespace Snow
 					if (camera.Primary)
 					{
 						MainCamera = &camera.Camera;
-						MainCameraTransform = &transform.Transform;
+						MainCameraTransform = transform.GetTransform();
 						break;
 					}
 				}
@@ -68,7 +68,7 @@ namespace Snow
 
 			if (MainCamera)
 			{
-				Renderer2D::BeginScene(MainCamera->GetProjectionMatrix(), *MainCameraTransform);
+				Renderer2D::BeginScene(MainCamera->GetProjectionMatrix(), MainCameraTransform);
 
 				//Render
 				{
@@ -77,7 +77,7 @@ namespace Snow
 					{
 						const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-						Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+						Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 					}
 				}
 
@@ -92,7 +92,7 @@ namespace Snow
 			{
 				const auto& [transform, listener] = view.get<TransformComponent, AudioListenerComponent>(entity);
 
-				AudioSystem::SetListenerPosition(glm::vec3(transform.Transform[3][0], transform.Transform[3][1], transform.Transform[3][2]),listener.ListenerID);
+				AudioSystem::SetListenerPosition(glm::vec3(transform.Translation.x, transform.Translation.y, transform.Translation.z),listener.ListenerID);
 				AudioSystem::SetMasterVolume(listener.masterVolume);
 			}
 		}
@@ -108,7 +108,7 @@ namespace Snow
 					if (!emitter.Instance.expired())
 					{
 						auto Instance = emitter.Instance.lock();
-						AudioSystem::SetSoundPosition(Instance, glm::vec2(transform.Transform[3][0], transform.Transform[3][1]));
+						AudioSystem::SetSoundPosition(Instance, transform.Translation);
 						AudioSystem::SetSoundConfig(Instance, emitter.Config);
 					}
 					else emitter.isPlaying = false;
@@ -123,7 +123,7 @@ namespace Snow
 					if(!emitter.Instance.expired())
 					{
 						auto Instance = emitter.Instance.lock();
-						AudioSystem::SetMusicPosition(Instance,glm::vec2(transform.Transform[3][0],transform.Transform[3][1]));
+						AudioSystem::SetMusicPosition(Instance,transform.Translation);
 						AudioSystem::SetMusicConfig(Instance,emitter.Config);
 					}
 					else emitter.isPlaying = false;

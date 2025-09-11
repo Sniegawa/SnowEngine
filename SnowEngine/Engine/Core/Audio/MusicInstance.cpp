@@ -121,9 +121,15 @@ namespace Snow
 		ma_sound_set_volume(&m_Music, std::clamp(volume, 0.0f, 1.0f));
 	}
 
+	void MusicInstance::SetPosition(const glm::vec3& position)
+	{
+		ma_sound_set_position(&m_Music, position.x, position.y, position.z);
+		m_Position = position;
+	}
+
 	void MusicInstance::SetPosition(const glm::vec2& position)
 	{
-		ma_sound_set_position(&m_Music, position.x, position.y, 0.0f);
+		SetPosition(glm::vec3(position.x, position.y, m_Position.z));
 	}
 
 	void MusicInstance::SetPitch(const float pitch)

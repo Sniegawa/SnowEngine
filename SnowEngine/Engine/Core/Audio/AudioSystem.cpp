@@ -20,8 +20,6 @@ namespace Snow
 		auto Result = ma_engine_init(nullptr, &s_Engine);
 		SNOW_ASSERT(Result == MA_SUCCESS, "Couldn't initialize audio engine");
 
-		//I'll modify this when i'm done with ecs and have audio listener component
-		//That i can attach to player, only support one listener
 		ma_engine_listener_set_position(&s_Engine, 0, 0.0f, 0.0f, 0.0f);
 		ma_engine_listener_set_direction(&s_Engine, 0, 0.0f, 0.0f, -1.0f);
 		ma_engine_listener_set_world_up(&s_Engine, 0, 0, 1, 0);
@@ -257,7 +255,17 @@ namespace Snow
 	/// </summary>
 	/// <param name="sound">A ref to the sound instance whose position will be set.</param>
 	/// <param name="position">A 2D vector specifying the new position</param>
-	void AudioSystem::SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2 position)
+	void AudioSystem::SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2& position)
+	{
+		sound->SetPosition(position);
+	}
+
+	/// <summary>
+	/// Sets the position of a sound instance in 3D space.
+	/// </summary>
+	/// <param name="sound">A ref to the sound instance whose position will be set.</param>
+	/// <param name="position">A 3D vector specifying the new position</param>
+	void AudioSystem::SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec3& position)
 	{
 		sound->SetPosition(position);
 	}
@@ -327,7 +335,17 @@ namespace Snow
 	/// </summary>
 	/// <param name="music">A ref to the music instance whose position will be set.</param>
 	/// <param name="position">A 2D vector specifying the new position</param>
-	void AudioSystem::SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2 position)
+	void AudioSystem::SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2& position)
+	{
+		music->SetPosition(position);
+	}
+
+	/// <summary>
+	/// Sets the position of a music instance in 3D space.
+	/// </summary>
+	/// <param name="music">A ref to the music instance whose position will be set.</param>
+	/// <param name="position">A 3D vector specifying the new position</param>
+	void AudioSystem::SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec3& position)
 	{
 		music->SetPosition(position);
 	}

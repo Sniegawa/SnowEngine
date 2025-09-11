@@ -11,7 +11,7 @@ namespace Snow
 	public:
 		void OnUpdate(Timestep ts)
 		{
-			glm::mat4& transform = GetComponent<TransformComponent>().Transform;
+			glm::mat4& transform = GetComponent<TransformComponent>().GetTransform();
 
 			glm::vec2 MoveVector = glm::vec2(0.0f);
 			float RotationAmount = 0.0f;
@@ -61,7 +61,7 @@ namespace Snow
 	void EditorLayer::OnAttach()
 	{
 		AudioSystem::LoadSound("Coin", "Assets/Audio/pickupCoin.wav");
-    AudioSystem::LoadMusic("Music","Assets/Audio/musicTest.mp3");
+		AudioSystem::LoadMusic("Music","Assets/Audio/musicTest.mp3");
 
 		FramebufferSpecification specs;
 		specs.Width = Application::Get().GetWindow().GetWidth();

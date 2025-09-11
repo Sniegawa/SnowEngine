@@ -26,6 +26,7 @@ namespace Snow
 		float GetVolume();
 		void SetVolume(const float volume);
 
+		void SetPosition(const glm::vec3& position);
 		void SetPosition(const glm::vec2& position);
 		const glm::vec2& GetPosition() const { return m_Position; }
 
@@ -56,7 +57,7 @@ namespace Snow
 		//MusicAsset Handle
 		Ref<MusicAsset> m_Asset;
 
-		glm::vec2 m_Position;
+		glm::vec3 m_Position;
 
 		bool m_Loop;
 
