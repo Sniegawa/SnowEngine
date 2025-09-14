@@ -24,16 +24,34 @@ namespace Snow
 
 		if (m_Context)
 		{
-
-			for (auto entityID : m_Context->m_Registry.storage<entt::entity>())
+			Entity EntityToDestroy = {};
+			auto view = m_Context->m_Registry.view<TagComponent>();
+			std::vector<entt::entity> entities(view.begin(), view.end());
+			std::sort(entities.begin(),entities.end());
+			for (auto entityID : entities)
 			{
 				Entity entity{ entityID,m_Context.get() };
-				DrawEntityNode(entity);
+				DrawEntityNode(entity,&EntityToDestroy);
 			}
 
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 				m_SelectionContext = {};
 
+			if (EntityToDestroy)
+			{
+				m_Context->DestroyEntity(EntityToDestroy);
+				if (m_SelectionContext == EntityToDestroy)
+					m_SelectionContext = {};
+			}
+			
+			//Right click blank space
+			if (ImGui::BeginPopupContextWindow("HierarchyContext", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+			{
+				if (ImGui::MenuItem("Create new entity"))
+					m_Context->CreateEntity();
+
+				ImGui::EndPopup();
+			}
 		}
 
 		ImGui::End();
@@ -42,11 +60,23 @@ namespace Snow
 		if (m_SelectionContext)
 		{
 			DrawComponents(m_SelectionContext);
+
+			if (ImGui::Button("Add Component"))
+				ImGui::OpenPopup("AddComponent");
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				DisplayAddComponentEntry<CameraComponent>("Camera");
+				DisplayAddComponentEntry<SpriteRendererComponent>("Sprite Renderer");
+				DisplayAddComponentEntry<SoundEmitterComponent>("Sound Emitter");
+				DisplayAddComponentEntry<MusicEmitterComponent>("Music Emitter");
+				DisplayAddComponentEntry<AudioListenerComponent>("Audio Listener");
+				ImGui::EndPopup();
+			}
 		}
 		ImGui::End();
 	}
 
-	void SceneHierarchyPanel::DrawEntityNode(Entity entity)
+	void SceneHierarchyPanel::DrawEntityNode(Entity entity,Entity* entityToDestroy)
 	{
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 
@@ -57,11 +87,26 @@ namespace Snow
 		{
 			m_SelectionContext = entity;
 		}
+		bool entityDeleted = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity"))
+			{
+				entityDeleted = true;
+			}
+			ImGui::EndPopup();
+		}
 
 		if (opened)
 		{
 			//Display child entity
 			ImGui::TreePop();
+		}
+
+		if (entityDeleted)
+		{
+			*entityToDestroy = entity;
+
 		}
 	}
 
@@ -106,6 +151,19 @@ namespace Snow
 
 			if (removeComponent)
 				entity.RemoveComponent<T>();
+		}
+	}
+
+	template<typename T>
+	void SceneHierarchyPanel::DisplayAddComponentEntry(const std::string& entryName)
+	{
+		if (!m_SelectionContext.HasComponent<T>())
+		{
+			if (ImGui::MenuItem(entryName.c_str()))
+			{
+				m_SelectionContext.AddComponent<T>();
+				ImGui::CloseCurrentPopup();
+			}
 		}
 	}
 

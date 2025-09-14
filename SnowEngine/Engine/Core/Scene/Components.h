@@ -127,7 +127,7 @@ namespace Snow
 			isPlaying = false;
 		}
 
-    constexpr bool IsPlaying() const { return isPlaying; }
+	constexpr bool IsPlaying() const { return isPlaying; }
 
 		WeakRef<SoundInstance> Instance;
 		bool isPlaying = false;
@@ -142,38 +142,38 @@ namespace Snow
 		Ref<MusicAsset> Music = nullptr;
 		MusicConfig Config = MusicConfig();
 
-    void Play()
-    {
-      if(!Music)
-      {
-        SNOW_CORE_WARN("Tried playing sound with no asset");
-        return;
-      }
-      if(!isPlaying || Instance.expired())
-      {
-        Instance = CreateWeakRef<MusicInstance>(AudioSystem::MusicPlay(Music,Config));
-        isPlaying = true;
-      }
-    }
+	void Play()
+	{
+		if(!Music)
+		{
+			SNOW_CORE_WARN("Tried playing sound with no asset");
+			return;
+		}
+		if(!isPlaying || Instance.expired())
+		{
+			Instance = CreateWeakRef<MusicInstance>(AudioSystem::MusicPlay(Music,Config));
+			isPlaying = true;
+		}
+	}
 
-    void Stop()
-    {
-      if(!Instance.expired())
-      {
-        isPlaying = false;
-        return;
-      }
-      auto instance = Instance.lock();
-      AudioSystem::Stop(instance);
-      isPlaying = false;
-    }
+	void Stop()
+	{
+		if(!Instance.expired())
+		{
+			isPlaying = false;
+			return;
+		}
+		auto instance = Instance.lock();
+		AudioSystem::Stop(instance);
+		isPlaying = false;
+	}
 
-    bool IsPlaying() const { return isPlaying; }
+	bool IsPlaying() const { return isPlaying; }
+	
+	WeakRef<MusicInstance> Instance;
+	bool isPlaying = false;
 
-    WeakRef<MusicInstance> Instance;
-    bool isPlaying = false;
-
-    MusicEmitterComponent() = default;
+	MusicEmitterComponent() = default;
 		MusicEmitterComponent(Ref<MusicAsset>& music)
 			: Music(music) {}
 	};

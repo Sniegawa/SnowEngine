@@ -83,7 +83,7 @@ namespace Snow
 
 		m_Entities[1].AddComponent<SoundEmitterComponent>().Sound = AudioSystem::GetSound("Coin");
 
-    m_Entities[2].AddComponent<MusicEmitterComponent>().Music = AudioSystem::GetMusic("Music");
+	m_Entities[2].AddComponent<MusicEmitterComponent>().Music = AudioSystem::GetMusic("Music");
 
 		m_CameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
 		auto& camComponent = m_CameraEntity.AddComponent<CameraComponent>();
@@ -107,11 +107,11 @@ namespace Snow
 		{
 			m_Entities[1].GetComponent<SoundEmitterComponent>().Play();
 		}
-    
-    if (Input::IsKeyPressed(Key::M))
-    {
-      m_Entities[2].GetComponent<MusicEmitterComponent>().Play();
-    }
+	
+		if (Input::IsKeyPressed(Key::M))
+		{
+			m_Entities[2].GetComponent<MusicEmitterComponent>().Play();
+		}
 		m_Framebuffer->Bind();
 		Renderer2D::ResetStats();
 

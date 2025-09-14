@@ -16,7 +16,9 @@ namespace Snow
 
 		void OnImGuiRender();
 	private:
-		void DrawEntityNode(Entity entity);
+		void DrawEntityNode(Entity entity, Entity* entityToDestroy);
+		template<typename T>
+		void DisplayAddComponentEntry(const std::string& entryName);
 	private:
 		Ref<Scene> m_Context = nullptr;
 		Entity m_SelectionContext;
