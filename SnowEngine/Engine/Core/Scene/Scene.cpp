@@ -154,4 +154,58 @@ namespace Snow
 		}
 
 	}
+	//TODO : think about reworking this to use some kind of component ID system
+	template<typename T>
+	void Scene::OnComponentAdded(Entity entity, T& component)
+	{
+		SNOW_CORE_ASSERT(false, "There is no OnComponentAdded specification for given component");
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	{
+		component.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<AudioListenerComponent>(Entity entity, AudioListenerComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SoundEmitterComponent>(Entity entity, SoundEmitterComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<MusicEmitterComponent>(Entity entity, MusicEmitterComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
+
+	}
 };

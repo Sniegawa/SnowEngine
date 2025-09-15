@@ -47,6 +47,9 @@ namespace Snow
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans-Bold.ttf", 16.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans-Regular.ttf",16.0f);
+
 		SetTheme(ImGuiTheme::DeepIce);
 
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());

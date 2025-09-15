@@ -36,6 +36,10 @@
 
 #define SNOW_BIND_EVENT_FN(fn,args) std::bind(&fn,this,std::placeholders::_##args)
 
+#define SNOW_FONT_BOLD 0
+#define SNOW_FONT_DEFAULT 1
+
+
 namespace Snow
 {
 	template<typename T>

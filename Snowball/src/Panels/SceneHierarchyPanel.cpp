@@ -61,8 +61,25 @@ namespace Snow
 		{
 			DrawComponents(m_SelectionContext);
 
-			if (ImGui::Button("Add Component"))
+			ImGui::Separator();
+			float windowWidth = ImGui::GetWindowSize().x;
+			float buttonWidth = ImGui::CalcTextSize("Add Component").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+
+			ImGui::SetCursorPosX((windowWidth - buttonWidth) * 0.5f);
+
+			float padding = 20.0f; // extra horizontal padding
+			ImVec2 textSize = ImGui::CalcTextSize("Add Component");
+			ImVec2 buttonSize = ImVec2(
+				textSize.x + ImGui::GetStyle().FramePadding.x * 2.0f + padding,
+				textSize.y + ImGui::GetStyle().FramePadding.y * 2.0f + 8.0f // taller
+			);
+
+			ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[SNOW_FONT_BOLD]);
+			if (ImGui::Button("Add Component",buttonSize))
 				ImGui::OpenPopup("AddComponent");
+
+			ImGui::PopFont();
+
 			if (ImGui::BeginPopup("AddComponent"))
 			{
 				DisplayAddComponentEntry<CameraComponent>("Camera");
@@ -121,17 +138,20 @@ namespace Snow
 			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
-			
+			float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 			ImGui::Separator();
 			bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags,name.c_str());
 			ImGui::PopStyleVar();
+
 			if(typeid(T) != typeid(TransformComponent))
 			{
-				if (ImGui::Button("+", ImVec2{ 16,16 }))
+				ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+				if (ImGui::Button("+", ImVec2{ lineHeight,lineHeight}))
 				{
 					ImGui::OpenPopup("ComponentSettings");
 				}
 			}
+			
 
 			bool removeComponent = false;
 			if(ImGui::BeginPopup("ComponentSettings"))
@@ -169,57 +189,69 @@ namespace Snow
 
 	static void DrawVec3Control(const std::string& label, glm::vec3& values, float speed = 0.1f, float resetValue = 0.0f, float columntWidth = 100.0f)
 	{
-		ImGui::PushID(label.c_str());
-		ImGui::Columns(2);
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[SNOW_FONT_BOLD]; // Bold
 
+		ImGui::PushID(label.c_str());
+
+
+		ImGui::Columns(2);
 		ImGui::SetColumnWidth(0, columntWidth);
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 
 		ImGui::PushMultiItemsWidths(3,ImGui::CalcItemWidth());
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 3,3 });
 		
-		float lineHeight = ImGui::GetFontSize() + GImGui->Style.FramePadding.y * 2.0f;
+		float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+		/// X BUTTON
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.7f,0.1f,0.1f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f,0.2f,0.2f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.7f,0.1f,0.1f,1.0f });
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("X", buttonSize))
 			values.x = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
-		
+
 		ImGui::SameLine();
 		ImGui::DragFloat("##X", &values.x, speed, 0.0f, 0.0f, "%.2f");
-		
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
+
+		// Y BUTTON
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f,0.7f,0.1f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f,0.9f,0.2f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f,0.7f,0.1f,1.0f });
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Y", buttonSize))
 			values.y = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
 		ImGui::DragFloat("##Y", &values.y, speed, 0.0f, 0.0f, "%.2f");
-
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
+
+		// Z BUTTON
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f,0.1f,0.7f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f,0.2f,0.9f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f,0.1f,0.7f,1.0f });
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Z", buttonSize))
 			values.z = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
 		ImGui::DragFloat("##Z", &values.z, speed, 0.0f, 0.0f, "%.2f");
-
 		ImGui::PopItemWidth();
-		ImGui::SameLine();
 
 		ImGui::Columns(1);
 
