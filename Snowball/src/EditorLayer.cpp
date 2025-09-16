@@ -115,7 +115,7 @@ namespace Snow
 		m_Framebuffer->Bind();
 		Renderer2D::ResetStats();
 
-		RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.7f, 1.0f });
+		RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 1.0f });
 		RenderCommand::Clear();
 
 		m_ActiveScene->OnUpdate(ts);
