@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_subdirectory(Libs/GLAD)
 add_subdirectory(Libs/glfw)
 add_subdirectory(Libs/spdlog)
-
+add_subdirectory(Libs/yaml-cpp)
 # glm is header-only so only include_directories needed
 include_directories(Libs/glm)
 

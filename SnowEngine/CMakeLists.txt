@@ -158,7 +158,7 @@ target_include_directories(SnowEngine PUBLIC
 	${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb
-	
+	${CMAKE_CURRENT_DIR}/Libs/yaml-cpp/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/entt
 )
 
@@ -171,6 +171,7 @@ target_link_libraries (SnowEngine PUBLIC
 		GLAD
 		glfw
 		spdlog::spdlog_header_only
+		yaml-cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
