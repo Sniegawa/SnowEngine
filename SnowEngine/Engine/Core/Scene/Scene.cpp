@@ -7,7 +7,8 @@
 
 namespace Snow
 {
-	Scene::Scene()
+	Scene::Scene(std::string name)
+		: m_SceneName(name)
 	{
 
 	}

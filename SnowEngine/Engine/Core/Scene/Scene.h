@@ -13,7 +13,7 @@ namespace Snow
 	class Scene
 	{
 	public:
-		Scene();
+		Scene(std::string name = "New Scene");
 		~Scene();
 
 		Entity CreateEntity(const std::string& name = "New Entity");
@@ -29,7 +29,11 @@ namespace Snow
 		entt::registry m_Registry;
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+
+		std::string m_SceneName;
+
 		friend class Entity;
 		friend class SceneHierarchyPanel;
+		friend class SceneSerializer;
 	};
 }

@@ -90,7 +90,9 @@ set(SNOW_SOURCES
 	"Engine/Core/Scene/Entity.h" 
 	"Engine/Core/Scene/SceneCamera.h" 
 	"Engine/Core/Scene/SceneCamera.cpp" 
-	"Engine/Core/Scene/ScriptableEntity.h")
+	"Engine/Core/Scene/ScriptableEntity.h" 
+	"Engine/Core/Scene/SceneSerializer.h"
+	"Engine/Core/Scene/SceneSerializer.cpp")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 
@@ -157,8 +159,8 @@ target_include_directories(SnowEngine PUBLIC
 	${CMAKE_SOURCE_DIR}/Libs/glfw/include
 	${CMAKE_SOURCE_DIR}/Libs/glm
 	${CMAKE_SOURCE_DIR}/Libs/spdlog/include
-	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb
 	${CMAKE_CURRENT_DIR}/Libs/yaml-cpp/include
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/entt
 )
 

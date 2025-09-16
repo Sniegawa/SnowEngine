@@ -3,6 +3,8 @@
 #include "Core/KeyCode.h"
 #include "Core/Scene/Components.h"
 
+#include "Core/Scene/SceneSerializer.h"
+
 namespace Snow
 {
 
@@ -69,29 +71,12 @@ namespace Snow
 
 		m_Framebuffer = Framebuffer::Create(specs);
 
-		m_ActiveScene = CreateRef<Scene>();
-
-		m_Entities.resize(4);
-
-		for (size_t i = 0; i < m_Entities.size(); ++i)
-		{
-			m_Entities[i] = m_ActiveScene->CreateEntity("Square " + std::to_string(i));
-			m_Entities[i].AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-		}
-		
-		m_Entities[0].AddComponent<AudioListenerComponent>();
-
-		m_Entities[1].AddComponent<SoundEmitterComponent>().Sound = AudioSystem::GetSound("Coin");
-
-	m_Entities[2].AddComponent<MusicEmitterComponent>().Music = AudioSystem::GetMusic("Music");
-
-		m_CameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
-		auto& camComponent = m_CameraEntity.AddComponent<CameraComponent>();
-		camComponent.Primary = true;
-		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
+		m_ActiveScene = CreateRef<Scene>("MyExampleScene");
 
 		m_Hierarchy.SetContext(m_ActiveScene);
+
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.Deserialize("Scenes/Example.snow");
 	}
 
 	void EditorLayer::OnDetach()
@@ -176,6 +161,16 @@ namespace Snow
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Exit")) Snow::Application::Get().Close();
+				if (ImGui::MenuItem("Serialize"))
+				{
+					SceneSerializer serializer = SceneSerializer(m_ActiveScene);
+					serializer.Serialize("Scenes/Example.snow");
+				}
+				if (ImGui::MenuItem("Deserialize"))
+				{
+					SceneSerializer serializer = SceneSerializer(m_ActiveScene);
+					serializer.Deserialize("Scenes/Example.snow");
+				}
 				ImGui::EndMenu();
 			}
 			

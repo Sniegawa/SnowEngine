@@ -10,3 +10,6 @@
 [submodule "Libs/yaml-cpp"]
 	path = Libs/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
+[submodule "Libs/refl-cpp"]
+	path = Libs/refl-cpp
+	url = https://github.com/veselink1/refl-cpp.git
