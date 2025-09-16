@@ -7,3 +7,6 @@
 [submodule "Libs/spdlog"]
 	path = Libs/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Libs/yaml-cpp"]
+	path = Libs/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp
