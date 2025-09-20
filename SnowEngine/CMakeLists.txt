@@ -92,7 +92,9 @@ set(SNOW_SOURCES
 	"Engine/Core/Scene/SceneCamera.cpp" 
 	"Engine/Core/Scene/ScriptableEntity.h" 
 	"Engine/Core/Scene/SceneSerializer.h"
-	"Engine/Core/Scene/SceneSerializer.cpp")
+	"Engine/Core/Scene/SceneSerializer.cpp" 
+	"Engine/Utilities/PlatformUtils.h"
+)
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 
@@ -106,13 +108,14 @@ if(WIN32)
 		"Engine/Platform/Windows/WindowsInput.cpp" 
 		"Engine/Platform/Windows/WindowsWindow.h" 
 		"Engine/Platform/Windows/WindowsWindow.cpp" 
+		"Engine/Platform/Windows/WindowsPlatformUtils.cpp"
 	)
 elseif(UNIX)
 	set(PLATFORM_SOURCES
 		 "Engine/Platform/Linux/LinuxInput.cpp" 
 		 "Engine/Platform/Linux/LinuxWindow.h" 
 		 "Engine/Platform/Linux/LinuxWindow.cpp"
-	)
+	 "Engine/Platform/Linux/LinuxPlatformUtils.cpp")
 endif()
 
 

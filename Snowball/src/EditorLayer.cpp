@@ -5,6 +5,8 @@
 
 #include "Core/Scene/SceneSerializer.h"
 
+#include "Utilities/PlatformUtils.h"
+
 namespace Snow
 {
 
@@ -161,16 +163,16 @@ namespace Snow
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Exit")) Snow::Application::Get().Close();
-				if (ImGui::MenuItem("Serialize"))
-				{
-					SceneSerializer serializer = SceneSerializer(m_ActiveScene);
-					serializer.Serialize("Scenes/Example.snow");
-				}
-				if (ImGui::MenuItem("Deserialize"))
-				{
-					SceneSerializer serializer = SceneSerializer(m_ActiveScene);
-					serializer.Deserialize("Scenes/Example.snow");
-				}
+
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					NewScene();
+
+				if (ImGui::MenuItem("Open","Ctrl+0"))
+					OpenScene();
+
+				if (ImGui::MenuItem("Save As","Ctrl+Shift+S"))
+					SaveSceneAs();
+
 				ImGui::EndMenu();
 			}
 			
@@ -244,6 +246,71 @@ namespace Snow
 	void EditorLayer::OnEvent(Event& e)
 	{
 		if (m_IsViewportHovered)	m_CameraController.OnEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(SNOW_BIND_EVENT_FN(EditorLayer::OnKeyPressed,1));
 	}
 
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+	{
+		//Shortucts
+		if (e.GetRepeatCount() > 0)
+			return false;
+
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+		switch (e.GetKeyCode())
+		{
+		case Key::S:
+			if (control && shift)
+			{
+				SaveSceneAs();
+			}
+			break;
+		case Key::N:
+			if (control)
+			{
+				NewScene();
+			}
+			break;
+		case Key::O:
+			if (control)
+			{
+				OpenScene();
+			}
+		}
+
+		return true;
+	}
+
+	void EditorLayer::NewScene()
+	{
+		m_ActiveScene = CreateRef<Scene>();
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_Hierarchy.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		std::string filepath = FileDialogs::OpenFile("Snow Scene (*.snow)\0*.snow\0");
+		if (!filepath.empty())
+		{
+			m_ActiveScene = CreateRef<Scene>();
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_Hierarchy.SetContext(m_ActiveScene);
+
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Deserialize(filepath);
+		}
+	}
+
+	void EditorLayer::SaveSceneAs()
+	{
+		std::string filepath = FileDialogs::SaveFile("Snow Scene (*.snow)\0*.snow\0");
+		if (!filepath.empty())
+		{
+			SceneSerializer serializer = SceneSerializer(m_ActiveScene);
+			serializer.Serialize(filepath);
+		}
+	}
 };
