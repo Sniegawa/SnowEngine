@@ -17,21 +17,23 @@ namespace Snow
 		
 		virtual ~WindowsWindow();
 
-		void OnUpdate() override;
+		virtual void OnUpdate() override;
 
-		inline uint32_t GetWidth() const override { return m_Data.Width; }
-		inline uint32_t GetHeight() const override { return m_Data.Height; }
+		virtual void SetIcon(const std::string& iconPath) override;
 
-		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+		virtual inline uint32_t GetWidth() const override { return m_Data.Width; }
+		virtual inline uint32_t GetHeight() const override { return m_Data.Height; }
+
+		virtual inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		
-		void SetVSync(bool enabled) override;
-		bool IsVSync() const override;
+		virtual void SetVSync(bool enabled) override;
+		virtual bool IsVSync() const override;
 		
-		void* GetNativeWindow() override { return m_Window; }
+		virtual void* GetNativeWindow() override { return m_Window; }
 
-		void Init(const WindowProperties& props) override;
+		virtual void Init(const WindowProperties& props) override;
 	protected:
-		void Shutdown() override;
+		virtual void Shutdown() override;
 
 	private:
 		

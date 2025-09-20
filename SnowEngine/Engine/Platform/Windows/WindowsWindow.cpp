@@ -5,6 +5,7 @@
 #include "SnowEngine/Engine/Core/Events/MouseEvent.h"
 #include "SnowEngine/Engine/Platform/OpenGL/OpenGLContext.h"
 
+#include "stb_image.h"
 
 namespace Snow
 {
@@ -188,5 +189,18 @@ namespace Snow
 	{
 		return m_Data.VSync;
 		
+	}
+
+	void WindowsWindow::SetIcon(const std::string& iconPath)
+	{
+		if (iconPath.empty())
+		{
+			SNOW_CORE_WARN("Tried to set icon with empty path");
+			return;
+		}
+		GLFWimage images[1];
+		images[0].pixels = stbi_load(iconPath.c_str(), &images[0].width, &images[0].height, 0, 4);
+		glfwSetWindowIcon(m_Window, 1, images);
+		stbi_image_free(images[0].pixels);
 	}
 };

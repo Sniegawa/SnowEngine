@@ -28,6 +28,7 @@ namespace Snow
 		
 		virtual void OnUpdate() = 0;
 
+		virtual void SetIcon(const std::string& iconPath) = 0;
 		
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 

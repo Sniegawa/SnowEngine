@@ -77,8 +77,7 @@ namespace Snow
 
 		m_Hierarchy.SetContext(m_ActiveScene);
 
-		SceneSerializer serializer(m_ActiveScene);
-		serializer.Deserialize("Scenes/Example.snow");
+		Application::Get().GetWindow().SetIcon("Assets/EditorImages/Snowball-logo.png");
 	}
 
 	void EditorLayer::OnDetach()
