@@ -327,7 +327,7 @@ namespace Snow
 			
 			if (camera.m_ProjectionType == SceneCamera::ProjectionType::Perspective)
 			{
-				float Size = glm::degrees(camera.GetPerspectiveFOV());
+				float Size = camera.GetPerspectiveFOV();
 				if (ImGui::DragFloat("Fov", &Size, 1.0f, 1.0f,359.0f))
 					camera.SetPerspectiveFOV(Size);
 				float Near = camera.GetPerspectiveNearClip();

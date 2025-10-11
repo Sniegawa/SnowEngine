@@ -30,7 +30,7 @@ namespace Snow
 		float GetOrthographicFarClip() const { return m_OrthographicFar; }
 		void SetOrthographicFarClip(float farClip) { m_OrthographicFar = farClip; RecalculateProjection(); }
 
-		float GetPerspectiveFOV() const { return m_PerspectiveFOV; }
+		float GetPerspectiveFOV() const { return glm::degrees(m_PerspectiveFOV); }
 		void SetPerspectiveFOV(float fov) { m_PerspectiveFOV = glm::radians(fov); RecalculateProjection(); }
 
 		float GetPerspectiveNearClip() const { return m_PerspectiveNear; }
