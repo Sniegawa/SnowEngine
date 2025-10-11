@@ -7,6 +7,10 @@
 
 #include "Utilities/PlatformUtils.h"
 
+#include <ImGuizmo.h>
+
+#include <glm/gtx/matrix_decompose.hpp>
+
 namespace Snow
 {
 
@@ -88,16 +92,6 @@ namespace Snow
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		if(m_IsViewportFocused)	m_CameraController.OnUpdate(ts);
-
-		if (Input::IsKeyPressed(Key::Space))
-		{
-			m_Entities[1].GetComponent<SoundEmitterComponent>().Play();
-		}
-	
-		if (Input::IsKeyPressed(Key::M))
-		{
-			m_Entities[2].GetComponent<MusicEmitterComponent>().Play();
-		}
 		m_Framebuffer->Bind();
 		Renderer2D::ResetStats();
 
@@ -220,22 +214,82 @@ namespace Snow
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID();
 		ImGui::Image(textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
+		
+		//Gizmos
+		Entity selectedEntity = m_Hierarchy.GetSelectedEntity();
+
+		if (selectedEntity && m_ActiveScene->GetPrimaryCameraEntity())
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			/*
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+			*/
+
+			ImVec2 windowPos = ImGui::GetWindowPos();
+			ImVec2 contentMin = ImGui::GetWindowContentRegionMin();
+			ImVec2 contentMax = ImGui::GetWindowContentRegionMax();
+
+			ImVec2 viewportPos = { windowPos.x + contentMin.x, windowPos.y + contentMin.y };
+			ImVec2 viewportSize = { contentMax.x - contentMin.x, contentMax.y - contentMin.y };
+
+			ImGuizmo::SetRect(viewportPos.x, viewportPos.y, viewportSize.x, viewportSize.y);
+
+			auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+			const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+			const glm::mat4& cameraProjection = camera.GetProjectionMatrix();
+			glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+
+			auto& tc = selectedEntity.GetComponent<TransformComponent>();
+			glm::mat4 transform = tc.GetTransform();
+
+			//Snapping
+			bool snap = Input::IsKeyPressed(Key::LeftControl);
+			float snapValue = 0.1f;
+			if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+				snapValue = 22.5f;
+
+			float snapValues[3] = { snapValue,snapValue, snapValue };
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::MODE::LOCAL, glm::value_ptr(transform),nullptr,(snap ? snapValues : nullptr));
+
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 translation, scale, skew;
+				glm::vec4 perspective;
+				glm::quat rotation;
+				glm::decompose(transform, scale, rotation, translation, skew, perspective);
+				
+				tc.Translation = translation;
+				glm::vec3 deltaRotation = glm::eulerAngles(rotation) - tc.Rotation;
+				tc.Rotation += deltaRotation;
+				tc.Scale = scale;
+			}
+		}
+
 
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		auto stats = Snow::Renderer2D::GetStats();
-		std::stringstream Drawcals;
-		Drawcals << "Drawcalls : " << stats.DrawCalls << std::endl;
-		std::stringstream Quads;
-		Drawcals << "Quads : " << stats.QuadCount << std::endl;
-		std::stringstream Vertices;
-		Drawcals << "Vertices : " << stats.GetTotalVertexCount();
-		ImGui::Begin("Renderer Stats");
-		ImGui::Text(Drawcals.str().c_str());
-		ImGui::Text(Quads.str().c_str());
-		ImGui::Text(Vertices.str().c_str());
-		ImGui::End();
+		//Additional stats
+		{
+			auto stats = Snow::Renderer2D::GetStats();
+			std::stringstream Drawcals;
+			Drawcals << "Drawcalls : " << stats.DrawCalls << std::endl;
+			std::stringstream Quads;
+			Drawcals << "Quads : " << stats.QuadCount << std::endl;
+			std::stringstream Vertices;
+			Drawcals << "Vertices : " << stats.GetTotalVertexCount();
+			ImGui::Begin("Renderer Stats");
+			ImGui::Text(Drawcals.str().c_str());
+			ImGui::Text(Quads.str().c_str());
+			ImGui::Text(Vertices.str().c_str());
+			ImGui::End();
+		}
 
 		m_Hierarchy.OnImGuiRender();
 
@@ -277,6 +331,19 @@ namespace Snow
 			{
 				OpenScene();
 			}
+			break;
+		case Key::Q:
+			if(!ImGuizmo::IsUsing()) m_GizmoType = -1;
+			break;
+		case Key::W:
+			if (!ImGuizmo::IsUsing()) m_GizmoType = ImGuizmo::TRANSLATE;
+			break;
+		case Key::E:
+			if (!ImGuizmo::IsUsing()) m_GizmoType = ImGuizmo::ROTATE;
+			break;
+		case Key::R:
+			if (!ImGuizmo::IsUsing()) m_GizmoType = ImGuizmo::SCALE;
+			break;
 		}
 
 		return true;

@@ -101,6 +101,8 @@ set(THIRD_PARTY_SOURCES
 	"ThirdParty/entt/entt.hpp"
 	"ThirdParty/stb/stb_image.h"
 	"ThirdParty/stb/stb_image.cpp" 
+	"ThirdParty/imguizmo/ImGuizmo.h"
+	"ThirdParty/imguizmo/ImGuizmo.cpp"
 )
 
 if(WIN32)
@@ -170,6 +172,7 @@ target_include_directories(SnowEngine PUBLIC
 target_include_directories(SnowEngine PUBLIC
 	${IMGUI_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/miniaudio
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imguizmo
 )
 
 target_link_libraries (SnowEngine PUBLIC

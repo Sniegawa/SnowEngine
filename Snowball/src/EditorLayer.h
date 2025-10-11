@@ -34,10 +34,11 @@ namespace Snow
 		glm::ivec2 m_ViewportSize = { 0,0 };
 
 		Ref<Scene> m_ActiveScene;
-		std::vector<Entity> m_Entities;
-		Entity m_CameraEntity;
+
+		int m_GizmoType = -1;
 
 		//Panels
 		SceneHierarchyPanel m_Hierarchy;
+
 	};
 };

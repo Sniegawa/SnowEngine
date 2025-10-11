@@ -2,6 +2,8 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui.h"
 
+#include "ImGuizmo.h"
+
 #ifdef SNOW_GLFW
 
 #include <GLFW/glfw3.h>
@@ -71,6 +73,7 @@ namespace Snow
 #endif //  SNOW_GLFW
 
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()

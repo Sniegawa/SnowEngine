@@ -15,6 +15,9 @@ namespace Snow
 		void DrawComponents(Entity entity);
 
 		void OnImGuiRender();
+
+		Entity GetSelectedEntity() const { return m_SelectionContext; };
+
 	private:
 		void DrawEntityNode(Entity entity, Entity* entityToDestroy);
 		template<typename T>

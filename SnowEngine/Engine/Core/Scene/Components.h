@@ -1,20 +1,25 @@
 #pragma once
 
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/common.hpp>
 
-#include "Core/Timestep.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+
 #include "SnowEngineAPI.h"
+#include "Core/Timestep.h"
 #include "Core/Logging/Log.h"
 
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
 
+#include "Core/Audio/AudioSystem.h"
 #include "Core/Audio/AudioAssets.h"
 #include "Core/Audio/SoundInstance.h"
 #include "Core/Audio/MusicInstance.h"
 
-#include "Core/Audio/AudioSystem.h"
 
 namespace Snow
 {
@@ -43,9 +48,7 @@ namespace Snow
 
 		glm::mat4 GetTransform() const
 		{
-			glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), Rotation.x, { 1,0,0 })
-				* glm::rotate(glm::mat4(1.0f), Rotation.y, { 0,1,0 })
-				* glm::rotate(glm::mat4(1.0f), Rotation.z, { 0,0,1 });
+			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
 			return glm::translate(glm::mat4(1.0f), Translation)
 				* rotation
