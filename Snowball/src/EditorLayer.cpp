@@ -19,7 +19,7 @@ namespace Snow
 	public:
 		void OnUpdate(Timestep ts)
 		{
-			glm::mat4& transform = GetComponent<TransformComponent>().GetTransform();
+			glm::mat4 transform = GetComponent<TransformComponent>().GetTransform();
 
 			glm::vec2 MoveVector = glm::vec2(0.0f);
 			float RotationAmount = 0.0f;

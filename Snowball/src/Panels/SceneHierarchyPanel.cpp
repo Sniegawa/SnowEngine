@@ -269,8 +269,12 @@ namespace Snow
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
+    #ifdef SNOW_LINUX
+      strcpy(buffer,tag.c_str());
+    #else
 			strncpy_s(buffer, sizeof(buffer), tag.c_str(), sizeof(buffer));
-			if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
+    #endif	
+    if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
 			{
 				tag = std::string(buffer);
 			}

@@ -28,7 +28,7 @@ namespace Snow
 		bool IsVSync() const override;
 
 		void* GetNativeWindow() override { return m_Window; }
-
+    virtual void SetIcon(const std::string& str) override {}
 		void Init(const WindowProperties& props) override;
 	protected:
 		void Shutdown() override;

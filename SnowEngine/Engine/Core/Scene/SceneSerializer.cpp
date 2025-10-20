@@ -191,7 +191,7 @@ namespace Snow
 		out MAP_START;
 		out KEYVAL("Scene" ,m_Scene->m_SceneName);
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-		auto& view = m_Scene->m_Registry.view<TagComponent>();
+		auto view = m_Scene->m_Registry.view<TagComponent>();
 		view.each([&](auto entityID, auto& tc)
 		{
 				Entity entity = Entity(entityID,m_Scene.get());
@@ -261,7 +261,7 @@ namespace Snow
 				{
 					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
 
-					auto& cameraProps = cameraComponent["Camera"];
+					auto cameraProps = cameraComponent["Camera"];
 					cc.Camera.SetProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
 
 					cc.Camera.SetPerspectiveFOV(cameraProps["PerspectiveFOV"].as<float>());

@@ -27,7 +27,7 @@ namespace Snow
 		{
 			SNOW_CORE_ASSERT(!HasComponent<T>(), "Entity already has given component");
 			T& component = m_Scene->m_Registry.template emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			m_Scene->OnComponentAdded<T>(*this,component);
+			m_Scene->template OnComponentAdded<T>(*this,component);
 			return component;
 		}
 		
