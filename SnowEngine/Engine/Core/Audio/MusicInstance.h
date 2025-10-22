@@ -28,7 +28,7 @@ namespace Snow
 
 		void SetPosition(const glm::vec3& position);
 		void SetPosition(const glm::vec2& position);
-		const glm::vec2& GetPosition() const { return m_Position; }
+		const glm::vec3& GetPosition() const { return m_Position; }
 
 		void SetPitch(const float pitch);
 		float GetPitch();

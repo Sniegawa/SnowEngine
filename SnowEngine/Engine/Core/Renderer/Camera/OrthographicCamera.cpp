@@ -2,7 +2,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "SnowEngineAPI.h"
 
 namespace Snow
 {
@@ -26,19 +25,19 @@ namespace Snow
 
 	void OrthographicCamera::SetRotation(const glm::vec3& rotation)
 	{
-		m_Rotation = rotation.z; // Note : for orthographic camera we only rotate in z axis
+		m_Rotation = rotation; // Note : for orthographic camera we only rotate in z axis
 		RecalculateViewMatrix();
 	}
 
 	const glm::vec3& OrthographicCamera::GetRotation() const
 	{
-		return glm::vec3(0.0f, 0.0f, m_Rotation);
+		return m_Rotation;
 	}
 
 	void OrthographicCamera::RecalculateViewMatrix()
 	{
 		glm::mat4 transform = 
-			glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0, 0, 1)) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.z), glm::vec3(0, 0, 1)) *
 			glm::translate(glm::mat4(1.0f), m_Position);
 
 

@@ -1,5 +1,6 @@
 #include "OpenGLVertexArray.h"
 
+#include <cstdint>
 #include <glad/glad.h>
 
 namespace Snow
@@ -72,14 +73,15 @@ namespace Snow
 					GL_FLOAT,
 					element.Normalized ? GL_TRUE : GL_FALSE,
 					layout.GetStride(),
-					(const void*)element.Offset);
+          reinterpret_cast<const void *>(static_cast<uintptr_t>(element.Offset)));
 				break;
 			case GL_INT:
 				glVertexAttribIPointer(index + m_VertexBufferIndexOffset,
 					element.GetComponentCount(),
 					ShaderDataTypeToOpenGLBaseType(element.Type),
 					layout.GetStride(),
-					(const void*)element.Offset);
+					reinterpret_cast<const void *>(static_cast<uintptr_t>(element.Offset)));
+				
 				break;
 			default:
 				SNOW_CORE_ASSERT(0, "Unsupported shader data type given");

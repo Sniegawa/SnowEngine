@@ -3,12 +3,12 @@
 #include <string>
 #include <entt.hpp>
 
-#include "Components.h"
+#include <SnowEngineAPI.h>
 #include "Core/Timestep.h"
-#include "Entity.h"
 
 namespace Snow
 {
+  class Entity;
 
 	class Scene
 	{

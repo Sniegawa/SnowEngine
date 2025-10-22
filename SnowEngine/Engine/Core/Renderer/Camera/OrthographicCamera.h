@@ -1,6 +1,5 @@
 #pragma once
-#include "Camera.h"
-
+#include <glm/glm.hpp>
 namespace Snow
 {
 	namespace CameraParams
@@ -42,7 +41,7 @@ namespace Snow
 		void RecalculateViewMatrix();
 	private:
 		glm::vec3 m_Position;
-		float m_Rotation;
+    glm::vec3 m_Rotation;
 		glm::mat4 m_ViewMatrix;
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewProjectionMatrix;

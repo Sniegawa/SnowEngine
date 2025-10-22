@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Core/Scene/Scene.h>
-
+#include <Core/Scene/Entity.h>
+#include <Core/Scene/Components.h>
 namespace Snow
 {
 	class SceneHierarchyPanel

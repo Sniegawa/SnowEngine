@@ -15,7 +15,7 @@ namespace Snow
 		case RendererAPI::API::None:		SNOW_CORE_ERROR("Renderer API is set to none");		return nullptr;
 		case RendererAPI::API::OpenGL:	return CreateRef<OpenGLFramebuffer>(OpenGLFramebuffer(specs));
 
-		default:	SNOW_CORE_ERROR("Can't get Renderer API");	break;
+		default:	SNOW_CORE_ERROR("Can't get Renderer API");	return nullptr;
 		}
 	}
 };

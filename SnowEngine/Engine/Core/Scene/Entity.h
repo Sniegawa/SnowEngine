@@ -1,11 +1,10 @@
 #pragma once
 
-#include <entt.hpp>
+#include "Scene.h"
+#include "Entity.h"
 #include <SnowEngineAPI.h>
-
 namespace Snow
 {
-	class Scene;
 
 	class Entity
 	{
@@ -15,35 +14,34 @@ namespace Snow
 			: m_EntityHandle(handle), m_Scene(scene) { }
 
 		Entity(const Entity& other) = default;
+    template<typename T>
+    bool HasComponent() 
+    { 
+      return m_Scene->m_Registry.template all_of<T>(m_EntityHandle); 
+    } 
+    
+    template<typename T, typename... Args> 
+    T& AddComponent(Args&&... args) 
+    { 
+      SNOW_CORE_ASSERT(!HasComponent<T>(), "Entity already has given component"); 
+      T& component = m_Scene->m_Registry.template emplace<T>(m_EntityHandle, std::forward<Args>(args)...); 
+      m_Scene->template OnComponentAdded<T>(*this,component); 
+      return component; 
+    }
 
-		template<typename T>
-		bool HasComponent()
-		{
-			return m_Scene->m_Registry.template all_of<T>(m_EntityHandle);
-		}
-
-		template<typename T, typename... Args>
-		T& AddComponent(Args&&... args)
-		{
-			SNOW_CORE_ASSERT(!HasComponent<T>(), "Entity already has given component");
-			T& component = m_Scene->m_Registry.template emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			m_Scene->template OnComponentAdded<T>(*this,component);
-			return component;
-		}
-		
-		template<typename T>
-		T& GetComponent()
-		{
-			SNOW_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have given component");
-			return m_Scene->m_Registry.template get<T>(m_EntityHandle);
-		}
-
-		template<typename T>
-		void RemoveComponent()
-		{
-			SNOW_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have given component");
-			m_Scene->m_Registry.template remove<T>(m_EntityHandle);
-		}
+    template<typename T>
+    T& GetComponent() 
+    { 
+      SNOW_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have given component"); 
+      return m_Scene->m_Registry.template get<T>(m_EntityHandle); 
+    } 
+  
+    template<typename T>
+    void RemoveComponent() 
+    { 
+      SNOW_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have given component"); 
+      m_Scene->m_Registry.template remove<T>(m_EntityHandle); 
+    }
 
 		operator bool() { return m_EntityHandle != entt::null; }
 		operator uint32_t() { return (uint32_t)m_EntityHandle; }

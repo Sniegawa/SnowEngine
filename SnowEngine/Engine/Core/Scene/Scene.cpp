@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+#include "Entity.h"
+#include "Components.h"
 #include "Core/Renderer/Renderer2D.h"
 
 #include "Core/Audio/AudioSystem.h"
