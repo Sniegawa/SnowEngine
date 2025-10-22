@@ -91,7 +91,7 @@ namespace Snow
 		glBindVertexArray(0);
 
 		m_VertexBuffers.push_back(vertexBuffer);
-		m_VertexBufferIndexOffset += layout.GetElements().size();
+		m_VertexBufferIndexOffset += (uint32_t)layout.GetElements().size();
 	}
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)

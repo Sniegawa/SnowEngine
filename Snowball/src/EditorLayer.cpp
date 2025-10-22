@@ -207,12 +207,12 @@ namespace Snow
 			m_ViewportSize = viewportSize;
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
-			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+			m_CameraController.OnResize((float)m_ViewportSize.x, (float)m_ViewportSize.y);
 
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID();
-		ImGui::Image(textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0,1 }, ImVec2{ 1,0 });
+		ImGui::Image(textureID, ImVec2((float)m_ViewportSize.x, (float)m_ViewportSize.y), ImVec2{ 0.0f,1.0f }, ImVec2{ 1.0f,0.0f });
 
 		
 		//Gizmos

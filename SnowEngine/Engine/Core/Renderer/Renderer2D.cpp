@@ -223,7 +223,8 @@ namespace Snow
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& pos, const glm::vec2& size, float rotation, Ref<Subtexture2D>& subTexture)
 	{
-		DrawRotatedQuad(pos, size, rotation, subTexture);
+		glm::vec3 Pos = glm::vec3(pos.x,pos.y,0.0f);
+		DrawRotatedQuad(Pos, size, rotation, subTexture);
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, Ref<Subtexture2D>& subTexture)
