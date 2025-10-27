@@ -17,8 +17,7 @@
 
 #include "Core/Audio/AudioSystem.h"
 #include "Core/Audio/AudioAssets.h"
-#include "Core/Audio/SoundInstance.h"
-#include "Core/Audio/MusicInstance.h"
+#include "Core/Audio/AudioInstance.h"
 
 
 namespace Snow
@@ -104,21 +103,21 @@ namespace Snow
 		AudioListenerComponent() = default;
 	};
 
-	struct SoundEmitterComponent
+	struct AudioEmitterComponent
 	{
-		Ref<SoundAsset> Sound = nullptr;
-		SoundConfig Config = SoundConfig();
-		
+		Ref<AudioAsset> Audio = nullptr;
+		AudioConfig Config = AudioConfig();
+
 		void Play()
 		{
-			if (!Sound)
+			if (!Audio)
 			{
-				SNOW_CORE_WARN("Tried playing sound with no asset");
+				SNOW_CORE_WARN("Tried playing audio with no asset");
 				return;
 			}
 			if (!isPlaying || Instance.expired())
 			{
-				Instance = CreateWeakRef<SoundInstance>(AudioSystem::SoundPlay(Sound, Config));
+				Instance = CreateWeakRef<AudioInstance>(AudioSystem::PlayAudio(Audio, Config));
 				isPlaying = true;
 			}
 		}
@@ -130,54 +129,13 @@ namespace Snow
 			isPlaying = false;
 		}
 
-	constexpr bool IsPlaying() const { return isPlaying; }
+		constexpr bool IsPlaying() const { return isPlaying; }
 
-		WeakRef<SoundInstance> Instance;
+		WeakRef<AudioInstance> Instance;
 		bool isPlaying = false;
 
-		SoundEmitterComponent() = default;
-		SoundEmitterComponent(Ref<SoundAsset>& sound)
-			: Sound(sound) {}
-	};
-
-	struct MusicEmitterComponent
-	{
-		Ref<MusicAsset> Music = nullptr;
-		MusicConfig Config = MusicConfig();
-
-	void Play()
-	{
-		if(!Music)
-		{
-			SNOW_CORE_WARN("Tried playing sound with no asset");
-			return;
-		}
-		if(!isPlaying || Instance.expired())
-		{
-			Instance = CreateWeakRef<MusicInstance>(AudioSystem::MusicPlay(Music,Config));
-			isPlaying = true;
-		}
-	}
-
-	void Stop()
-	{
-		if(!Instance.expired())
-		{
-			isPlaying = false;
-			return;
-		}
-		auto instance = Instance.lock();
-		AudioSystem::Stop(instance);
-		isPlaying = false;
-	}
-
-	bool IsPlaying() const { return isPlaying; }
-	
-	WeakRef<MusicInstance> Instance;
-	bool isPlaying = false;
-
-	MusicEmitterComponent() = default;
-		MusicEmitterComponent(Ref<MusicAsset>& music)
-			: Music(music) {}
+		AudioEmitterComponent() = default;
+		AudioEmitterComponent(Ref<AudioAsset>& audio)
+			: Audio(audio) {}
 	};
 }

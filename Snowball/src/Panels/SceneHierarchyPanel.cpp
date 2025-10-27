@@ -85,8 +85,7 @@ namespace Snow
 			{
 				DisplayAddComponentEntry<CameraComponent>("Camera");
 				DisplayAddComponentEntry<SpriteRendererComponent>("Sprite Renderer");
-				DisplayAddComponentEntry<SoundEmitterComponent>("Sound Emitter");
-				DisplayAddComponentEntry<MusicEmitterComponent>("Music Emitter");
+				DisplayAddComponentEntry<AudioEmitterComponent>("Audio Emitter");
 				DisplayAddComponentEntry<AudioListenerComponent>("Audio Listener");
 				ImGui::EndPopup();
 			}
@@ -361,14 +360,14 @@ namespace Snow
 			ImGui::DragFloat("Volume", &component.masterVolume, 0.05f, 0.0f, 1.0f);
 		});
 
-		DrawComponent<MusicEmitterComponent>("Music Emitter", entity, [](MusicEmitterComponent& component)
+		DrawComponent<AudioEmitterComponent>("Music Emitter", entity, [](AudioEmitterComponent& component)
 		{
 			ImGui::DragFloat("Volume", &component.Config.volume, 0.05f, 0.0f, 1.0f);
 			ImGui::DragFloat("Pitch", &component.Config.pitch, 0.05f, 0.0f, 10.0f);
 			ImGui::DragFloat("Close Range", &component.Config.minDistance, 0.05f, 0.0f);
 			ImGui::DragFloat("Far Range", &component.Config.maxDistance, 0.05f, 0.0f);
 			//Add some support for toggling the Looping during runtime of music
-			ImGui::Checkbox("Will loop", &component.Config.looping);
+			ImGui::Checkbox("Will loop", &component.Config.loop);
 			
 			AttenuationModel& model = component.Config.attenuation;
 			const char* AttenuationModelStrings[] = { "Linear", "Inverse", "Exponential" };
@@ -389,34 +388,6 @@ namespace Snow
 			}
 
 			model = static_cast<AttenuationModel>(currentIndex);
-		});
-
-		DrawComponent<SoundEmitterComponent>("Sound Emitter", entity, [](SoundEmitterComponent& component)
-		{
-				ImGui::DragFloat("Volume", &component.Config.volume, 0.05f, 0.0f, 1.0f);
-				ImGui::DragFloat("Pitch", &component.Config.pitch, 0.05f, 0.0f, 10.0f);
-				ImGui::DragFloat("Close Range", &component.Config.minDistance, 0.05f, 0.0f);
-				ImGui::DragFloat("Far Range", &component.Config.maxDistance, 0.05f, 0.0f);
-
-				AttenuationModel& model = component.Config.attenuation;
-				const char* AttenuationModelStrings[] = { "Linear", "Inverse", "Exponential" };
-				int currentIndex = static_cast<int>(model);
-				int count = sizeof(AttenuationModelStrings) / sizeof(AttenuationModelStrings[0]);
-				if (ImGui::BeginCombo("Attenuation Model", AttenuationModelStrings[currentIndex]))
-				{
-					for (int i = 0; i < count; ++i)
-					{
-						bool isSelected = (currentIndex == i);
-						if (ImGui::Selectable(AttenuationModelStrings[i], isSelected))
-							currentIndex = i;
-
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
-					}
-					ImGui::EndCombo();
-				}
-
-				model = static_cast<AttenuationModel>(currentIndex);
 		});
 	}
 

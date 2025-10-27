@@ -74,11 +74,11 @@ set(SNOW_SOURCES
 	"Engine/Core/Renderer/Spritesheet.cpp" 
 	"Engine/Core/Audio/AudioSystem.h" 
 	"Engine/Core/Audio/AudioSystem.cpp" 
-	"Engine/Core/Audio/SoundInstance.h" 
-	"Engine/Core/Audio/SoundInstance.cpp" 
+	 
+	 
 	"Engine/Core/Audio/MiniAduioBackend.cpp"
-	"Engine/Core/Audio/MusicInstance.h"
-	"Engine/Core/Audio/MusicInstance.cpp"
+	
+	
 	"Engine/Core/Audio/AudioAssets.h"
 	"Engine/Core/Renderer/Framebuffer.h"
 	"Engine/Core/Renderer/Framebuffer.cpp"
@@ -94,7 +94,7 @@ set(SNOW_SOURCES
 	"Engine/Core/Scene/SceneSerializer.h"
 	"Engine/Core/Scene/SceneSerializer.cpp" 
 	"Engine/Utilities/PlatformUtils.h"
-)
+ "Engine/Core/Audio/AudioInstance.h" "Engine/Core/Audio/AudioInstance.cpp")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 

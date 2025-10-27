@@ -5,19 +5,17 @@
 
 #include "AudioAssets.h"
 #include <SnowEngineAPI.h>
-
 namespace Snow
 {
 
-	class MusicInstance
+	class AudioInstance
 	{
 	public:
-		MusicInstance(Ref<MusicAsset> asset);
-		MusicInstance(Ref<MusicAsset> asset,MusicConfig& config);
-		~MusicInstance();
+		AudioInstance(const Ref<AudioAsset> asset, const AudioConfig& config);
+		~AudioInstance();
 
 		void Play();
-		void Play(MusicConfig& config);
+		void Play(const AudioConfig& config);
 
 		void Stop();
 
@@ -42,20 +40,20 @@ namespace Snow
 
 		const bool& isFinished() const { return m_Finished; }
 
-		void ApplyConfig(MusicConfig& config);
+		void ApplyConfig(const AudioConfig& config);
 		void ApplyConfig();
 	public:
-		MusicConfig m_Config;
+		AudioConfig m_Config;
 	private:
 		static void OnMusicEnd(void* pUserData, ma_sound* pMusic);
 
 
 	private:
 		//miniaudio sound handle
-		ma_sound m_Music;
+		ma_sound m_Audio;
 
 		//MusicAsset Handle
-		Ref<MusicAsset> m_Asset;
+		Ref<AudioAsset> m_Asset;
 
 		glm::vec3 m_Position;
 
@@ -63,4 +61,4 @@ namespace Snow
 
 		bool m_Finished = false;
 	};
-};
+}

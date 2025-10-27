@@ -3,30 +3,26 @@
 #include <miniaudio.h>
 #include <SnowEngineAPI.h>
 
-#include "SoundInstance.h"
 #include "AudioAssets.h"
-
-#include "MusicInstance.h"
+#include "AudioInstance.h"
 
 #include "../Timestep.h"
 
 namespace Snow
 {
-	template<typename T, typename C>
 	class AudioAssetLibrary
 	{
 	public:
-		Ref<T> Load(const std::string& name, const std::string& path);
-		Ref<T> Load(const std::string& name, const std::string& path, C& config);
-		Ref<T> Get(const std::string& name);
+		Ref<AudioAsset> Load(const std::string& name, const std::string& path, AudioType type = AudioType::SFX, const AudioConfig& config = AudioConfig());
+		Ref<AudioAsset> Get(const std::string& name);
 
 		bool Unload(const std::string& name);
 
 		void Shutdown();
 
 	private:
-		void Add(const Ref<T>& audioAsset, const std::string& name);
-		std::unordered_map<std::string, Ref<T>> m_Assets;
+		void Add(const Ref<AudioAsset>& audioAsset, const std::string& name);
+		std::unordered_map<std::string, Ref<AudioAsset>> m_Assets;
 	};
 
 	//Static Api class used to controlling audio in engine
@@ -38,50 +34,26 @@ namespace Snow
 
 		static void Update(Timestep ts);
 		
-		static Ref<SoundInstance> SoundPlay(Ref<SoundAsset>& soundAsset);
-		static Ref<SoundInstance> SoundPlay(const std::string& name);
-		static Ref<SoundInstance> SoundPlay(Ref<SoundAsset>& soundAsset, SoundConfig& config);
-		static Ref<SoundInstance> SoundPlay(const std::string& name, SoundConfig& config);
+		static Ref<AudioInstance> PlayAudio(const Ref<AudioAsset>& audioAsset, const AudioConfig& config = AudioConfig());
+		static Ref<AudioInstance> PlayAudio(const std::string& name, const AudioConfig& config = AudioConfig());
 
-		static Ref<MusicInstance> MusicPlay(Ref<MusicAsset>& musicAsset);
-		static Ref<MusicInstance> MusicPlay(const std::string& name);
-		static Ref<MusicInstance> MusicPlay(Ref<MusicAsset>& musicAsset, MusicConfig& config);
-		static Ref<MusicInstance> MusicPlay(const std::string& name, MusicConfig& config);
+		static void Stop(Ref<AudioInstance>& audio);
 
-		//Dunno how to handle stops
-		static void Stop(Ref<SoundInstance>& sound);
-		static void Stop(Ref<MusicInstance>& music);
-
-		static void SetSoundVolume(const Ref<SoundInstance>& music, const float volume);
-		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec2& position);
-		static void SetSoundPosition(const Ref<SoundInstance>& sound, const glm::vec3& position);
-		static void SetSoundPitch(const Ref<SoundInstance>& sound, const float pitch);
-		static void SetSoundNearRadius(const Ref<SoundInstance>& sound, const float nearRadius);
-		static void SetSoundFarRadius(const Ref<SoundInstance>& sound, const float farRadius);
-		static void SetSoundAttenuationModel(const Ref<SoundInstance>& sound,AttenuationModel model);
-		static void SetSoundConfig(const Ref<SoundInstance>& sound, SoundConfig& config);
-
-		static void SetMusicVolume(const Ref<MusicInstance>& music, const float volume);
-		static void SetMusicPosition(const Ref<MusicInstance>& music, const glm::vec2& position);
-		static void SetMusicPosition(const Ref<MusicInstance>& sound, const glm::vec3& position);
-		static void SetMusicPitch(const Ref<MusicInstance>& music, const float pitch);
-		static void SetMusicNearRadius(const Ref<MusicInstance>& music, const float nearRadius);
-		static void SetMusicFarRadius(const Ref<MusicInstance>& music, const float farRadius);
-		static void SetMusicAttenuationModel(const Ref<MusicInstance>& music, AttenuationModel model);
-		static void SetMusicLooping(const Ref<MusicInstance>& music, bool loop);
-		static void SetMusicConfig(const Ref<MusicInstance>& music, MusicConfig& config);
+		static void SetAudioVolume(const Ref<AudioInstance>& audio, const float volume);
+		static void SetAudioPosition(const Ref<AudioInstance>& audio, const glm::vec2& position);
+		static void SetAudioPosition(const Ref<AudioInstance>& audio, const glm::vec3& position);
+		static void SetAudioPitch(const Ref<AudioInstance>& audio, const float pitch);
+		static void SetAudioNearRadius(const Ref<AudioInstance>& audio, const float nearRadius);
+		static void SetAudioFarRadius(const Ref<AudioInstance>& audio, const float farRadius);
+		static void SetAudioAttenuationModel(const Ref<AudioInstance>& audio, const AttenuationModel model);
+		static void SetAudioLooping(const Ref<AudioInstance>& audio, bool loop);
+		static void SetAudioConfig(const Ref<AudioInstance>& audio, const AudioConfig& config);
 
 		static void SetMasterVolume(const float volume);
 		static float GetMasterVolume();
 
-
-		static Ref<SoundAsset> LoadSound(const std::string& name, const std::string& path);
-		static Ref<SoundAsset> LoadSound(const std::string& name, const std::string& path, SoundConfig& config);
-		static Ref<SoundAsset> GetSound(const std::string& name);
-
-		static Ref<MusicAsset> LoadMusic(const std::string& name, const std::string& path);
-		static Ref<MusicAsset> LoadMusic(const std::string& name, const std::string& path, MusicConfig& config);
-		static Ref<MusicAsset> GetMusic(const std::string& name);
+		static Ref<AudioAsset> LoadAudio(const std::string& name, const std::string& path, AudioType type = AudioType::SFX, const AudioConfig& config = AudioConfig());
+		static Ref<AudioAsset> GetAudio(const std::string& name);
 
 		static ma_engine& GetEngine() { return s_Engine; }
 
@@ -89,10 +61,8 @@ namespace Snow
 
 	private:
 		static ma_engine s_Engine;
-		static AudioAssetLibrary<SoundAsset,SoundConfig> s_SoundLibrary;
-		static AudioAssetLibrary<MusicAsset,MusicConfig> s_MusicLibrary;
-		static std::vector<Ref<SoundInstance>> s_SoundInstances;
-		static std::vector<Ref<MusicInstance>> s_MusicInstances;
+		static AudioAssetLibrary s_AudioLibrary;
+		static std::vector<Ref<AudioInstance>> s_AudioInstances;
 	};
 
 };

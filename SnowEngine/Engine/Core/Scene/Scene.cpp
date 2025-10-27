@@ -121,32 +121,18 @@ namespace Snow
 		//Update audio emitters
 		{
 			{
-				auto group = m_Registry.group<SoundEmitterComponent>(entt::get<TransformComponent>);
+				auto group = m_Registry.group<AudioEmitterComponent>(entt::get<TransformComponent>);
 				for (auto entity : group)
 				{
-					const auto& [transform, emitter] = group.get<TransformComponent, SoundEmitterComponent>(entity);
+					const auto& [transform, emitter] = group.get<TransformComponent, AudioEmitterComponent>(entity);
 					if (!emitter.Instance.expired())
 					{
 						auto Instance = emitter.Instance.lock();
-						AudioSystem::SetSoundPosition(Instance, transform.Translation);
-						AudioSystem::SetSoundConfig(Instance, emitter.Config);
+						AudioSystem::SetAudioPosition(Instance, transform.Translation);
+						AudioSystem::SetAudioConfig(Instance, emitter.Config);
 					}
 					else emitter.isPlaying = false;
 					
-				}
-			}
-			{
-				auto group = m_Registry.group<MusicEmitterComponent>(entt::get<TransformComponent>);
-				for(auto entity : group)
-				{
-					const auto& [transform,emitter] = group.get<TransformComponent,MusicEmitterComponent>(entity);
-					if(!emitter.Instance.expired())
-					{
-						auto Instance = emitter.Instance.lock();
-						AudioSystem::SetMusicPosition(Instance,transform.Translation);
-						AudioSystem::SetMusicConfig(Instance,emitter.Config);
-					}
-					else emitter.isPlaying = false;
 				}
 			}
 		}
@@ -207,13 +193,7 @@ namespace Snow
 	}
 
 	template<>
-	void Scene::OnComponentAdded<SoundEmitterComponent>(Entity entity, SoundEmitterComponent& component)
-	{
-
-	}
-
-	template<>
-	void Scene::OnComponentAdded<MusicEmitterComponent>(Entity entity, MusicEmitterComponent& component)
+	void Scene::OnComponentAdded<AudioEmitterComponent>(Entity entity, AudioEmitterComponent& component)
 	{
 
 	}

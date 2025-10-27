@@ -68,8 +68,8 @@ namespace Snow
 
 	void EditorLayer::OnAttach()
 	{
-		AudioSystem::LoadSound("Coin", "Assets/Audio/pickupCoin.wav");
-		AudioSystem::LoadMusic("Music","Assets/Audio/musicTest.mp3");
+		AudioSystem::LoadAudio("Coin", "Assets/Audio/pickupCoin.wav");
+		AudioSystem::LoadAudio("Music","Assets/Audio/musicTest.mp3",AudioType::Music);
 
 		FramebufferSpecification specs;
 		specs.Width = Application::Get().GetWindow().GetWidth();

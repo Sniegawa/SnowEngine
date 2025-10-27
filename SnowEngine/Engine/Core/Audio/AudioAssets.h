@@ -2,10 +2,6 @@
 
 #include <string>
 
-//I don't like the approach where i have Music and Sound structs,
-//in one file, but it's the best option for now to ensure that i 
-//have Attenuation Model same for them both
-
 namespace Snow
 {
 	enum class AttenuationModel
@@ -15,54 +11,37 @@ namespace Snow
 		Exponential
 	};
 
-	struct MusicConfig
+	enum class AudioType
 	{
+		SFX,
+		Music
+	};
+
+	struct AudioConfig
+	{
+		AudioType type = AudioType::SFX;
+		
+		bool loop = false;
 		float volume = 1.0f;
 		float pitch = 1.0f;
-		bool looping = false;
-		float spatialBlend = 1.0f; // 2D->3D blend
+
 		float minDistance = 1.0f;
 		float maxDistance = 100.0f;
 		AttenuationModel attenuation = AttenuationModel::Linear;
 	};
 
-	struct MusicAsset
+	struct AudioAsset
 	{
 		std::string filePath;
-		MusicConfig defaultConfig;
+		AudioConfig defaultConfig;
+		AudioType audioType;
 
-		MusicAsset(const std::string& path) : 
-			filePath(path) {}
+		AudioAsset(const std::string& path, AudioType type = AudioType::SFX(), const AudioConfig& config = AudioConfig())
+			: filePath(path), defaultConfig(config), audioType(type) {
+		}
 
-		MusicAsset(const std::string& path, MusicConfig config)
-			: filePath(path), defaultConfig(config) {}
-
-		MusicAsset() 
-			: filePath(""), defaultConfig() {}
-	};
-	
-	struct SoundConfig
-	{
-		float volume = 1.0f;
-		float pitch = 1.0f;
-		float spatialBlend = 1.0f; // 2D->3D blend
-		float minDistance = 1.0f;
-		float maxDistance = 100.0f;
-		AttenuationModel attenuation = AttenuationModel::Exponential;
-	};
-
-	struct SoundAsset
-	{
-		std::string filePath;
-		SoundConfig defaultConfig;
-
-		SoundAsset(const std::string& path) 
-			: filePath(path) , defaultConfig(SoundConfig()) {}
-
-		SoundAsset(const std::string& path,SoundConfig config)
-			: filePath(path), defaultConfig(config) {}
-
-		SoundAsset()
-			 : filePath(""), defaultConfig(SoundConfig()) {}
+		AudioAsset()
+			: filePath(""), defaultConfig(), audioType(AudioType::SFX) {
+		}
 	};
 };

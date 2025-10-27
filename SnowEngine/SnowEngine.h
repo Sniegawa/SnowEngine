@@ -44,5 +44,5 @@
 #include "Engine/Core/Renderer/Framebuffer.h"
 
 #include "Engine/Core/Audio/AudioSystem.h"
-#include "Engine/Core/Audio/SoundInstance.h"
+#include "Engine/Core/Audio/AudioInstance.h"
 #include "Engine/Core/Audio/AudioAssets.h"
