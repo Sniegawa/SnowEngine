@@ -106,6 +106,10 @@ namespace Snow
 
 	void Renderer2D::Shutdown()
 	{
+		s_Data.QuadVertexArray.reset();
+		s_Data.QuadVertexBuffer.reset();
+		s_Data.TextureShader.reset();
+		s_Data.DefaultTexture.reset();
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
