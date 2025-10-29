@@ -200,6 +200,7 @@ namespace Snow
 
 		m_IsViewportFocused = ImGui::IsWindowFocused();
 		m_IsViewportHovered = ImGui::IsWindowHovered();
+		Application::Get().GetImGuiLayer()->BlockEvents(!m_IsViewportFocused && !m_IsViewportHovered);
 		glm::ivec2 viewportSize = { ImGui::GetContentRegionAvail().x,ImGui::GetContentRegionAvail().y };
 
 		if (m_ViewportSize != viewportSize && (viewportSize.x > 0 && viewportSize.y > 0))

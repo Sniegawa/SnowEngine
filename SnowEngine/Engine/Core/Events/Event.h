@@ -71,7 +71,6 @@ namespace Snow
 			return GetCategoryFlags() & category;
 		}
 
-	protected:
 		bool m_handled = false;
 	};
 	

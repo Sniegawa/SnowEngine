@@ -27,11 +27,13 @@ namespace Snow
 		void Begin();
 		void End();
 
+		void OnEvent(Event& e);
+		void BlockEvents(bool block) { m_BlockEvents = block; }
+
 		static void SetTheme(ImGuiTheme theme);
 
 	private:
-
-		float m_Time = 0.0f;
+		bool m_BlockEvents = true;
 	};
 
 	

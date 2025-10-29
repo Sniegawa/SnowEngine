@@ -34,7 +34,7 @@ namespace Snow
 		glm::ivec2 m_ViewportSize = { 0,0 };
 
 		Ref<Scene> m_ActiveScene;
-
+ 
 		int m_GizmoType = -1;
 
 		//Panels

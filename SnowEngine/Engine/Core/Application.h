@@ -29,6 +29,8 @@ namespace Snow
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+
 		inline IWindow& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
 	private:
