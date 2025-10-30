@@ -64,5 +64,14 @@
 
 Libs/* linguist-vendored
 
+Libs/GLAD/src/glad.c linguist-generated=true
+Libs/GLAD/src/glad.c linguist-vendored
+
+Libs/GLAD/include/KHR/khrplatform.h linguist-generated=true
+Libs/GLAD/include/KHR/khrplatform.h linguist-vendored
+
+Libs/GLAD/include/glad/glad.h linguist-generated=true
+Libs/GLAD/include/glad/glad.h linguist-vendored
+
 SnowEngine/ThirdParty/miniaudio/miniaudio.h linguist-generated=true
 SnowEngine/ThirdParty/miniaudio/miniaudio.h linguist-vendored
