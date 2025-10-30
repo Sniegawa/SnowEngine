@@ -36,7 +36,7 @@ namespace Snow
 		AudioConfig defaultConfig;
 		AudioType audioType;
 
-		AudioAsset(const std::string& path, AudioType type = AudioType::SFX(), const AudioConfig& config = AudioConfig())
+		AudioAsset(const std::string& path, AudioType type = AudioType::SFX, const AudioConfig& config = AudioConfig())
 			: filePath(path), defaultConfig(config), audioType(type) {
 		}
 
