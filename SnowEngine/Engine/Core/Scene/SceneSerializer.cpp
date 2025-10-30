@@ -5,6 +5,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <glm/glm.hpp>
 #include "Core/Logging/Log.h"
 #include "Components.h"
 #include "Entity.h"
@@ -16,21 +17,28 @@
 #define MAP_START << YAML::BeginMap
 #define MAP_END   << YAML::EndMap
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
-{
-	out << YAML::Flow;
-	out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
-	return out;
-}
-
-YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v)
-{
-	out << YAML::Flow;
-	out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
-	return out;
-}
-
 namespace YAML {
+
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
+	{
+		out << YAML::Flow;
+		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
+		return out;
+	}
+
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
+	{
+		out << YAML::Flow;
+		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
+		return out;
+	}
+
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v)
+	{
+		out << YAML::Flow;
+		out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
+		return out;
+	}
 
 	template<>
 	struct convert<glm::vec2>
