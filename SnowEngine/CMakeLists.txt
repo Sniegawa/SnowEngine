@@ -94,7 +94,7 @@ set(SNOW_SOURCES
 	"Engine/Core/Scene/SceneSerializer.h"
 	"Engine/Core/Scene/SceneSerializer.cpp" 
 	"Engine/Utilities/PlatformUtils.h"
- "Engine/Core/Audio/AudioInstance.h" "Engine/Core/Audio/AudioInstance.cpp")
+ "Engine/Core/Audio/AudioInstance.h" "Engine/Core/Audio/AudioInstance.cpp" "Engine/Core/Renderer/Camera/EditorCamera.h" "Engine/Core/Renderer/Camera/EditorCamera.cpp")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 

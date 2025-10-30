@@ -1,9 +1,9 @@
 #pragma once
 
+#include <Core/Renderer/Camera/EditorCamera.h>
 #include <SnowEngine/SnowEngine.h>
 
 #include "Panels/SceneHierarchyPanel.h"
-
 namespace Snow
 {
 	class EditorLayer : public Layer
@@ -27,7 +27,7 @@ namespace Snow
 		void SaveSceneAs();
 	private:
 		Ref<Framebuffer>m_Framebuffer;
-		OrthographicCameraController m_CameraController;
+		OrthographicCameraController m_CameraController; //TODO : Remove
 
 		bool m_IsViewportFocused = false;
 		bool m_IsViewportHovered = false;
@@ -35,6 +35,8 @@ namespace Snow
 
 		Ref<Scene> m_ActiveScene;
  
+		EditorCamera m_EditorCamera;
+
 		int m_GizmoType = -1;
 
 		//Panels

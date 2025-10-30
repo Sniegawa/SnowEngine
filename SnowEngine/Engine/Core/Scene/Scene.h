@@ -5,6 +5,7 @@
 
 #include <SnowEngineAPI.h>
 #include "Core/Timestep.h"
+#include <Core/Renderer/Camera/EditorCamera.h>
 
 namespace Snow
 {
@@ -19,7 +20,8 @@ namespace Snow
 		Entity CreateEntity(const std::string& name = "New Entity");
 		void DestroyEntity(Entity entity);
 
-		void OnUpdate(Timestep ts);
+		void OnUpdateRuntime(Timestep ts);
+		void OnUpdateEditor(Timestep ts,EditorCamera& camera);
 
 		void OnViewportResize(uint32_t width, uint32_t height);
 

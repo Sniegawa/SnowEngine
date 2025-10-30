@@ -79,6 +79,8 @@ namespace Snow
 
 		m_ActiveScene = CreateRef<Scene>("MyExampleScene");
 
+		m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
+
 		m_Hierarchy.SetContext(m_ActiveScene);
 
 		Application::Get().GetWindow().SetIcon("Assets/EditorImages/Snowball-logo.png");
@@ -91,14 +93,28 @@ namespace Snow
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
-		if(m_IsViewportFocused)	m_CameraController.OnUpdate(ts);
+		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+		{
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_EditorCamera.SetViewportSize((float)m_ViewportSize.x, (float)m_ViewportSize.y);
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		}
+
+		if (m_IsViewportFocused)
+		{
+			m_CameraController.OnUpdate(ts);
+		}
+			m_EditorCamera.OnUpdate(ts);
 		m_Framebuffer->Bind();
 		Renderer2D::ResetStats();
 
 		RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 1.0f });
 		RenderCommand::Clear();
 
-		m_ActiveScene->OnUpdate(ts);
+		m_ActiveScene->OnUpdateEditor(ts,m_EditorCamera);
+		//m_ActiveScene->OnUpdateRuntime(ts);
 
 		m_Framebuffer->Unbind();
 	}
@@ -208,8 +224,6 @@ namespace Snow
 			m_ViewportSize = viewportSize;
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
-			m_CameraController.OnResize((float)m_ViewportSize.x, (float)m_ViewportSize.y);
-
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID();
@@ -219,7 +233,7 @@ namespace Snow
 		//Gizmos
 		Entity selectedEntity = m_Hierarchy.GetSelectedEntity();
 
-		if (selectedEntity && m_ActiveScene->GetPrimaryCameraEntity())
+		if (selectedEntity)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -239,10 +253,8 @@ namespace Snow
 
 			ImGuizmo::SetRect(viewportPos.x, viewportPos.y, viewportSize.x, viewportSize.y);
 
-			auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-			const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-			const glm::mat4& cameraProjection = camera.GetProjectionMatrix();
-			glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+			const glm::mat4& cameraProjection = m_EditorCamera.GetProjectionMatrix();
+			const glm::mat4& cameraView = m_EditorCamera.GetViewMatrix();
 
 
 			auto& tc = selectedEntity.GetComponent<TransformComponent>();
@@ -299,8 +311,9 @@ namespace Snow
 
 	void EditorLayer::OnEvent(Event& e)
 	{
-		if (m_IsViewportHovered)	m_CameraController.OnEvent(e);
-
+		m_CameraController.OnEvent(e);
+		m_EditorCamera.OnEvent(e);
+ 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(SNOW_BIND_EVENT_FN(EditorLayer::OnKeyPressed,1));
 	}
