@@ -32,8 +32,6 @@
 #include "Engine/Core/Renderer/Shader.h"
 #include "Engine/Core/Renderer/VertexArray.h"
 #include "Engine/Core/Renderer/Buffer.h"
-#include "Engine/Core/Renderer/Camera/OrthographicCamera.h"
-#include "Engine/Core/Renderer/Camera/OrthographicCameraController.h"
 #include "Engine/Core/Renderer/Texture.h"
 #include "Engine/Core/Renderer/Spritesheet.h"
 

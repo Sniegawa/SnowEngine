@@ -122,15 +122,6 @@ namespace Snow
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 	}
 
-	void Renderer2D::BeginScene(const OrthographicCamera& camera)
-	{
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-
-		s_Data.QuadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-	}
-
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
 		s_Data.TextureShader->Bind();

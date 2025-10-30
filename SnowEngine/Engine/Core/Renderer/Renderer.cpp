@@ -17,9 +17,14 @@ namespace Snow
 		RenderCommand::SetViewport(0, 0, width, height);
 	}
 
-	void Renderer::BeginScene(OrthographicCamera& camera)
+	void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
-		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		m_SceneData->ViewProjectionMatrix = camera.GetProjectionMatrix() * glm::inverse(transform);
+	}
+
+	void Renderer::BeginScene(const EditorCamera& camera)
+	{
+		m_SceneData->ViewProjectionMatrix = camera.GetViewProjection();
 	}
 
 	void Renderer::EndScene()

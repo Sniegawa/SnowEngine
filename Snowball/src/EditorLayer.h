@@ -27,7 +27,6 @@ namespace Snow
 		void SaveSceneAs();
 	private:
 		Ref<Framebuffer>m_Framebuffer;
-		OrthographicCameraController m_CameraController; //TODO : Remove
 
 		bool m_IsViewportFocused = false;
 		bool m_IsViewportHovered = false;

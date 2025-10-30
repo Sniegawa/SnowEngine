@@ -1,8 +1,7 @@
 #pragma once
 
 #include "RenderCommand.h"
-
-#include "Camera/OrthographicCamera.h"
+#include "Camera/EditorCamera.h"
 #include "Shader.h"
 namespace Snow
 {
@@ -14,7 +13,8 @@ namespace Snow
 
 		static void OnWindowResize(uint32_t width, uint32_t height);
 
-		static void BeginScene(OrthographicCamera& camera);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
+		static void BeginScene(const EditorCamera& camera);
 		static void EndScene();
 
 		static void Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform = glm::mat4(1.0f));

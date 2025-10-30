@@ -57,8 +57,6 @@ set(SNOW_SOURCES
 	"Engine/Core/Renderer/RenderCommand.cpp" 
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.h" 
 	"Engine/Platform/OpenGL/OpenGLRendererAPI.cpp" 
-	"Engine/Core/Renderer/Camera/OrthographicCamera.h" 
-	"Engine/Core/Renderer/Camera/OrthographicCamera.cpp" 
 	"Engine/Core/Timestep.h" 
 	"Engine/Platform/OpenGL/OpenGLShader.h" 
 	"Engine/Platform/OpenGL/OpenGLShader.cpp" 
@@ -66,19 +64,13 @@ set(SNOW_SOURCES
 	"Engine/Core/Renderer/Texture.cpp"   
 	"Engine/Platform/OpenGL/OpenGLTexture.h" 
 	"Engine/Platform/OpenGL/OpenGLTexture.cpp" 
-	"Engine/Core/Renderer/Camera/OrthographicCameraController.h" 
-	"Engine/Core/Renderer/Camera/OrthographicCameraController.cpp" 
 	"Engine/Core/Renderer/Renderer2D.cpp" 
 	"Engine/Core/Renderer/Renderer2D.h" 
 	"Engine/Core/Renderer/Spritesheet.h" 
 	"Engine/Core/Renderer/Spritesheet.cpp" 
 	"Engine/Core/Audio/AudioSystem.h" 
 	"Engine/Core/Audio/AudioSystem.cpp" 
-	 
-	 
 	"Engine/Core/Audio/MiniAduioBackend.cpp"
-	
-	
 	"Engine/Core/Audio/AudioAssets.h"
 	"Engine/Core/Renderer/Framebuffer.h"
 	"Engine/Core/Renderer/Framebuffer.cpp"
@@ -94,7 +86,10 @@ set(SNOW_SOURCES
 	"Engine/Core/Scene/SceneSerializer.h"
 	"Engine/Core/Scene/SceneSerializer.cpp" 
 	"Engine/Utilities/PlatformUtils.h"
- "Engine/Core/Audio/AudioInstance.h" "Engine/Core/Audio/AudioInstance.cpp" "Engine/Core/Renderer/Camera/EditorCamera.h" "Engine/Core/Renderer/Camera/EditorCamera.cpp")
+	"Engine/Core/Audio/AudioInstance.h" 
+	"Engine/Core/Audio/AudioInstance.cpp" 
+	"Engine/Core/Renderer/Camera/EditorCamera.h" 
+	"Engine/Core/Renderer/Camera/EditorCamera.cpp")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 
