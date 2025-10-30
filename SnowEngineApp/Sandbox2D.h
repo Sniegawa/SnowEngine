@@ -25,7 +25,6 @@ private:
 	float m_testRotation = 0.0f;
 
 	Snow::ShaderLibrary m_ShaderLib;
-	Snow::OrthographicCameraController m_CameraController;
 
 	Snow::Ref<Snow::VertexArray> m_SquareVA;
 

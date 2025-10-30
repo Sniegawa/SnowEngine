@@ -12,10 +12,10 @@ namespace Snow
 
 	struct QuadVertex
 	{
-		glm::vec3 Position;
-		glm::vec4 Color;
-		glm::vec2 TexCoord;
-		int TexIndex;
+		glm::vec3 Position = glm::vec3(0.0);
+		glm::vec4 Color = glm::vec4(0.0);
+		glm::vec2 TexCoord = glm::vec2(0.0);
+		int TexIndex = 0;
 	};
 
 	struct Renderer2DData
@@ -110,6 +110,7 @@ namespace Snow
 		s_Data.QuadVertexBuffer.reset();
 		s_Data.TextureShader.reset();
 		s_Data.DefaultTexture.reset();
+		delete s_Data.QuadVertexBufferBase;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
@@ -124,8 +125,9 @@ namespace Snow
 
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
+		glm::mat4 viewProj = camera.GetViewProjection();
 		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjection());
+		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection", viewProj);
 
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
@@ -138,6 +140,9 @@ namespace Snow
 			s_Data.TextureSlots[i]->Bind(i);
 
 		uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
+
+		if (dataSize == 0)
+			return;
 
 		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
 

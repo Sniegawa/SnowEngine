@@ -2,8 +2,7 @@
 
 
 Sandbox2D::Sandbox2D()
-	: Layer("Application Example Layer"),
-		m_CameraController(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, (1280.0f / 720.0f), true)
+	: Layer("Application Example Layer")
 {
 
 	m_Texture = Snow::Texture2D::Create("Assets/Textures/pizza.png");
@@ -11,12 +10,12 @@ Sandbox2D::Sandbox2D()
 	m_SpriteSheet = Snow::Spritesheet::CreateFromPath("Assets/Spritesheet/RPGpack_sheet_2X.png", glm::vec2(128.0f));
 	m_Grass = Snow::Subtexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 },{1,2});
 
-	Snow::SoundConfig config;
+	Snow::AudioConfig config;
 	config.volume = 0.15f;
 
-	Snow::AudioSystem::LoadSound("PickupCoin", "Assets/Sounds/pickupCoin.wav");
-	Snow::AudioSystem::LoadSound("PickupCoin2", "Assets/Sounds/pickupCoin.wav",config);
-	Snow::AudioSystem::LoadMusic("MusicTest", "Assets/Sounds/musicTest.mp3");
+	Snow::AudioSystem::LoadAudio("PickupCoin", "Assets/Sounds/pickupCoin.wav");
+	Snow::AudioSystem::LoadAudio("PickupCoin2", "Assets/Sounds/pickupCoin.wav", Snow::AudioType::SFX, config);
+	Snow::AudioSystem::LoadAudio("MusicTest", "Assets/Sounds/musicTest.mp3", Snow::AudioType::Music);
 }
 
 Sandbox2D::~Sandbox2D()
@@ -26,11 +25,11 @@ Sandbox2D::~Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-	Snow::MusicConfig config;
+	Snow::AudioConfig config;
 	config.pitch = 1.0f;
 	config.volume = 0.125f;
-	config.looping = true;
-	Snow::AudioSystem::MusicPlay("MusicTest",config);
+	config.loop = true;
+	Snow::AudioSystem::PlayAudio("MusicTest",config);
 }
 
 void Sandbox2D::OnDetach()
@@ -42,7 +41,6 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 {
 	Snow::Renderer2D::ResetStats();
 	m_testRotation += ts*10.0f;
-	m_CameraController.OnUpdate(ts);
 
 	if (Snow::Input::IsKeyPressed(Snow::Key::Left))
 	{
@@ -62,21 +60,21 @@ void Sandbox2D::OnUpdate(Snow::Timestep ts)
 	}
 	if (Snow::Input::IsKeyPressed(Snow::Key::Minus))
 	{
-		Snow::AudioSystem::SoundPlay("PickupCoin");
+		Snow::AudioSystem::PlayAudio("PickupCoin");
 	}
 	if (Snow::Input::IsKeyPressed(Snow::Key::Equal))
 	{
-		Snow::AudioSystem::SoundPlay("PickupCoin2");
+		Snow::AudioSystem::PlayAudio("PickupCoin2");
 	}
 	if (Snow::Input::IsKeyPressed(Snow::Key::D0))
 	{
-		Snow::SoundConfig config;
+		Snow::AudioConfig config;
 		config.pitch = 0.5f;
-		Snow::AudioSystem::SoundPlay("PickupCoin",config);
+		Snow::AudioSystem::PlayAudio("PickupCoin",config);
 	}
 	Snow::RenderCommand::SetClearColor({ 0.4f, 0.4f, 0.9f, 1.0f });
 	Snow::RenderCommand::Clear();
-	Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	//Snow::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
 
 
@@ -147,5 +145,5 @@ void Sandbox2D::OnImGuiRender()
 
 void Sandbox2D::OnEvent(Snow::Event& e)
 {
-	m_CameraController.OnEvent(e);
+	//m_CameraController.OnEvent(e);
 }
