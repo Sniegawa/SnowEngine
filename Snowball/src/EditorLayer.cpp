@@ -70,15 +70,22 @@ namespace Snow
 		AudioSystem::LoadAudio("Coin", "Assets/Audio/pickupCoin.wav");
 		AudioSystem::LoadAudio("Music","Assets/Audio/musicTest.mp3",AudioType::Music);
 
-		FramebufferSpecification specs;
-		specs.Width = Application::Get().GetWindow().GetWidth();
-		specs.Height = Application::Get().GetWindow().GetHeight();
+		FramebufferSpecification fbspecs;
 
-		m_Framebuffer = Framebuffer::Create(specs);
+		fbspecs.Attachments = { FramebufferTextureFormat::RGBA8 , FramebufferTextureFormat::Depth };
+
+		fbspecs.Width = Application::Get().GetWindow().GetWidth();
+		fbspecs.Height = Application::Get().GetWindow().GetHeight();
+
+		m_Framebuffer = Framebuffer::Create(fbspecs);
 
 		m_ActiveScene = CreateRef<Scene>("MyExampleScene");
 
-		m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
+		const float fov = 30.0f;
+		const float aspect = 1.778f;
+		const float nearClip = 0.1f;
+		const float farClip = 1000.0f;
+		m_EditorCamera = EditorCamera(fov, aspect, nearClip, farClip);
 
 		m_Hierarchy.SetContext(m_ActiveScene);
 
@@ -212,16 +219,20 @@ namespace Snow
 		m_IsViewportFocused = ImGui::IsWindowFocused();
 		m_IsViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_IsViewportFocused && !m_IsViewportHovered);
-		glm::ivec2 viewportSize = { ImGui::GetContentRegionAvail().x,ImGui::GetContentRegionAvail().y };
 
-		if (m_ViewportSize != viewportSize && (viewportSize.x > 0 && viewportSize.y > 0))
+
+
+		glm::ivec2 viewportSize = { (int)ImGui::GetContentRegionAvail().x, (int)ImGui::GetContentRegionAvail().y };
+
+		if ((m_ViewportSize.x != viewportSize.x || m_ViewportSize.y != viewportSize.y) && (viewportSize.x > 0 && viewportSize.y > 0))
 		{
+			SNOW_CORE_TRACE("Resizing framebuffer from {0},{1} to {2},{3}", m_ViewportSize.x, m_ViewportSize.y, viewportSize.x, viewportSize.y);
 			m_ViewportSize = viewportSize;
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
-		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID();
+		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID(0);
 		ImGui::Image(textureID, ImVec2((float)m_ViewportSize.x, (float)m_ViewportSize.y), ImVec2{ 0.0f,1.0f }, ImVec2{ 1.0f,0.0f });
 
 		

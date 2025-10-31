@@ -5,9 +5,42 @@
 namespace Snow
 {
 
+	enum class FramebufferTextureFormat
+	{
+		None = 0,
+
+		//Color
+		RGBA8,
+
+		//Depth/Stencil
+		DEPTH24STENCIL8,
+
+		//Default
+		Depth = DEPTH24STENCIL8
+	};
+
+	struct FramebufferTextureSpecification
+	{
+		FramebufferTextureSpecification() = default;
+		FramebufferTextureSpecification(FramebufferTextureFormat format)
+			: TextureFormat(format){ }
+
+		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
+		//Filtering & wrap
+	};
+
+	struct FramebufferAttachmentSpecification
+	{
+		FramebufferAttachmentSpecification() = default;
+		FramebufferAttachmentSpecification(const std::initializer_list<FramebufferTextureSpecification> attachments)
+			: Attachments(attachments) {}
+		std::vector<FramebufferTextureSpecification> Attachments;
+	};
+
 	struct FramebufferSpecification
 	{
 		uint32_t Width,Height;
+		FramebufferAttachmentSpecification Attachments;
 		uint32_t Samples = 1;
 
 		//Render to screen
@@ -20,7 +53,7 @@ namespace Snow
 		virtual ~Framebuffer() = default;
 
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
-		virtual uint32_t GetColorAttachementRendererID() const = 0;
+		virtual uint32_t GetColorAttachementRendererID(int index = 0) const = 0;
 
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
