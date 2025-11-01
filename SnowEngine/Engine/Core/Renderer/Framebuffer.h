@@ -11,6 +11,7 @@ namespace Snow
 
 		//Color
 		RGBA8,
+		RED_INTEGER,
 
 		//Depth/Stencil
 		DEPTH24STENCIL8,
@@ -54,11 +55,14 @@ namespace Snow
 
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
 		virtual uint32_t GetColorAttachementRendererID(int index = 0) const = 0;
+		
+		virtual void ClearAttachment(int idx,const void* value) = 0;
 
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
 		virtual void Resize(const uint32_t width, const uint32_t height) = 0;
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
 
 		static Ref<Framebuffer> Create(const FramebufferSpecification& specs);
 	};

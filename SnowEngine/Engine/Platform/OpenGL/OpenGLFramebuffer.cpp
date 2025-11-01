@@ -11,14 +11,39 @@ namespace Snow
 		{
 			switch (format)
 			{
-			case Snow::FramebufferTextureFormat::None:
-			case Snow::FramebufferTextureFormat::RGBA8:
+			case FramebufferTextureFormat::RGBA8:
+			case FramebufferTextureFormat::RED_INTEGER:
 				return false;
-			case Snow::FramebufferTextureFormat::DEPTH24STENCIL8:
+			case FramebufferTextureFormat::None:
+			case FramebufferTextureFormat::DEPTH24STENCIL8:
 				return true;
 			default:
 				SNOW_CORE_ERROR("Unknwon Framebuffer Texture Format");
 				return false;
+				break;
+			}
+		}
+
+		static std::pair<GLenum,GLenum> FormatType(FramebufferTextureFormat format)
+		{
+			switch (format)
+			{
+			case Snow::FramebufferTextureFormat::None:
+				SNOW_CORE_ERROR("Can't retrieve Format and type from None texture format");
+				return { 0,0 };
+				break;
+			case Snow::FramebufferTextureFormat::RGBA8:
+				return { GL_RGBA,GL_UNSIGNED_BYTE };
+				break;
+			case Snow::FramebufferTextureFormat::RED_INTEGER:
+				return { GL_RED_INTEGER,GL_INT };
+				break;
+			case Snow::FramebufferTextureFormat::DEPTH24STENCIL8:
+				return { GL_DEPTH_STENCIL_ATTACHMENT , GL_UNSIGNED_INT_24_8 };
+				break;
+			default:
+				SNOW_CORE_ERROR("Can't retrieve Format and type from None texture format");
+				return { 0,0 };
 				break;
 			}
 		}
@@ -38,16 +63,17 @@ namespace Snow
 			glBindTexture(TextureTarget(multisampled), id);
 		}
 
-		static void AttachColorTexture(uint32_t id, int samples, GLenum format, uint32_t width, uint32_t height, int index)
+		static void AttachColorTexture(uint32_t id, int samples, GLenum internalformat, FramebufferTextureFormat format, uint32_t width, uint32_t height, int index)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
 			{
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalformat, width, height, GL_FALSE);
 			}
 			else
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+				auto [dataformat, datatype] = Utils::FormatType(format);
+				glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, dataformat, datatype, nullptr);
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -59,16 +85,16 @@ namespace Snow
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
 		}
 
-		static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType ,uint32_t width, uint32_t height)
+		static void AttachDepthTexture(uint32_t id, int samples, GLenum internalformat, GLenum attachmentType ,uint32_t width, uint32_t height)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
 			{
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalformat, width, height, GL_FALSE);
 			}
 			else
 			{
-				glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
+				glTexStorage2D(GL_TEXTURE_2D, 1, internalformat, width, height);
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -142,7 +168,11 @@ namespace Snow
 				switch (m_ColorAttachmentSpecs[i].TextureFormat)
 				{
 				case FramebufferTextureFormat::RGBA8:
-					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specs.Samples, GL_RGBA8, m_Specs.Width, m_Specs.Height, i); break;
+					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specs.Samples, GL_RGBA8, m_ColorAttachmentSpecs[i].TextureFormat, m_Specs.Width, m_Specs.Height, i);
+					break;
+				case FramebufferTextureFormat::RED_INTEGER:
+					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specs.Samples, GL_R32I, m_ColorAttachmentSpecs[i].TextureFormat, m_Specs.Width, m_Specs.Height, i);
+					break;
 				default:
 					break;
 				}
@@ -184,6 +214,39 @@ namespace Snow
 		m_Specs.Height = height;
 		this->Invalidate();
 	}
+
+	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
+	{
+		Bind();
+
+		SNOW_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(),"");
+
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+		int pixelData;
+
+		auto& texformat = m_ColorAttachmentSpecs[attachmentIndex].TextureFormat;
+		auto [format, datatype] = Utils::FormatType(texformat);
+
+		glReadPixels(x, y, 1, 1,format, datatype,&pixelData); // TODO make not hard-coded
+		Unbind();
+
+		return pixelData;
+	}
+
+	//TODO: think about templating the function and not use type from Utils function
+	//Because the data format should rely on internal format not just a format and that's not in the function
+	void OpenGLFramebuffer::ClearAttachment(int idx, const void* value)
+	{
+		SNOW_CORE_ASSERT(idx < m_ColorAttachments.size(), "idx for clear should be in range of color attachments");
+
+		auto& texformat = m_ColorAttachmentSpecs[idx].TextureFormat;
+		bool multisample = m_Specs.Samples > 1;
+
+		auto [format, datatype] = Utils::FormatType(texformat);
+
+		glClearTexImage(m_ColorAttachments[idx], 0, format, datatype, value);
+	}
+
 
 	void OpenGLFramebuffer::Bind()
 	{

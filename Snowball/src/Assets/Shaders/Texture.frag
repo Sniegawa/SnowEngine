@@ -4,8 +4,11 @@
 in vec2 v_TexCoord;
 in vec4 v_Color;
 flat in int v_TextureIndex;
+flat in int v_EntityID;
 
-out vec4 color;
+
+layout(location = 0) out vec4 color;
+layout(location = 1) out int ID;
 
 uniform sampler2D u_Textures[32];
 
@@ -54,5 +57,5 @@ void main()
 
     color = texColor * v_Color;
 
-    
+    ID = v_EntityID;
 }

@@ -21,6 +21,7 @@ namespace Snow
 		virtual void OnEvent(Event& e) override;
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
 		void OpenScene();
@@ -31,10 +32,12 @@ namespace Snow
 		bool m_IsViewportFocused = false;
 		bool m_IsViewportHovered = false;
 		glm::ivec2 m_ViewportSize = { 0,0 };
-
+		glm::vec2 m_ViewportBounds[2];
 		Ref<Scene> m_ActiveScene;
  
 		EditorCamera m_EditorCamera;
+
+		Entity m_HoveredEntity;
 
 		int m_GizmoType = -1;
 

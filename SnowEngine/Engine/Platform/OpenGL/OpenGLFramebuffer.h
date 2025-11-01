@@ -17,7 +17,9 @@ namespace Snow
 		virtual void Unbind() override;
 
 		virtual void Resize(const uint32_t width, const uint32_t height) override;
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 
+		virtual void ClearAttachment(int idx,const void* value) override;
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specs; }
 		virtual uint32_t GetColorAttachementRendererID(int index = 0) const override { return m_ColorAttachments[index]; }
 	private:

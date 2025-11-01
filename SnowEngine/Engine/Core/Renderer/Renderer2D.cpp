@@ -16,6 +16,9 @@ namespace Snow
 		glm::vec4 Color = glm::vec4(0.0);
 		glm::vec2 TexCoord = glm::vec2(0.0);
 		int TexIndex = 0;
+
+		// Editor-only
+		int EntityID = -1;
 	};
 
 	struct Renderer2DData
@@ -60,7 +63,8 @@ namespace Snow
 			{ShaderDataType::Float3,"a_Position"},
 			{ShaderDataType::Float4,"a_Color"},
 			{ShaderDataType::Float2,"a_TexCoord"},
-			{ShaderDataType::Int,"a_TextureIndex"}
+			{ShaderDataType::Int,"a_TextureIndex"},
+			{ShaderDataType::Int,"a_EntityID"}
 		});
 
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
@@ -277,7 +281,7 @@ namespace Snow
 		int textureIndex = 0;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
-			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
+			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparison between textures
 			{
 				textureIndex = i;
 				break;
@@ -318,7 +322,7 @@ namespace Snow
 		int textureIndex = 0;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
-			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparasion between textures
+			if (*s_Data.TextureSlots[i].get() == *texture.get()) // Comparison between textures
 			{
 				textureIndex = i;
 				break;
@@ -340,6 +344,28 @@ namespace Snow
 			s_Data.QuadVertexBufferPtr->Color = color;
 			s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr++;
+		}
+		s_Data.QuadIndexCount += 6;
+
+		s_Data.stats.QuadCount++;
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+	{
+		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
+			Flush();
+
+		const int texIndex = 0;//Default texture - for colors
+		const glm::vec2 VertexTexCoords[4] = { {0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},{0.0f,1.0f} };
+
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Color = src.Color;
+			s_Data.QuadVertexBufferPtr->TexCoord = VertexTexCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 		s_Data.QuadIndexCount += 6;

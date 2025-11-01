@@ -1,12 +1,15 @@
 #pragma once
 
 #include <glm/glm.hpp>
+
 #include "Camera/Camera.h"
 #include "Camera/EditorCamera.h"
+#include "Core/Scene/Components.h"
 #include "SnowEngineAPI.h"
 #include "Shader.h"
-#include "Texture.h"
 #include "Spritesheet.h"
+#include "Texture.h"
+
 
 namespace Snow
 {
@@ -43,11 +46,10 @@ namespace Snow
 		static void DrawRotatedQuad(const glm::vec3& pos, const glm::vec2& size,float rotation, Ref<Subtexture2D>& subTexture);
 
 		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
-
 		static void DrawQuad(const glm::mat4& transform, Ref<Texture2D>& texture);
-		
 		static void DrawQuad(const glm::mat4& transform, Ref<Subtexture2D>& subTexture);
 
+		static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 
 		struct Statistics
 		{

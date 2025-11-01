@@ -72,7 +72,7 @@ namespace Snow
 
 		FramebufferSpecification fbspecs;
 
-		fbspecs.Attachments = { FramebufferTextureFormat::RGBA8 , FramebufferTextureFormat::Depth };
+		fbspecs.Attachments = { FramebufferTextureFormat::RGBA8 , FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 
 		fbspecs.Width = Application::Get().GetWindow().GetWidth();
 		fbspecs.Height = Application::Get().GetWindow().GetHeight();
@@ -108,22 +108,44 @@ namespace Snow
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
-			m_EditorCamera.OnUpdate(ts);
+		m_EditorCamera.OnUpdate(ts);
 		m_Framebuffer->Bind();
 		Renderer2D::ResetStats();
 
 		RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 1.0f });
 		RenderCommand::Clear();
 
+		//Clear entityID attachment
+		int ClearValue = -1;
+		m_Framebuffer->ClearAttachment(1, &ClearValue);
+		
+		//Update scene
 		m_ActiveScene->OnUpdateEditor(ts,m_EditorCamera);
 		//m_ActiveScene->OnUpdateRuntime(ts);
+
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
+		glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+
+		//Flip to match opengls texture coord system
+		my = viewportSize.y - my;
+		
+		int mouseX = (int)mx;
+		int mouseY = (int)my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+		{
+			int id = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+			m_HoveredEntity = id > -1 ? Entity((entt::entity)id, m_ActiveScene.get()) : Entity();
+		}
 
 		m_Framebuffer->Unbind();
 	}
 
 	void EditorLayer::OnImGuiRender()
 	{
-		//Todo : Strip out unnecesary code from this imgui demo
+		//Todo : Strip out unnecessary code from this imgui demo
 		static bool p_open = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = true;
@@ -216,6 +238,8 @@ namespace Snow
 
 		ImGui::Begin("Viewport");
 
+		auto viewportOffset = ImGui::GetCursorPos();
+
 		m_IsViewportFocused = ImGui::IsWindowFocused();
 		m_IsViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_IsViewportFocused && !m_IsViewportHovered);
@@ -235,7 +259,17 @@ namespace Snow
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID(0);
 		ImGui::Image(textureID, ImVec2((float)m_ViewportSize.x, (float)m_ViewportSize.y), ImVec2{ 0.0f,1.0f }, ImVec2{ 1.0f,0.0f });
 
-		
+		auto windowSize = ImGui::GetWindowSize();
+		ImVec2 minBound = ImGui::GetWindowPos();
+		minBound.x += viewportOffset.x;
+		minBound.y += viewportOffset.y;
+
+		float tabBarHeight = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0f;
+
+		ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+		m_ViewportBounds[0] = { minBound.x, minBound.y + tabBarHeight };
+		m_ViewportBounds[1] = { maxBound.x, maxBound.y - tabBarHeight };
+
 		//Gizmos
 		Entity selectedEntity = m_Hierarchy.GetSelectedEntity();
 
@@ -243,12 +277,6 @@ namespace Snow
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
-
-			/*
-			float windowWidth = (float)ImGui::GetWindowWidth();
-			float windowHeight = (float)ImGui::GetWindowHeight();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-			*/
 
 			ImVec2 windowPos = ImGui::GetWindowPos();
 			ImVec2 contentMin = ImGui::GetWindowContentRegionMin();
@@ -261,7 +289,6 @@ namespace Snow
 
 			const glm::mat4& cameraProjection = m_EditorCamera.GetProjectionMatrix();
 			const glm::mat4& cameraView = m_EditorCamera.GetViewMatrix();
-
 
 			auto& tc = selectedEntity.GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
@@ -296,14 +323,21 @@ namespace Snow
 
 		//Additional stats
 		{
+			std::string HoveredEntityName = "None";
+			if (m_HoveredEntity)
+			{
+				HoveredEntityName = m_HoveredEntity.GetComponent<TagComponent>();
+			}
+
 			auto stats = Snow::Renderer2D::GetStats();
 			std::stringstream Drawcals;
-			Drawcals << "Drawcalls : " << stats.DrawCalls << std::endl;
+			Drawcals << "Draw calls : " << stats.DrawCalls << std::endl;
 			std::stringstream Quads;
 			Drawcals << "Quads : " << stats.QuadCount << std::endl;
 			std::stringstream Vertices;
 			Drawcals << "Vertices : " << stats.GetTotalVertexCount();
 			ImGui::Begin("Renderer Stats");
+			ImGui::Text("Hovered entity : %s", HoveredEntityName.c_str());
 			ImGui::Text(Drawcals.str().c_str());
 			ImGui::Text(Quads.str().c_str());
 			ImGui::Text(Vertices.str().c_str());
@@ -321,11 +355,12 @@ namespace Snow
  
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(SNOW_BIND_EVENT_FN(EditorLayer::OnKeyPressed,1));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(SNOW_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed, 1));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 	{
-		//Shortucts
+		//Shortcuts
 		if (e.GetRepeatCount() > 0)
 			return false;
 
@@ -365,6 +400,16 @@ namespace Snow
 			break;
 		}
 
+		return true;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		if (e.GetMouseButton() == MouseButton::ButtonLeft)
+		{
+			if(m_IsViewportHovered && !Input::IsKeyPressed(Key::LeftAlt) && !ImGuizmo::IsOver())
+				m_Hierarchy.SetSelectedEntity(m_HoveredEntity);
+		}
 		return true;
 	}
 

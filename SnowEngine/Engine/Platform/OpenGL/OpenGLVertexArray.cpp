@@ -72,7 +72,7 @@ namespace Snow
 					GL_FLOAT,
 					element.Normalized ? GL_TRUE : GL_FALSE,
 					layout.GetStride(),
-          reinterpret_cast<const void *>(static_cast<uintptr_t>(element.Offset)));
+					reinterpret_cast<const void *>(static_cast<uintptr_t>(element.Offset)));
 				break;
 			case GL_INT:
 				glVertexAttribIPointer(index + m_VertexBufferIndexOffset,
