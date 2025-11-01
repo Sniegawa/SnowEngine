@@ -29,6 +29,7 @@ namespace Snow
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
+		SNOW_CORE_TRACE("Deleting OpenGLVertexBuffer id {0}", m_RendererID);
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
@@ -56,6 +57,7 @@ namespace Snow
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
+		SNOW_CORE_TRACE("Deleting OpenGLIndexBuffer id {0}", m_RendererID);
 		glDeleteBuffers(GL_ELEMENT_ARRAY_BUFFER, &m_RendererID);
 	}
 

@@ -38,7 +38,8 @@ namespace Snow
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
-	{		
+	{
+		SNOW_CORE_TRACE("Deleting OpenGLVertexArray id {0}", m_RendererID);
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
