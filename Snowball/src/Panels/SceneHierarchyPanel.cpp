@@ -6,8 +6,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <entt.hpp>
 
+#include <filesystem>
+
 namespace Snow
 {
+
+	extern const std::filesystem::path g_AssetsPath;
+
+
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
 	{
 		SetContext(context);
@@ -347,6 +353,29 @@ namespace Snow
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](SpriteRendererComponent& component)
 		{
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+
+			ImGui::Text("Texture");
+			ImGui::SameLine();
+			//Texture
+			if (component.SpriteTexture)
+				ImGui::ImageButton("TextureControl", (ImTextureID)component.SpriteTexture->GetRendererID(), { 100,100 }, { 0,1 }, { 1,0 });
+			else
+				ImGui::Button("Empty Texture", ImVec2(100.0f, 100.0f));
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
+				if (payload)
+				{
+					auto path = std::filesystem::path((const wchar_t*)payload->Data);
+					auto file_path = std::filesystem::path(g_AssetsPath) / path;
+					if(path.extension() == ".png" || path.extension() == ".jpg" || path.extension() == ".jpeg")
+						component.SpriteTexture = Texture2D::Create(file_path.string());
+						
+				}
+				ImGui::EndDragDropTarget();
+			}
+
 		});
 
 		DrawComponent<AudioListenerComponent>("Audio Listener", entity, [](AudioListenerComponent& component)

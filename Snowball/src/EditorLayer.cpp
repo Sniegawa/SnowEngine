@@ -269,8 +269,21 @@ namespace Snow
 			{
 				auto path = (const wchar_t*)payload->Data;
 				auto file_path = std::filesystem::path(path);
-				if(file_path.extension() == ".snow")
+				std::string extesion = file_path.extension().string();
+				
+				if(extesion == ".snow")
 					OpenScene(g_AssetsPath / path);
+				else if(extesion == ".png" || extesion == ".jpg" || extesion == ".jpeg")
+				{
+					if(m_HoveredEntity)
+					{
+						if(m_HoveredEntity.HasComponent<SpriteRendererComponent>())
+						{
+							auto& src = m_HoveredEntity.GetComponent<SpriteRendererComponent>();
+							src.SpriteTexture = Texture2D::Create((g_AssetsPath / path).string());
+						}
+					}
+				}
 			}
 			ImGui::EndDragDropTarget();
 		}

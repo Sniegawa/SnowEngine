@@ -19,6 +19,8 @@
 #include "Core/Audio/AudioAssets.h"
 #include "Core/Audio/AudioInstance.h"
 
+#include "Core/Renderer/Texture.h"
+
 
 namespace Snow
 {
@@ -58,6 +60,7 @@ namespace Snow
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color = { 1.0f,1.0f,1.0f,1.0f };
+		Ref<Texture2D> SpriteTexture;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default; //Default copy constructor

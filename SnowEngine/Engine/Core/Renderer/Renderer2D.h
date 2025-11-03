@@ -45,9 +45,9 @@ namespace Snow
 		static void DrawRotatedQuad(const glm::vec2& pos, const glm::vec2& size,float rotation, Ref<Subtexture2D>& subTexture);
 		static void DrawRotatedQuad(const glm::vec3& pos, const glm::vec2& size,float rotation, Ref<Subtexture2D>& subTexture);
 
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
-		static void DrawQuad(const glm::mat4& transform, Ref<Texture2D>& texture);
-		static void DrawQuad(const glm::mat4& transform, Ref<Subtexture2D>& subTexture);
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID = 0);
+		static void DrawQuad(const glm::mat4& transform, Ref<Texture2D>& texture, int entityID = 0);
+		static void DrawQuad(const glm::mat4& transform, Ref<Subtexture2D>& subTexture, int entityID = 0);
 
 		static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 

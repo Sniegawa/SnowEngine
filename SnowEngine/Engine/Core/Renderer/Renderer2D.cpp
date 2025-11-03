@@ -250,7 +250,7 @@ namespace Snow
 		DrawQuad(transform, subTexture);
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
@@ -264,6 +264,7 @@ namespace Snow
 			s_Data.QuadVertexBufferPtr->Color = color;
 			s_Data.QuadVertexBufferPtr->TexCoord = VertexTexCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 		s_Data.QuadIndexCount += 6;
@@ -271,7 +272,7 @@ namespace Snow
 		s_Data.stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Texture2D>& texture, int entityID)
 	{
 		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetOpacity());
 
@@ -304,6 +305,7 @@ namespace Snow
 			s_Data.QuadVertexBufferPtr->Color = color;
 			s_Data.QuadVertexBufferPtr->TexCoord = VertexTexCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 		s_Data.QuadIndexCount += 6;
@@ -311,7 +313,7 @@ namespace Snow
 		s_Data.stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Subtexture2D>& subTexture)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Subtexture2D>& subTexture,int entityID)
 	{
 		Ref<Texture2D> texture = subTexture->GetTexture();
 		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetOpacity());
@@ -344,6 +346,7 @@ namespace Snow
 			s_Data.QuadVertexBufferPtr->Color = color;
 			s_Data.QuadVertexBufferPtr->TexCoord = subTexture->GetTexCoords()[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 		s_Data.QuadIndexCount += 6;
@@ -353,24 +356,10 @@ namespace Snow
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 	{
-		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
-			Flush();
-
-		const int texIndex = 0;//Default texture - for colors
-		const glm::vec2 VertexTexCoords[4] = { {0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},{0.0f,1.0f} };
-
-		for (uint32_t i = 0; i < 4; i++)
-		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-			s_Data.QuadVertexBufferPtr->Color = src.Color;
-			s_Data.QuadVertexBufferPtr->TexCoord = VertexTexCoords[i];
-			s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-			s_Data.QuadVertexBufferPtr->EntityID = entityID;
-			s_Data.QuadVertexBufferPtr++;
-		}
-		s_Data.QuadIndexCount += 6;
-
-		s_Data.stats.QuadCount++;
+		if (src.SpriteTexture)
+			DrawQuad(transform, src.SpriteTexture, entityID);
+		else
+			DrawQuad(transform, src.Color, entityID);
 	}
 
 	Renderer2D::Statistics Renderer2D::GetStats()
