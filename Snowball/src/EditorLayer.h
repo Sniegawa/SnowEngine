@@ -4,6 +4,8 @@
 #include <SnowEngine/SnowEngine.h>
 
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ContentBrowserPanel.h"
+
 namespace Snow
 {
 	class EditorLayer : public Layer
@@ -25,6 +27,7 @@ namespace Snow
 
 		void NewScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 		void SaveSceneAs();
 	private:
 		Ref<Framebuffer>m_Framebuffer;
@@ -42,7 +45,9 @@ namespace Snow
 		int m_GizmoType = -1;
 
 		//Panels
-		SceneHierarchyPanel m_Hierarchy;
+		SceneHierarchyPanel m_HierarchyPanel;
+
+		ContentBrowserPanel m_ContentBrowserPanel;
 
 	};
 };

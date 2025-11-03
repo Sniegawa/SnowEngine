@@ -110,8 +110,8 @@ namespace Snow
 
 	void Renderer2D::Shutdown()
 	{
-		s_Data.QuadVertexArray.reset();
 		s_Data.QuadVertexBuffer.reset();
+		s_Data.QuadVertexArray.reset();
 		s_Data.TextureShader.reset();
 		s_Data.DefaultTexture.reset();
 		delete s_Data.QuadVertexBufferBase;

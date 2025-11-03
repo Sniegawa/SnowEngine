@@ -1,0 +1,29 @@
+Scene: New Scene
+Entities:
+  - Entity: 0123456
+    TagComponent:
+      Tag: Right
+    TransformComponent:
+      Translation: [0.5, 0, 0.5]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.6666667, 0.6666667, 0.6666667, 1]
+  - Entity: 0123456
+    TagComponent:
+      Tag: Left
+    TransformComponent:
+      Translation: [0, 0, 0.013242404]
+      Rotation: [0, 1.5707964, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
+  - Entity: 0123456
+    TagComponent:
+      Tag: Top
+    TransformComponent:
+      Translation: [0.5, 0.5, 0]
+      Rotation: [1.5707964, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.78431374, 0.78431374, 0.78431374, 1]

@@ -13,6 +13,9 @@
 
 namespace Snow
 {
+	//To be changed when projects are a thing
+	extern const std::filesystem::path g_AssetsPath = "Assets";
+
 
 	class CameraController : public ScriptableEntity
 	{
@@ -87,9 +90,9 @@ namespace Snow
 		const float farClip = 1000.0f;
 		m_EditorCamera = EditorCamera(fov, aspect, nearClip, farClip);
 
-		m_Hierarchy.SetContext(m_ActiveScene);
+		m_HierarchyPanel.SetContext(m_ActiveScene);
 
-		Application::Get().GetWindow().SetIcon("Assets/EditorImages/Snowball-logo.png");
+		Application::Get().GetWindow().SetIcon("Resources/Icons/Snowball-logo.png");
 	}
 
 	void EditorLayer::OnDetach()
@@ -259,6 +262,19 @@ namespace Snow
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID(0);
 		ImGui::Image(textureID, ImVec2((float)m_ViewportSize.x, (float)m_ViewportSize.y), ImVec2{ 0.0f,1.0f }, ImVec2{ 1.0f,0.0f });
 
+		if(ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
+			if (payload)
+			{
+				auto path = (const wchar_t*)payload->Data;
+				auto file_path = std::filesystem::path(path);
+				if(file_path.extension() == ".snow")
+					OpenScene(g_AssetsPath / path);
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		auto windowSize = ImGui::GetWindowSize();
 		ImVec2 minBound = ImGui::GetWindowPos();
 		minBound.x += viewportOffset.x;
@@ -271,7 +287,7 @@ namespace Snow
 		m_ViewportBounds[1] = { maxBound.x, maxBound.y - tabBarHeight };
 
 		//Gizmos
-		Entity selectedEntity = m_Hierarchy.GetSelectedEntity();
+		Entity selectedEntity = m_HierarchyPanel.GetSelectedEntity();
 
 		if (selectedEntity)
 		{
@@ -344,7 +360,8 @@ namespace Snow
 			ImGui::End();
 		}
 
-		m_Hierarchy.OnImGuiRender();
+		m_HierarchyPanel.OnImGuiRender();
+		m_ContentBrowserPanel.OnImGuiRender();
 
 		ImGui::End();
 	}
@@ -408,7 +425,7 @@ namespace Snow
 		if (e.GetMouseButton() == MouseButton::ButtonLeft)
 		{
 			if(m_IsViewportHovered && !Input::IsKeyPressed(Key::LeftAlt) && !ImGuizmo::IsOver())
-				m_Hierarchy.SetSelectedEntity(m_HoveredEntity);
+				m_HierarchyPanel.SetSelectedEntity(m_HoveredEntity);
 		}
 		return true;
 	}
@@ -417,21 +434,24 @@ namespace Snow
 	{
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-		m_Hierarchy.SetContext(m_ActiveScene);
+		m_HierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OpenScene()
 	{
 		std::string filepath = FileDialogs::OpenFile("Snow Scene (*.snow)\0*.snow\0");
 		if (!filepath.empty())
-		{
-			m_ActiveScene = CreateRef<Scene>();
-			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_Hierarchy.SetContext(m_ActiveScene);
+			OpenScene(filepath);
+	}
 
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Deserialize(filepath);
-		}
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		m_ActiveScene = CreateRef<Scene>();
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_HierarchyPanel.SetContext(m_ActiveScene);
+
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.Deserialize(path.string()); //To change to std::filesystem
 	}
 
 	void EditorLayer::SaveSceneAs()
