@@ -51,8 +51,8 @@ namespace Snow
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		
 		float FontSize = 17.0f;
-		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans-Bold.ttf", FontSize);
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans-Regular.ttf", FontSize);
+		io.Fonts->AddFontFromFileTTF("Assets/Fonts/OpenSans-Bold.ttf", FontSize);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/OpenSans-Regular.ttf", FontSize);
 
 		SetTheme(ImGuiTheme::DeepIce);
 

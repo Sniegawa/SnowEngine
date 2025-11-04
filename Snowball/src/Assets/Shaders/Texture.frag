@@ -53,7 +53,7 @@ vec4 SampleTexture(int index, vec2 texCoord) {
 
 void main()
 {
-	vec4 texColor = texture(u_Textures[v_TextureIndex], v_TexCoord);
+  	vec4 texColor = SampleTexture(v_TextureIndex, v_TexCoord);
 
     color = texColor * v_Color;
 

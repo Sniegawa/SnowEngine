@@ -367,7 +367,7 @@ namespace Snow
 				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
 				if (payload)
 				{
-					auto path = std::filesystem::path((const wchar_t*)payload->Data);
+					auto path = std::filesystem::path((const char *)payload->Data);
 					auto file_path = std::filesystem::path(g_AssetsPath) / path;
 					if(path.extension() == ".png" || path.extension() == ".jpg" || path.extension() == ".jpeg")
 						component.SpriteTexture = Texture2D::Create(file_path.string());

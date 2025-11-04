@@ -267,7 +267,7 @@ namespace Snow
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
 			if (payload)
 			{
-				auto path = (const wchar_t*)payload->Data;
+				auto path = (const char*)payload->Data;
 				auto file_path = std::filesystem::path(path);
 				std::string extesion = file_path.extension().string();
 				
