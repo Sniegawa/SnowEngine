@@ -6,10 +6,11 @@ namespace Snow
 	AudioInstance::AudioInstance(const Ref<AudioAsset> asset, const AudioConfig& config)
 		: m_Asset(asset)
 	{
+		auto filePath = Snow::Utils::ToUTF8String(asset->filePath);
 		//Create sound asset on miniaudio
 		auto Result = ma_sound_init_from_file(
 			&AudioSystem::GetEngine(),
-			asset->filePath.c_str(),
+			filePath.c_str(),
 			asset->audioType == AudioType::Music ? MA_SOUND_FLAG_STREAM : MA_SOUND_FLAG_DECODE,
 			nullptr,
 			nullptr,

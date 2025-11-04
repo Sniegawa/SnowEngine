@@ -67,13 +67,12 @@ namespace Snow
 
 			if (ImGui::BeginDragDropSource())
 			{
-				const char* itemPath = relativePath.c_str();
-				size_t len = strlen(itemPath) + 1; //+1 for null termination
+				auto itemPath = Snow::Utils::ToUTF8String(relativePath);
 
-				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, len * sizeof(char), ImGuiCond_Once);
+				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath.c_str(), itemPath.size()+1, ImGuiCond_Once);
 				ImGui::EndDragDropSource();
 			}
-
+			
 
 			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{

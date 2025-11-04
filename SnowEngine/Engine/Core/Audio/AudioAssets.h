@@ -24,7 +24,7 @@ namespace Snow
 		AudioType type = AudioType::SFX;
 		
 		bool loop = false;
-		float volume = 1.0f;
+		float volume = 0.5f;
 		float pitch = 1.0f;
 
 		float minDistance = 1.0f;

@@ -267,12 +267,12 @@ namespace Snow
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
 			if (payload)
 			{
-				auto path = (const char*)payload->Data;
-				auto file_path = std::filesystem::path(path);
+				auto path = static_cast<const char*>(payload->Data);
+				std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
 				std::string extesion = file_path.extension().string();
 				
 				if(extesion == ".snow")
-					OpenScene(g_AssetsPath / path);
+					OpenScene(g_AssetsPath / file_path);
 				else if(extesion == ".png" || extesion == ".jpg" || extesion == ".jpeg")
 				{
 					if(m_HoveredEntity)
@@ -280,7 +280,7 @@ namespace Snow
 						if(m_HoveredEntity.HasComponent<SpriteRendererComponent>())
 						{
 							auto& src = m_HoveredEntity.GetComponent<SpriteRendererComponent>();
-							src.SpriteTexture = Texture2D::Create((g_AssetsPath / path).string());
+							src.SpriteTexture = Texture2D::Create((g_AssetsPath / file_path).string());
 						}
 					}
 				}

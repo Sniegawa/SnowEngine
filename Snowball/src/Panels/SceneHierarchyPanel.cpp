@@ -276,12 +276,12 @@ m_SelectionContext = {};
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
-    #ifdef SNOW_LINUX
-      strcpy(buffer,tag.c_str());
-    #else
+	#ifdef SNOW_LINUX
+	  strcpy(buffer,tag.c_str());
+	#else
 			strncpy_s(buffer, sizeof(buffer), tag.c_str(), sizeof(buffer));
-    #endif	
-    if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
+	#endif	
+	if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
 			{
 				tag = std::string(buffer);
 			}
@@ -369,10 +369,12 @@ m_SelectionContext = {};
 				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
 				if (payload)
 				{
-					auto path = std::filesystem::path((const char *)payload->Data);
-					auto file_path = std::filesystem::path(g_AssetsPath) / path;
-					if(path.extension() == ".png" || path.extension() == ".jpg" || path.extension() == ".jpeg")
-						component.SpriteTexture = Texture2D::Create(file_path.string());
+					auto path = static_cast<const char*>(payload->Data);
+					std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
+					std::string extesion = file_path.extension().string();
+
+					if(extesion == ".png" || extesion == ".jpg" || extesion == ".jpeg")
+						component.SpriteTexture = Texture2D::Create((g_AssetsPath / file_path).string());
 						
 				}
 				ImGui::EndDragDropTarget();
@@ -394,44 +396,46 @@ m_SelectionContext = {};
 		DrawComponent<AudioEmitterComponent>("Audio Emitter", entity, [](AudioEmitterComponent& component)
 		{
 
-      ImGui::Text("Audio asset");
-      ImGui::SameLine();
+			ImGui::Text("Audio asset");
+			ImGui::SameLine();
 
-      if(component.Audio == nullptr)
-      {
-        ImGui::Button("Empty audio asset",ImVec2(100.0f,100.0f));
-      }
-      else 
-      {
-        const auto& path = component.Audio->filePath;
-       const std::string fileName = std::filesystem::relative(path,g_AssetsPath).filename().string(); 
-        ImGui::Button(fileName.c_str(),ImVec2(100.0f,100.0f));
-      }
-      
-  		if (ImGui::BeginDragDropTarget())
-	  	{
-	  			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
-	  			if (payload)
-	  			{
-	  				auto path = std::filesystem::path((const char *)payload->Data);
-	  				auto file_path = std::filesystem::path(g_AssetsPath) / path;
-            std::string fileName = path.filename().string(); 
-		  			if(path.extension() == ".wav")
-						  component.Audio = AudioSystem::LoadAudio(fileName,file_path.string(),AudioType::SFX);
-					  else if(path.extension() == ".mp3")
-              component.Audio = AudioSystem::LoadAudio(fileName, file_path.string(),AudioType::Music);
-		  		}
+			if (component.Audio == nullptr)
+			{
+				ImGui::Button("Empty audio asset", ImVec2(200.0f, 20.0f));
+			}
+			else
+			{
+				const auto& path = component.Audio->filePath;
+				const std::string fileName = std::filesystem::relative(path, g_AssetsPath).filename().string();
+				ImGui::Button(fileName.c_str(), ImVec2(200.0f, 20.0f));
+			}
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
+				if (payload)
+				{
+					auto path = static_cast<const char*>(payload->Data);
+					std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
+					std::string extesion = file_path.extension().string();
+					std::string fileName = file_path.filename().string();
+
+					if (extesion == ".wav")
+						component.Audio = AudioSystem::LoadAudio(fileName, (g_AssetsPath / file_path).string(), AudioType::SFX);
+					else if (extesion == ".mp3")
+						component.Audio = AudioSystem::LoadAudio(fileName, (g_AssetsPath / file_path).string(), AudioType::Music);
+				}
 				ImGui::EndDragDropTarget();
 			}
 
 
 
-			ImGui::DragFloat("Volume", &component.Config.volume, 0.05f, 0.0f, 1.0f);
-			ImGui::DragFloat("Pitch", &component.Config.pitch, 0.05f, 0.0f, 10.0f);
-			ImGui::DragFloat("Close Range", &component.Config.minDistance, 0.05f, 0.0f);
-			ImGui::DragFloat("Far Range", &component.Config.maxDistance, 0.05f, 0.0f);
+			if (ImGui::DragFloat("Volume", &component.Config.volume, 0.05f, 0.0f, 1.0f))			component.ApplyConfig();
+			if (ImGui::DragFloat("Pitch", &component.Config.pitch, 0.05f, 0.0f, 10.0f))				component.ApplyConfig();
+			if (ImGui::DragFloat("Close Range", &component.Config.minDistance, 0.05f, 0.0f))		component.ApplyConfig();
+			if (ImGui::DragFloat("Far Range", &component.Config.maxDistance, 0.05f, 0.0f))			component.ApplyConfig();
 			//Add some support for toggling the Looping during runtime of music
-			ImGui::Checkbox("Will loop", &component.Config.loop);
+			if (ImGui::Checkbox("Will loop", &component.Config.loop))								component.ApplyConfig();
 			
 			AttenuationModel& model = component.Config.attenuation;
 			const char* AttenuationModelStrings[] = { "Linear", "Inverse", "Exponential" };
@@ -443,8 +447,10 @@ m_SelectionContext = {};
 				{
 					bool isSelected = (currentIndex == i);
 					if (ImGui::Selectable(AttenuationModelStrings[i], isSelected))
+					{
 						currentIndex = i;
-
+						component.ApplyConfig();
+					}
 					if (isSelected)
 						ImGui::SetItemDefaultFocus();
 				}
@@ -453,10 +459,13 @@ m_SelectionContext = {};
 
 			model = static_cast<AttenuationModel>(currentIndex);
 
-      if(ImGui::Button("Play",ImVec2(40.0,25.0)))
-      {
-          component.Play();
-      }
+			if (ImGui::Button("Play", ImVec2(40.0, 25.0)))
+				component.Play();
+
+			ImGui::SameLine();
+			
+			if (ImGui::Button("Stop",ImVec2(40.0,25.0)))
+				component.Stop();
 
 
 		});

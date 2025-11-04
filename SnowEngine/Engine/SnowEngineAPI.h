@@ -1,8 +1,12 @@
 #pragma once
 
-#include <memory>
-#include <functional>
 #include "Core/Logging/Log.h"
+
+#include <filesystem>
+#include <functional>
+#include <memory>
+#include <string>
+
 // Need this to export as dll, without declaring SNOW_API before
 // every public class/struct there would be symbol errors while using them in app
 //#ifdef SNOW_WINDOWS
@@ -67,5 +71,31 @@ namespace Snow
 	constexpr WeakRef<T> CreateWeakRef(const Ref<T>& ref)
 	{
 		return WeakRef<T>(ref);
+	}
+
+	namespace Utils
+	{
+		inline std::string ToUTF8String(const std::filesystem::path& path)
+		{
+#ifdef SNOW_WINDOWS
+			auto u8 = path.u8string();
+			return std::string(reinterpret_cast<const char*>(u8.c_str()), u8.size());  // convert from UTF-16 to UTF-8
+#elif SNOW_LINUX
+			return path.string();    // already UTF-8
+#else
+			SNOW_CORE_ASSERT(false, "No conversion for your system found");
+#endif
+		}
+
+		inline std::filesystem::path FromUTF8String(const std::string& utf8)
+		{
+#ifdef SNOW_WINDOWS
+			return std::filesystem::path(std::u8string(reinterpret_cast<const char8_t*>(utf8.c_str())));
+#elif SNOW_LINUX
+			return std::filesystem::path(utf8);
+#else
+			SNOW_CORE_ASSERT(false, "No conversion for your system found");
+#endif
+		}
 	}
 };

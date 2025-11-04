@@ -127,18 +127,31 @@ namespace Snow
 
 		void Stop()
 		{
+			if(Instance.expired())
+			{
+				SNOW_CORE_WARN("Tried stopping audio that isn't playing");
+				return;
+			}
 			auto instance = Instance.lock();
 			AudioSystem::Stop(instance);
 			isPlaying = false;
 		}
 
+		void ApplyConfig()
+		{
+			if(!Instance.expired())
+			{
+				auto instance = Instance.lock();
+				instance->ApplyConfig(Config);
+			}
+		}
 		constexpr bool IsPlaying() const { return isPlaying; }
 
 		WeakRef<AudioInstance> Instance;
 		bool isPlaying = false;
 
 		AudioEmitterComponent()
-  : Audio(nullptr), Config(AudioConfig()){}
+			: Audio(nullptr), Config(AudioConfig()) {}
 		AudioEmitterComponent(Ref<AudioAsset>& audio)
 			: Audio(audio) {}
 	};
