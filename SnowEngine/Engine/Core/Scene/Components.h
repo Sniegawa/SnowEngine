@@ -137,7 +137,8 @@ namespace Snow
 		WeakRef<AudioInstance> Instance;
 		bool isPlaying = false;
 
-		AudioEmitterComponent() = default;
+		AudioEmitterComponent()
+  : Audio(nullptr), Config(AudioConfig()){}
 		AudioEmitterComponent(Ref<AudioAsset>& audio)
 			: Audio(audio) {}
 	};

@@ -1,4 +1,6 @@
 #include "SceneHierarchyPanel.h"
+#include "Core/Audio/AudioAssets.h"
+#include "Core/Audio/AudioSystem.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -48,7 +50,7 @@ namespace Snow
 			{
 				m_Context->DestroyEntity(EntityToDestroy);
 				if (m_SelectionContext == EntityToDestroy)
-					m_SelectionContext = {};
+m_SelectionContext = {};
 			}
 			
 			//Right click blank space
@@ -389,8 +391,41 @@ namespace Snow
 			ImGui::DragFloat("Volume", &component.masterVolume, 0.05f, 0.0f, 1.0f);
 		});
 
-		DrawComponent<AudioEmitterComponent>("Music Emitter", entity, [](AudioEmitterComponent& component)
+		DrawComponent<AudioEmitterComponent>("Audio Emitter", entity, [](AudioEmitterComponent& component)
 		{
+
+      ImGui::Text("Audio asset");
+      ImGui::SameLine();
+
+      if(component.Audio == nullptr)
+      {
+        ImGui::Button("Empty audio asset",ImVec2(100.0f,100.0f));
+      }
+      else 
+      {
+        const auto& path = component.Audio->filePath;
+       const std::string fileName = std::filesystem::relative(path,g_AssetsPath).filename().string(); 
+        ImGui::Button(fileName.c_str(),ImVec2(100.0f,100.0f));
+      }
+      
+  		if (ImGui::BeginDragDropTarget())
+	  	{
+	  			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
+	  			if (payload)
+	  			{
+	  				auto path = std::filesystem::path((const char *)payload->Data);
+	  				auto file_path = std::filesystem::path(g_AssetsPath) / path;
+            std::string fileName = path.filename().string(); 
+		  			if(path.extension() == ".wav")
+						  component.Audio = AudioSystem::LoadAudio(fileName,file_path.string(),AudioType::SFX);
+					  else if(path.extension() == ".mp3")
+              component.Audio = AudioSystem::LoadAudio(fileName, file_path.string(),AudioType::Music);
+		  		}
+				ImGui::EndDragDropTarget();
+			}
+
+
+
 			ImGui::DragFloat("Volume", &component.Config.volume, 0.05f, 0.0f, 1.0f);
 			ImGui::DragFloat("Pitch", &component.Config.pitch, 0.05f, 0.0f, 10.0f);
 			ImGui::DragFloat("Close Range", &component.Config.minDistance, 0.05f, 0.0f);
@@ -417,6 +452,13 @@ namespace Snow
 			}
 
 			model = static_cast<AttenuationModel>(currentIndex);
+
+      if(ImGui::Button("Play",ImVec2(40.0,25.0)))
+      {
+          component.Play();
+      }
+
+
 		});
 	}
 

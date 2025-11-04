@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
+
 
 namespace Snow
 {
@@ -32,7 +34,7 @@ namespace Snow
 
 	struct AudioAsset
 	{
-		std::string filePath;
+		std::filesystem::path filePath;
 		AudioConfig defaultConfig;
 		AudioType audioType;
 
