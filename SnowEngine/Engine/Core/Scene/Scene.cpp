@@ -70,7 +70,7 @@ namespace Snow
 	{
 		//Update Scripts
 		{
-			m_Registry.view<NativeScriptComponent>().each([=](auto entity, NativeScriptComponent& nsc)
+			m_Registry.view<NativeScriptComponent>().each([=,this](auto entity, NativeScriptComponent& nsc)
 			{
 				// TODO: Move to Scene::OnScenePlay
 				if (!nsc.Instance)
