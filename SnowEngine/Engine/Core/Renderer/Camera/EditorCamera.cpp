@@ -70,8 +70,8 @@ namespace Snow
 
 	void EditorCamera::UpdateProjection()
 	{
-		m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
-		m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
+      m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
+      m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
 	}
 
 	void EditorCamera::UpdateView()

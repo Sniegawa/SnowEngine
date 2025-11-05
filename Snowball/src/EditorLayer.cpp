@@ -84,8 +84,8 @@ namespace Snow
 
 		m_ActiveScene = CreateRef<Scene>("MyExampleScene");
 
-		const float fov = 30.0f;
-		const float aspect = 1.778f;
+		const float fov = 45.0f;
+		const float aspect = 16.0f / 9.0f;
 		const float nearClip = 0.1f;
 		const float farClip = 1000.0f;
 		m_EditorCamera = EditorCamera(fov, aspect, nearClip, farClip);
@@ -256,7 +256,7 @@ namespace Snow
 			SNOW_CORE_TRACE("Resizing framebuffer from {0},{1} to {2},{3}", m_ViewportSize.x, m_ViewportSize.y, viewportSize.x, viewportSize.y);
 			m_ViewportSize = viewportSize;
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-
+      m_EditorCamera.SetViewportSize((float)m_ViewportSize.x, (float)m_ViewportSize.y);
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID(0);

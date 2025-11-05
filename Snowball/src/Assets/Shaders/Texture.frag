@@ -55,6 +55,10 @@ void main()
 {
   	vec4 texColor = SampleTexture(v_TextureIndex, v_TexCoord);
 
+       if(texColor.a == 0.0)
+    {
+      discard;
+    }
     color = texColor * v_Color;
 
     ID = v_EntityID;
