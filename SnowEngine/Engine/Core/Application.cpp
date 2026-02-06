@@ -88,6 +88,7 @@ namespace Snow
 			m_Window->OnUpdate();
 			AudioSystem::Update(timestep);
 		}
+		// TODO : Look into why OnDetach isn't called
 	}
 
 	void Application::Close()

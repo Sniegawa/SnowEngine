@@ -21,9 +21,17 @@
 
 #include "Core/Renderer/Texture.h"
 
+#include "Utilities/UUID.h"
 
 namespace Snow
 {
+	struct UUIDComponent
+	{
+		UUID id = UUID();
+		UUIDComponent() = default;
+		UUIDComponent(const UUID& _id) : id(_id) {}
+	};
+
 	struct TagComponent
 	{
 		std::string Tag;

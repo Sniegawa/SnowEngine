@@ -12,6 +12,9 @@ namespace Snow
 	{
 	public:
 		ContentBrowserPanel();
+		
+
+		void SetAssetsPath(std::filesystem::path path) { m_AssetsPath = path; m_CurrentDirectory = m_AssetsPath; }
 
 		void OnImGuiRender();
 	private:
@@ -20,5 +23,6 @@ namespace Snow
 		Ref<Texture2D> m_SceneIcon;
 
 		std::filesystem::path m_CurrentDirectory;
+		std::filesystem::path m_AssetsPath;
 	};
 }

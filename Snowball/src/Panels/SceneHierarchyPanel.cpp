@@ -12,10 +12,6 @@
 
 namespace Snow
 {
-
-	extern const std::filesystem::path g_AssetsPath;
-
-
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
 	{
 		SetContext(context);
@@ -290,6 +286,13 @@ m_SelectionContext = {};
 		ImGui::SameLine();
 		
 
+		// DEBUG ONLY 
+		if (entity.HasComponent<UUIDComponent>())
+		{
+			auto id = entity.GetComponent<UUIDComponent>().id;
+			ImGui::Text(UUIDToString(id).c_str());
+		}
+
 		DrawComponent<TransformComponent>("Transform", entity, [](TransformComponent& component)
 		{
 			DrawVec3Control("Position", component.Translation);
@@ -352,7 +355,7 @@ m_SelectionContext = {};
 			ImGui::Checkbox("Primary", &component.Primary);
 		});
 
-		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](SpriteRendererComponent& component)
+		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [this](SpriteRendererComponent& component)
 		{
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
 
@@ -372,9 +375,10 @@ m_SelectionContext = {};
 					auto path = static_cast<const char*>(payload->Data);
 					std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
 					std::string extesion = file_path.extension().string();
+					std::string fullPath = (m_AssetsPath / file_path).string();
 
 					if(extesion == ".png" || extesion == ".jpg" || extesion == ".jpeg")
-						component.SpriteTexture = Texture2D::Create((g_AssetsPath / file_path).string());
+						component.SpriteTexture = Texture2D::Create(fullPath); // Todo change
 						
 				}
 				ImGui::EndDragDropTarget();
@@ -393,7 +397,7 @@ m_SelectionContext = {};
 			ImGui::DragFloat("Volume", &component.masterVolume, 0.05f, 0.0f, 1.0f);
 		});
 
-		DrawComponent<AudioEmitterComponent>("Audio Emitter", entity, [](AudioEmitterComponent& component)
+		DrawComponent<AudioEmitterComponent>("Audio Emitter", entity, [this](AudioEmitterComponent& component)
 		{
 
 			ImGui::Text("Audio asset");
@@ -406,7 +410,7 @@ m_SelectionContext = {};
 			else
 			{
 				const auto& path = component.Audio->filePath;
-				const std::string fileName = std::filesystem::relative(path, g_AssetsPath).filename().string();
+				const std::string fileName = std::filesystem::relative(path, m_AssetsPath).filename().string();
 				ImGui::Button(fileName.c_str(), ImVec2(200.0f, 20.0f));
 			}
 
@@ -419,11 +423,12 @@ m_SelectionContext = {};
 					std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
 					std::string extesion = file_path.extension().string();
 					std::string fileName = file_path.filename().string();
+					std::string fullPath = (m_AssetsPath / file_path).string();
 
 					if (extesion == ".wav")
-						component.Audio = AudioSystem::LoadAudio(fileName, (g_AssetsPath / file_path).string(), AudioType::SFX);
+						component.Audio = AudioSystem::LoadAudio(fileName, fullPath, AudioType::SFX);
 					else if (extesion == ".mp3")
-						component.Audio = AudioSystem::LoadAudio(fileName, (g_AssetsPath / file_path).string(), AudioType::Music);
+						component.Audio = AudioSystem::LoadAudio(fileName, fullPath, AudioType::Music);
 				}
 				ImGui::EndDragDropTarget();
 			}

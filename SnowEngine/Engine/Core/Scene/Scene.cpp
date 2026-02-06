@@ -7,6 +7,8 @@
 #include "Core/Audio/AudioSystem.h"
 #include "Core/Scene/Components.h"
 
+
+
 namespace Snow
 {
 	Scene::Scene(std::string name)
@@ -26,7 +28,21 @@ namespace Snow
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag = name;
-		
+		auto id = GenerateUUID();
+		entity.AddComponent<UUIDComponent>(id);
+
+		return entity;
+	}
+
+	Entity Scene::CreateEntity(const std::string& name, const UUID id)
+	{
+		Entity entity = Entity(m_Registry.create(), this);
+		entity.AddComponent<TransformComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag = name;
+		auto& idComp = entity.AddComponent<UUIDComponent>();
+		idComp.id = id;
+
 		return entity;
 	}
 
@@ -179,6 +195,12 @@ namespace Snow
 	void Scene::OnComponentAdded(Entity entity, T& component)
 	{
 		SNOW_CORE_ASSERT(false, "There is no OnComponentAdded specification for given component");
+	}
+
+	template<>
+	void Scene::OnComponentAdded<UUIDComponent>(Entity entity, UUIDComponent& component)
+	{
+
 	}
 
 	template<>

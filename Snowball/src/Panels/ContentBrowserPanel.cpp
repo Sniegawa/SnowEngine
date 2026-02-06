@@ -4,12 +4,11 @@
 
 namespace Snow
 {
-	extern const std::filesystem::path g_AssetsPath;
 
 	ContentBrowserPanel::ContentBrowserPanel()
-	: m_CurrentDirectory(g_AssetsPath) 
+	: m_CurrentDirectory() 
 	{
-		TextureParameters parameters;
+		TextureParameters parameters(TextureFormat::RGBA);
 		parameters.MinFilter = SNOW_TEXTURE_LINEAR;
 		parameters.MagFilter = SNOW_TEXTURE_LINEAR;
 		
@@ -20,11 +19,14 @@ namespace Snow
 
 	void ContentBrowserPanel::OnImGuiRender()
 	{
-
+		if (m_AssetsPath.empty())
+			return;
 		ImGui::Begin("Content Browser");
 
+
+
 		//Return arrow
-		if(m_CurrentDirectory != std::filesystem::path(g_AssetsPath))
+		if(m_CurrentDirectory != m_AssetsPath)
 		{
 			if(ImGui::Button("<-"))
 			{
@@ -47,7 +49,7 @@ namespace Snow
 		for(auto& it : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			const auto& path = it.path();
-			auto relativePath = std::filesystem::relative(path, g_AssetsPath);
+			auto relativePath = std::filesystem::relative(path, m_AssetsPath);
 			std::string filenameString = relativePath.filename().string();
 
 			Ref<Texture2D> icon;

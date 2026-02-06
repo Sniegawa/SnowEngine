@@ -6,6 +6,7 @@
 #include <SnowEngineAPI.h>
 #include "Core/Timestep.h"
 #include <Core/Renderer/Camera/EditorCamera.h>
+#include "Utilities/UUID.h"
 
 namespace Snow
 {
@@ -18,6 +19,7 @@ namespace Snow
 		~Scene();
 
 		Entity CreateEntity(const std::string& name = "New Entity");
+		Entity CreateEntity(const std::string& name, const UUID id);
 		void DestroyEntity(Entity entity);
 
 		void OnUpdateRuntime(Timestep ts);

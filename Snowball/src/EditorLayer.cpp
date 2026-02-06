@@ -13,10 +13,6 @@
 
 namespace Snow
 {
-	//To be changed when projects are a thing
-	extern const std::filesystem::path g_AssetsPath = "Assets";
-
-
 	class CameraController : public ScriptableEntity
 	{
 	public:
@@ -65,7 +61,8 @@ namespace Snow
 
 	EditorLayer::~EditorLayer()
 	{
-
+		if (m_ActiveScene && !m_ProjectManager.GetProjectPath().empty())
+			m_ProjectManager.SaveProject(m_ActiveScenePath);
 	}
 
 	void EditorLayer::OnAttach()
@@ -194,24 +191,34 @@ namespace Snow
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
+		static bool openCreateProjectPopup = false;
+
 		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Exit")) Snow::Application::Get().Close();
 
-				if (ImGui::MenuItem("New", "Ctrl+N"))
+				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
 					NewScene();
 
-				if (ImGui::MenuItem("Open","Ctrl+0"))
+				if (ImGui::MenuItem("Open Scene","Ctrl+0"))
 					OpenScene();
 
-				if (ImGui::MenuItem("Save As","Ctrl+Shift+S"))
+				if (ImGui::MenuItem("Save Scene As","Ctrl+Shift+S"))
 					SaveSceneAs();
+
+				if (ImGui::MenuItem("Create New Project"))
+					openCreateProjectPopup = true;
+				
+				if (ImGui::MenuItem("Open Project"))
+					OpenProject();
 
 				ImGui::EndMenu();
 			}
 			
+			
+
 			if (ImGui::BeginMenu("Editor"))
 			{
 				if (ImGui::BeginMenu("Themes"))
@@ -236,6 +243,44 @@ namespace Snow
 
 			ImGui::EndMenuBar();
 		}
+		if (openCreateProjectPopup)
+		{
+			ImGui::OpenPopup("CREATE_PROJECT_POPUP");
+			openCreateProjectPopup = false;
+		}
+		static char projectName[256] = "";
+		static char projectPath[512] = "";
+
+		if (ImGui::BeginPopupModal("CREATE_PROJECT_POPUP", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+
+			ImGui::InputText("Project Name", projectName, sizeof(projectName));
+
+			ImGui::InputText("Project Path", projectPath, sizeof(projectPath));
+			ImGui::SameLine();
+			if (ImGui::Button("Browse"))
+			{
+				std::string filepath = FileDialogs::SaveFile("Snow Project (*.snpr)\0*.snpr\0");
+				strncpy(projectPath, filepath.c_str(), sizeof(projectPath) - 1);
+				projectPath[sizeof(projectPath) - 1] = '\0';
+			}
+
+			if (ImGui::Button("Create Project"))
+			{
+				CreateNewProject(projectPath, projectName);
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
+			{
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+
+
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
 
@@ -260,6 +305,7 @@ namespace Snow
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 		uint32_t textureID = m_Framebuffer->GetColorAttachementRendererID(0);
+
 		ImGui::Image(textureID, ImVec2((float)m_ViewportSize.x, (float)m_ViewportSize.y), ImVec2{ 0.0f,1.0f }, ImVec2{ 1.0f,0.0f });
 
 		if(ImGui::BeginDragDropTarget())
@@ -269,18 +315,18 @@ namespace Snow
 			{
 				auto path = static_cast<const char*>(payload->Data);
 				std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
-				std::string extesion = file_path.extension().string();
-				
-				if(extesion == ".snow")
-					OpenScene(g_AssetsPath / file_path);
-				else if(extesion == ".png" || extesion == ".jpg" || extesion == ".jpeg")
+				std::string extension = file_path.extension().string();
+				std::string AssetsPath = m_ProjectManager.GetAssetsPath().string();
+				if(extension == ".snow")
+					OpenScene(AssetsPath / file_path);
+				else if(extension == ".png" || extension == ".jpg" || extension == ".jpeg")
 				{
 					if(m_HoveredEntity)
 					{
 						if(m_HoveredEntity.HasComponent<SpriteRendererComponent>())
 						{
 							auto& src = m_HoveredEntity.GetComponent<SpriteRendererComponent>();
-							src.SpriteTexture = Texture2D::Create((g_AssetsPath / file_path).string());
+							src.SpriteTexture = Texture2D::Create((AssetsPath / file_path).string());
 						}
 					}
 				}
@@ -377,6 +423,7 @@ namespace Snow
 		m_ContentBrowserPanel.OnImGuiRender();
 
 		ImGui::End();
+
 	}
 
 	void EditorLayer::OnEvent(Event& e)
@@ -464,7 +511,8 @@ namespace Snow
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 
 		SceneSerializer serializer(m_ActiveScene);
-		serializer.Deserialize(path.string()); //To change to std::filesystem
+		serializer.Deserialize(m_ProjectManager.GetAssetsPath()/ path);
+		m_ActiveScenePath = path;
 	}
 
 	void EditorLayer::SaveSceneAs()
@@ -474,6 +522,30 @@ namespace Snow
 		{
 			SceneSerializer serializer = SceneSerializer(m_ActiveScene);
 			serializer.Serialize(filepath);
+			m_ActiveScenePath = filepath;
+		}
+	}
+
+	void EditorLayer::CreateNewProject(std::string path, std::string name)
+	{
+		m_ProjectManager.CreateProject(path, name);
+		const auto& AssetsPath = m_ProjectManager.GetAssetsPath();
+		m_HierarchyPanel.SetAssetsPath(AssetsPath);
+		m_ContentBrowserPanel.SetAssetsPath(AssetsPath);
+	}
+
+	void EditorLayer::OpenProject()
+	{
+		std::string filepath = FileDialogs::OpenFile("Snow Project (*.snpr)\0*.snpr\0");
+		if (!filepath.empty())
+		{
+			std::filesystem::path SceneToOpen;
+			m_ProjectManager.OpenProject(filepath, SceneToOpen);
+			const auto& AssetsPath = m_ProjectManager.GetAssetsPath();
+			m_HierarchyPanel.SetAssetsPath(AssetsPath);
+			m_ContentBrowserPanel.SetAssetsPath(AssetsPath);
+			if(!SceneToOpen.empty())
+				OpenScene(SceneToOpen);
 		}
 	}
 };

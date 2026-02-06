@@ -5,6 +5,7 @@
 
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Tools/ProjectManager.h"
 
 namespace Snow
 {
@@ -29,6 +30,9 @@ namespace Snow
 		void OpenScene();
 		void OpenScene(const std::filesystem::path& path);
 		void SaveSceneAs();
+
+		void CreateNewProject(std::string path, std::string name);
+		void OpenProject();
 	private:
 		Ref<Framebuffer>m_Framebuffer;
 
@@ -37,7 +41,6 @@ namespace Snow
 		glm::ivec2 m_ViewportSize = { 0,0 };
 		glm::vec2 m_ViewportBounds[2];
 		Ref<Scene> m_ActiveScene;
- 
 		EditorCamera m_EditorCamera;
 
 		Entity m_HoveredEntity;
@@ -49,5 +52,7 @@ namespace Snow
 
 		ContentBrowserPanel m_ContentBrowserPanel;
 
+		ProjectManager m_ProjectManager;
+		std::filesystem::path m_ActiveScenePath;
 	};
 };

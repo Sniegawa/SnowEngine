@@ -14,12 +14,20 @@ namespace Snow
 #define SNOW_TEXTURE_CLAMP 0
 #define SNOW_TEXTURE_REPEAT 1
 
+	enum class TextureFormat
+	{
+		RGBA,
+		RGB
+	};
+
 	typedef struct TextureParameters
 	{
 		int MagFilter = 0;
 		int MinFilter = 0;
 		int Wrap = 0;
-		TextureParameters(int minFilter = SNOW_TEXTURE_NEAREST,int magFilter = SNOW_TEXTURE_NEAREST,int wrap = SNOW_TEXTURE_REPEAT) : MagFilter(magFilter),MinFilter(minFilter),Wrap(wrap){}
+
+		TextureFormat Format;
+		TextureParameters(TextureFormat format,int minFilter = SNOW_TEXTURE_NEAREST,int magFilter = SNOW_TEXTURE_NEAREST,int wrap = SNOW_TEXTURE_REPEAT) : Format(format),MagFilter(magFilter),MinFilter(minFilter),Wrap(wrap){}
 	} TextureParameters;
 
 
@@ -33,7 +41,7 @@ namespace Snow
 		const glm::vec2 GetSize() const { return glm::vec2(GetWidth(), GetHeight()); }
 		
 		virtual void Bind(uint32_t slot = 0) const = 0;
-		virtual void SetData(void* data, uint32_t size) = 0;
+		virtual void SetData(const void* data, uint32_t size) = 0;
 
 		virtual const uint32_t GetRendererID() const = 0;
 
@@ -52,8 +60,8 @@ namespace Snow
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(const std::string& path, TextureParameters params = TextureParameters());
-		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureParameters params = TextureParameters());
+		static Ref<Texture2D> Create(const std::string& path, TextureParameters params = TextureParameters(TextureFormat::RGBA));
+		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureParameters params = TextureParameters(TextureFormat::RGBA));
 		virtual bool operator==(const Texture2D& other) const = 0;
 	};
 };

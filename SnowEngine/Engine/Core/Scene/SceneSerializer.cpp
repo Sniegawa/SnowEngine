@@ -127,9 +127,13 @@ namespace Snow
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		out MAP_START; // Entity
-		out KEYVAL("Entity", "0123456"); //TODO: move to uuid component
+		if (entity.HasComponent<UUIDComponent>())
+		{
+			auto& id = entity.GetComponent<UUIDComponent>().id;
+			
+			out KEYVAL("Entity", UUIDToString(id));
+		}
 
-		
 		if (entity.HasComponent<TagComponent>())
 		{
 			out KEY("TagComponent");
@@ -193,7 +197,7 @@ namespace Snow
 		out MAP_END; // Entity
 	}
 
-	void SceneSerializer::Serialize(const std::string& filepath)
+	void SceneSerializer::Serialize(std::filesystem::path filepath)
 	{
 		YAML::Emitter out;
 		out MAP_START;
@@ -215,22 +219,22 @@ namespace Snow
 		fout << out.c_str();
 	}
 
-	void SceneSerializer::SerializeRuntime(const std::string& filepath)
+	void SceneSerializer::SerializeRuntime(std::filesystem::path filepath)
 	{
 		//not implemented
 		SNOW_CORE_ASSERT(false, "Serializing runtime not implemented");
 	}
 
-	bool SceneSerializer::Deserialize(const std::string& filepath)
+	bool SceneSerializer::Deserialize(std::filesystem::path filepath)
 	{
 		YAML::Node data;
 		try
 		{
-			data = YAML::LoadFile(filepath);
+			data = YAML::LoadFile(filepath.string());
 		}
 		catch (YAML::ParserException e)
 		{
-			SNOW_CORE_ERROR("Failed to load .snow file '{0}'\n     {1}", filepath, e.what());
+			SNOW_CORE_ERROR("Failed to load .snow file '{0}'\n     {1}", filepath.string(), e.what());
 			return false;
 		}
 		if (!data["Scene"])
@@ -244,16 +248,16 @@ namespace Snow
 		{
 			for (auto entity : entities)
 			{
-				uint64_t uuid = entity["Entity"].as<uint64_t>();
-
+				auto idStr = entity["Entity"].as<std::string>();
+				UUID id = UUIDFromString(idStr);
 				std::string name;
 				auto tagComponent = entity["TagComponent"];
 				if (tagComponent)
 					name = tagComponent["Tag"].as<std::string>();
 
-				SNOW_CORE_INFO("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+				SNOW_CORE_INFO("Deserialized entity with ID = {0}, name = {1}", idStr, name);
 
-				Entity deserializedEntity = m_Scene->CreateEntity(name);
+				Entity deserializedEntity = m_Scene->CreateEntity(name,id);
 				
 				auto transformComponent = entity["TransformComponent"];
 				if (transformComponent)
@@ -295,7 +299,7 @@ namespace Snow
 		return true;
 	}
 
-	bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
+	bool SceneSerializer::DeserializeRuntime(std::filesystem::path filepath)
 	{
 		//not implemented
 		SNOW_CORE_ASSERT(false,"Deserializing runtime not implemented");

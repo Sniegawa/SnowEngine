@@ -89,7 +89,7 @@ set(SNOW_SOURCES
 	"Engine/Core/Audio/AudioInstance.h" 
 	"Engine/Core/Audio/AudioInstance.cpp" 
 	"Engine/Core/Renderer/Camera/EditorCamera.h" 
-	"Engine/Core/Renderer/Camera/EditorCamera.cpp")
+	"Engine/Core/Renderer/Camera/EditorCamera.cpp" "Engine/Core/Asset/AssetManager.h" "Engine/Core/Asset/AssetType.h" "Engine/Utilities/UUID.h" "Engine/Utilities/UUID.cpp")
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 
@@ -121,7 +121,7 @@ add_library(SnowEngine STATIC
 	${THIRD_PARTY_SOURCES}
 	${SNOW_SOURCES}
 	${PLATFORM_SOURCES}
-)
+ "Engine/Core/Asset/AssetManager.cpp")
 
 #Export as dll if on Windows
 if (WIN32)

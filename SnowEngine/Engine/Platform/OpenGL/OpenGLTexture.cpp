@@ -5,11 +5,42 @@
 
 namespace Snow
 {
+	GLenum GetFormatFromParams(const TextureParameters& params)
+	{
+		switch (params.Format)
+		{
+		case TextureFormat::RGB:
+			return GL_RGB;
+			break;
+		case TextureFormat::RGBA:
+			return GL_RGBA;
+			break;
+		default:
+			return GL_RGBA;
+			break;
+		}
+	}
+	GLenum GetInternalFormatFromParams(const TextureParameters& params)
+	{
+		switch (params.Format)
+		{
+		case TextureFormat::RGB:
+			return GL_RGB8;
+			break;
+		case TextureFormat::RGBA:
+			return GL_RGBA8;
+			break;
+		default:
+			return GL_RGBA8;
+			break;
+		}
+	}
+
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, const TextureParameters& params)
 		: m_Width(width),m_Height(height)
 	{
-		m_internalFormat = GL_RGBA8;
-		m_dataFormat = GL_RGBA;
+		m_internalFormat = GetInternalFormatFromParams(params);
+		m_dataFormat = GetFormatFromParams(params);
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_internalFormat, m_Width, m_Height);
@@ -70,8 +101,9 @@ namespace Snow
 	
 	}
 
-	void OpenGLTexture2D::SetData(void* data, uint32_t size)
+	void OpenGLTexture2D::SetData(const void* data, uint32_t size)
 	{
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 

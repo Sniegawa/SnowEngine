@@ -12,11 +12,11 @@ namespace Snow
 	public:
 		SceneSerializer(const Ref<Scene>& scene);
 
-		void Serialize(const std::string& filepath); // To scene file
-		void SerializeRuntime(const std::string& filepath); // To binary
+		void Serialize(std::filesystem::path filepath); // To scene file
+		void SerializeRuntime(std::filesystem::path filepath); // To binary
 
-		bool Deserialize(const std::string& filepath);
-		bool DeserializeRuntime(const std::string& filepath);
+		bool Deserialize(std::filesystem::path filepath);
+		bool DeserializeRuntime(std::filesystem::path filepath);
 	private:
 		Ref<Scene> m_Scene;
 	};

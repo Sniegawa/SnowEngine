@@ -9,7 +9,7 @@ add_executable(Snowball
     "src/Panels/SceneHierarchyPanel.h" 
     "src/Panels/SceneHierarchyPanel.cpp"
     "src/Panels/ContentBrowserPanel.h"
-    "src/Panels/ContentBrowserPanel.cpp")
+    "src/Panels/ContentBrowserPanel.cpp" "src/Tools/ProjectManager.h" "src/Tools/ProjectManager.cpp")
 
 target_include_directories(Snowball PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/src
