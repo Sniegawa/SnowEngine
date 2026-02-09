@@ -6,6 +6,8 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Renderer2D.h"
 #include "Audio/AudioSystem.h"
+#include "Asset/AssetManager.h"
+
 namespace Snow 
 {
 	Application* Application::s_Instance = nullptr;

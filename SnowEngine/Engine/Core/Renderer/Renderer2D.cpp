@@ -3,6 +3,7 @@
 #include "VertexArray.h"
 #include "RenderCommand.h"
 
+#include <Core/Asset/AssetManager.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -89,7 +90,7 @@ namespace Snow
 		Ref<IndexBuffer> ib(IndexBuffer::Create(quadIndices.data(), Renderer2DData::MaxIndices));
 		s_Data.QuadVertexArray->SetIndexBuffer(ib);
 
-		s_Data.TextureShader = Shader::Create("Texture", "Assets/Shaders/Texture.vert", "Assets/Shaders/Texture.frag", true); // Todo : don't staticly link path
+		s_Data.TextureShader = Shader::Create("Texture", "Resources/Shaders/Texture.vert", "Resources/Shaders/Texture.frag", true); // Todo : don't staticly link path
 
 		int32_t samplers[s_Data.MaxTextureSlots];
 		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
@@ -356,8 +357,9 @@ namespace Snow
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 	{
-		if (src.SpriteTexture)
-			DrawQuad(transform, src.SpriteTexture, entityID);
+		TextureHandle texture = AssetManager::GetTextureHandle(src.SpriteTexture);
+		if (texture)
+			DrawQuad(transform, texture, entityID);
 		else
 			DrawQuad(transform, src.Color, entityID);
 	}

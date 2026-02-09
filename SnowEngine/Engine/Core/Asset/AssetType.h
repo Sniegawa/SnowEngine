@@ -4,22 +4,28 @@
 
 #include "Core/Renderer/Texture.h"
 #include "Core/Audio/AudioAssets.h"
-
+#include "Utilities/UUID.h"
 namespace Snow
 {
-	using AssetID = uint64_t;
+	using AssetID = UUID;
 
 	using TextureHandle = Ref<Texture2D>;
 	
 	enum class AssetType
 	{
 		Texture2D = 0,
-		Shader,
-		//Audio,
+		Audio,
+		Scene,
+		//Shader,
 		//Script,
 		//Spritesheet
 	};
 
-	struct AssetEntry { AssetType type; uint64_t offset, size; };
+	struct AssetEntry 
+	{ 
+		AssetID id;
+		AssetType type;
+		Path sourcePath;
+	};
 
 };

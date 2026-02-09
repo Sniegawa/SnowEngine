@@ -2,6 +2,8 @@
 
 #include <imgui.h>
 
+#include <Core/Asset/AssetManager.h>
+
 namespace Snow
 {
 
@@ -49,8 +51,10 @@ namespace Snow
 		for(auto& it : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			const auto& path = it.path();
-			auto relativePath = std::filesystem::relative(path, m_AssetsPath);
-			std::string filenameString = relativePath.filename().string();
+			std::string filenameString = path.filename().string();
+
+			if (path.extension() == ".meta")
+				continue;
 
 			Ref<Texture2D> icon;
 		
@@ -69,9 +73,11 @@ namespace Snow
 
 			if (ImGui::BeginDragDropSource())
 			{
-				auto itemPath = Snow::Utils::ToUTF8String(relativePath);
-
-				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath.c_str(), itemPath.size()+1, ImGuiCond_Once);
+				AssetID id;
+				if (AssetManager::TryGetAssetID(path, id))
+				{
+					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", &id, sizeof(AssetID), ImGuiCond_Once);
+				}
 				ImGui::EndDragDropSource();
 			}
 			

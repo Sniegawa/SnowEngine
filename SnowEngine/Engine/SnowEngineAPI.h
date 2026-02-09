@@ -6,6 +6,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <filesystem>
 
 // Need this to export as dll, without declaring SNOW_API before
 // every public class/struct there would be symbol errors while using them in app
@@ -46,6 +47,8 @@
 
 namespace Snow
 {
+	using Path = std::filesystem::path;
+
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
 

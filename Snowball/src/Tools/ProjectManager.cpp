@@ -19,10 +19,10 @@ namespace Snow
 
 	ProjectManager::~ProjectManager() {}
 
-	void ProjectManager::SaveProject(std::filesystem::path& LastOpenedScene)
+	void ProjectManager::SaveProject(Path& LastOpenedScene)
 	{
-		std::filesystem::path ProjectDirectoryPath = m_ProjectPath;		
-		std::filesystem::path AssetsPath = m_AssetsPath;
+		Path ProjectDirectoryPath = m_ProjectPath;		
+		Path AssetsPath = m_AssetsPath;
 
 		YAML::Emitter out;
 
@@ -37,7 +37,7 @@ namespace Snow
 		fout << out.c_str();
 	}
 
-	bool ProjectManager::OpenProject(std::filesystem::path path, std::filesystem::path& SceneToOpen)
+	bool ProjectManager::OpenProject(Path path, Path& SceneToOpen)
 	{
 		YAML::Node data;
 		try
@@ -66,10 +66,10 @@ namespace Snow
 		return true;
 	}
 
-	bool ProjectManager::CreateProject(std::filesystem::path path, std::string name)
+	bool ProjectManager::CreateProject(Path path, std::string name)
 	{
-		std::filesystem::path ProjectDirectoryPath = path.parent_path();
-		std::filesystem::path AssetsPath = ProjectDirectoryPath / "Assets";
+		Path ProjectDirectoryPath = path.parent_path();
+		Path AssetsPath = ProjectDirectoryPath / "Assets";
 		std::filesystem::create_directory(AssetsPath);
 		YAML::Emitter out;
 

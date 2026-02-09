@@ -165,6 +165,7 @@ namespace Snow
 
 			auto& src = entity.GetComponent<SpriteRendererComponent>();
 			out KEYVAL("Color", src.Color);
+			out KEYVAL("SpriteTextureID", UUIDToString(src.SpriteTexture));
 
 			out MAP_END;//SpriteRendererComponent
 		}
@@ -292,6 +293,11 @@ namespace Snow
 				{
 					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 					src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+					if (spriteRendererComponent["SpriteTextureID"])
+					{
+						auto textureIDString = spriteRendererComponent["SpriteTextureID"].as<std::string>();
+						src.SpriteTexture = UUIDFromString(textureIDString);
+					}
 				}
 			}
 		}

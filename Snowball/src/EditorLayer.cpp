@@ -67,8 +67,8 @@ namespace Snow
 
 	void EditorLayer::OnAttach()
 	{
-		AudioSystem::LoadAudio("Coin", "Assets/Audio/pickupCoin.wav");
-		AudioSystem::LoadAudio("Music","Assets/Audio/musicTest.mp3",AudioType::Music);
+		//AudioSystem::LoadAudio("Coin", "Assets/Audio/pickupCoin.wav");
+		//AudioSystem::LoadAudio("Music","Assets/Audio/musicTest.mp3",AudioType::Music);
 
 		FramebufferSpecification fbspecs;
 
@@ -216,8 +216,6 @@ namespace Snow
 
 				ImGui::EndMenu();
 			}
-			
-			
 
 			if (ImGui::BeginMenu("Editor"))
 			{
@@ -258,21 +256,21 @@ namespace Snow
 
 			ImGui::InputText("Project Path", projectPath, sizeof(projectPath));
 			ImGui::SameLine();
-			if (ImGui::Button("Browse"))
+			if(ImGui::Button("Browse"))
 			{
 				std::string filepath = FileDialogs::SaveFile("Snow Project (*.snpr)\0*.snpr\0");
 				strncpy(projectPath, filepath.c_str(), sizeof(projectPath) - 1);
 				projectPath[sizeof(projectPath) - 1] = '\0';
 			}
 
-			if (ImGui::Button("Create Project"))
+			if(ImGui::Button("Create Project"))
 			{
 				CreateNewProject(projectPath, projectName);
 				ImGui::CloseCurrentPopup();
 			}
 
 			ImGui::SameLine();
-			if (ImGui::Button("Cancel"))
+			if(ImGui::Button("Cancel"))
 			{
 				ImGui::CloseCurrentPopup();
 			}
@@ -280,7 +278,33 @@ namespace Snow
 			ImGui::EndPopup();
 		}
 
+		if(m_FirstOpened)
+		{
+			ImGui::OpenPopup("CREATE_OR_OPEN_PROJECT");
+			m_FirstOpened = false;
+		}
 
+		if(ImGui::BeginPopupModal("CREATE_OR_OPEN_PROJECT",nullptr,ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("Open or create new project");
+			
+			if(ImGui::Button("Open project"))
+			{
+				bool done = OpenProject();
+				if (done)
+					ImGui::CloseCurrentPopup();
+			}
+			
+			ImGui::SameLine();
+
+			if(ImGui::Button("Create Project"))
+			{
+				openCreateProjectPopup = true; // TODO : Forbid user from closing create project popup, when no project is loaded
+				ImGui::CloseCurrentPopup(); 
+			}
+
+			ImGui::EndPopup();
+		}
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
 
@@ -313,20 +337,20 @@ namespace Snow
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
 			if (payload)
 			{
-				auto path = static_cast<const char*>(payload->Data);
-				std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
-				std::string extension = file_path.extension().string();
-				std::string AssetsPath = m_ProjectManager.GetAssetsPath().string();
-				if(extension == ".snow")
-					OpenScene(AssetsPath / file_path);
-				else if(extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+				auto id = *static_cast<UUID*>(payload->Data);
+
+				AssetType type = AssetManager::GetAssetType(id);
+				
+				if(type == AssetType::Scene)
+					OpenScene(AssetManager::GetScenePath(id));
+				else if(type == AssetType::Texture2D)
 				{
 					if(m_HoveredEntity)
 					{
 						if(m_HoveredEntity.HasComponent<SpriteRendererComponent>())
 						{
 							auto& src = m_HoveredEntity.GetComponent<SpriteRendererComponent>();
-							src.SpriteTexture = Texture2D::Create((AssetsPath / file_path).string());
+							src.SpriteTexture = id;
 						}
 					}
 				}
@@ -504,7 +528,7 @@ namespace Snow
 			OpenScene(filepath);
 	}
 
-	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	void EditorLayer::OpenScene(const Path& path)
 	{
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -534,18 +558,24 @@ namespace Snow
 		m_ContentBrowserPanel.SetAssetsPath(AssetsPath);
 	}
 
-	void EditorLayer::OpenProject()
+	bool EditorLayer::OpenProject()
 	{
 		std::string filepath = FileDialogs::OpenFile("Snow Project (*.snpr)\0*.snpr\0");
 		if (!filepath.empty())
 		{
-			std::filesystem::path SceneToOpen;
-			m_ProjectManager.OpenProject(filepath, SceneToOpen);
-			const auto& AssetsPath = m_ProjectManager.GetAssetsPath();
-			m_HierarchyPanel.SetAssetsPath(AssetsPath);
-			m_ContentBrowserPanel.SetAssetsPath(AssetsPath);
-			if(!SceneToOpen.empty())
-				OpenScene(SceneToOpen);
+			Path SceneToOpen;
+			bool ret = m_ProjectManager.OpenProject(filepath, SceneToOpen);
+			if (ret)
+			{
+				const auto& AssetsPath = m_ProjectManager.GetAssetsPath();
+				m_HierarchyPanel.SetAssetsPath(AssetsPath);
+				m_ContentBrowserPanel.SetAssetsPath(AssetsPath);
+				AssetManager::LoadAssets(AssetsPath);
+				if (!SceneToOpen.empty())
+					OpenScene(SceneToOpen);
+				return true;
+			}
 		}
+		return false;
 	}
 };

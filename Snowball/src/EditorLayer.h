@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/Renderer/Camera/EditorCamera.h>
+#include <Core/Asset/AssetManager.h>
 #include <SnowEngine/SnowEngine.h>
 
 #include "Panels/SceneHierarchyPanel.h"
@@ -32,7 +33,7 @@ namespace Snow
 		void SaveSceneAs();
 
 		void CreateNewProject(std::string path, std::string name);
-		void OpenProject();
+		bool OpenProject();
 	private:
 		Ref<Framebuffer>m_Framebuffer;
 
@@ -54,5 +55,7 @@ namespace Snow
 
 		ProjectManager m_ProjectManager;
 		std::filesystem::path m_ActiveScenePath;
+		bool m_FirstOpened = true; // Flag that forces Editor to open/create new scene Popup
+
 	};
 };

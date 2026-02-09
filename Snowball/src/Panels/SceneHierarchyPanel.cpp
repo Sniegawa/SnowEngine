@@ -10,6 +10,8 @@
 
 #include <filesystem>
 
+#include <Core/Asset/AssetManager.h>
+
 namespace Snow
 {
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
@@ -363,7 +365,10 @@ m_SelectionContext = {};
 			ImGui::SameLine();
 			//Texture
 			if (component.SpriteTexture)
-				ImGui::ImageButton("TextureControl", (ImTextureID)component.SpriteTexture->GetRendererID(), { 100,100 }, { 0,1 }, { 1,0 });
+			{
+				TextureHandle texture = AssetManager::GetTextureHandle(component.SpriteTexture);
+				ImGui::ImageButton("TextureControl", (ImTextureID)texture->GetRendererID(), { 100,100 }, { 0,1 }, { 1,0 });
+			}
 			else
 				ImGui::Button("Empty Texture", ImVec2(100.0f, 100.0f));
 
@@ -372,14 +377,12 @@ m_SelectionContext = {};
 				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
 				if (payload)
 				{
-					auto path = static_cast<const char*>(payload->Data);
-					std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
-					std::string extesion = file_path.extension().string();
-					std::string fullPath = (m_AssetsPath / file_path).string();
+					auto id = *static_cast<UUID*>(payload->Data);
+					
+					AssetType type = AssetManager::GetAssetType(id);
 
-					if(extesion == ".png" || extesion == ".jpg" || extesion == ".jpeg")
-						component.SpriteTexture = Texture2D::Create(fullPath); // Todo change
-						
+					if (type == AssetType::Texture2D)
+						component.SpriteTexture = id;
 				}
 				ImGui::EndDragDropTarget();
 			}

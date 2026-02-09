@@ -22,6 +22,7 @@
 #include "Core/Renderer/Texture.h"
 
 #include "Utilities/UUID.h"
+#include "Core/Asset/AssetType.h"
 
 namespace Snow
 {
@@ -68,12 +69,12 @@ namespace Snow
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color = { 1.0f,1.0f,1.0f,1.0f };
-		Ref<Texture2D> SpriteTexture;
+		AssetID SpriteTexture;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default; //Default copy constructor
 		SpriteRendererComponent(const glm::vec4& color)
-			: Color(color) { }
+			: Color(color), SpriteTexture() { }
 
 		operator glm::vec4& () { return Color; }
 		operator const glm::vec4& () { return Color; }
