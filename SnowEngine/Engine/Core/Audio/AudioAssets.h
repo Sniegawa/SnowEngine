@@ -3,6 +3,7 @@
 #include <string>
 #include <filesystem>
 
+#include <SnowEngineAPI.h>
 
 namespace Snow
 {
@@ -34,16 +35,15 @@ namespace Snow
 
 	struct AudioAsset
 	{
-		std::filesystem::path filePath;
+		Path filePath;
 		AudioConfig defaultConfig;
-		AudioType audioType;
 
-		AudioAsset(const std::string& path, AudioType type = AudioType::SFX, const AudioConfig& config = AudioConfig())
-			: filePath(path), defaultConfig(config), audioType(type) {
+		AudioAsset(const Path& path, const AudioConfig& config = AudioConfig())
+			: filePath(path), defaultConfig(config){
 		}
 
 		AudioAsset()
-			: filePath(""), defaultConfig(), audioType(AudioType::SFX) {
+			: filePath(""), defaultConfig() {
 		}
 	};
 };

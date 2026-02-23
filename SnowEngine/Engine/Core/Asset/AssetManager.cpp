@@ -1,9 +1,11 @@
 #include "AssetManager.h"
 
 #include <algorithm>
+#include <set>
 
 #include "stb_image.h"
 #include <yaml-cpp/yaml.h>
+
 #define KEY(x) << YAML::Key << x
 #define VAL(x) << YAML::Value << x
 #define KEYVAL(x, y) KEY(x) VAL(y)
@@ -12,154 +14,29 @@
 #define MAP_END   << YAML::EndMap
 
 
+/* TODO LIST
+*	- PUT ALL OF THAT IN PROJECT MANAGER OR SOMETGHING LIKE THAT ON THE EDITOR SIDE
+*	- A way to add assets during runtime of engine
+*	- Spritesheets
+* 
+*	- File watcher :
+*		- When a file gets renamed during engine runtime, it detects it and updates the meta file with this new information
+*		- When a file gets added during engine runtime, it creates a meta file for it
+*		- When a file gets deleted during engine runtime, it should do something with it (delete the asset from memory or idk)
+*		- Handle all above but for directories
+*/
+
+
 namespace Snow
 {
 	std::unordered_map<AssetID, AssetEntry> AssetManager::m_AssetTable;
 
 	std::unordered_map<AssetID, std::weak_ptr<Texture2D>> AssetManager::m_CachedTextures;
-
-
-	AssetType StringToAssetType(const std::string& typeString)
-	{
-		if (typeString == "Texture2D")
-			return AssetType::Texture2D;
-		else if (typeString == "Audio")
-			return AssetType::Audio;
-		else if (typeString == "Scene")
-			return AssetType::Scene;
-		else
-		{
-			SNOW_ASSERT(0, "Can't resolve Asset Type");
-			return AssetType::Texture2D;
-		}
-	}
-
-	std::string AssetTypeToString(AssetType type)
-	{
-		switch (type)
-		{
-		case AssetType::Texture2D:
-			return "Texture2D";
-		case AssetType::Audio:
-			return "Audio";
-		case AssetType::Scene:
-			return "Scene";
-		default:
-			return "";
-		}
-	}
-
-	bool WriteMetaFile(Path metaPath, Path sourcePath, AssetID id, AssetType* type)
-	{
-		std::string ext = sourcePath.extension().string();
-		std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-		if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" ||
-			ext == ".bmp" || ext == ".tga" || ext == ".gif" ||
-			ext == ".hdr" || ext == ".psd" || ext == ".pic" ||
-			ext == ".ppm" || ext == ".pgm" || ext == ".pbm")
-		{
-			*type = AssetType::Texture2D;
-		}
-		else if(ext == ".snow")
-			*type = AssetType::Scene;
-		else if(ext == ".mp3" || ext == ".wav")
-			*type = AssetType::Audio;
-		else
-		{
-			return false;
-		}
-		
-		YAML::Emitter out;
-		out MAP_START;
-		out KEYVAL("ID", UUIDToString(id));
-		out KEYVAL("SourcePath", sourcePath.string());
-		out KEYVAL("AssetType", AssetTypeToString(*type));
-		out MAP_END;
-
-		std::ofstream fout(metaPath);
-		fout << out.c_str();
-
-
-		return true;
-	}
-
-	AssetManager::AssetManager()
-	{
-	}
+	std::unordered_map<AssetID, std::weak_ptr<AudioAsset>> AssetManager::m_CachedAudio;
 
 	void AssetManager::ClearCache()
 	{
 		m_CachedTextures.clear();
-	}
-
-
-	// TODO :
-	// Update new assets on open
-	// Add a way to drag and drop files to copy them and import into project
-	// Use some kind of filewatcher to handle importing assets by system (not important)
-	// Make engine use the Asset infrastructure
-	
-
-	void AssetManager::LoadAssets(const Path& AssetsFolderPath)
-	{
-		m_AssetTable.clear();
-		for (auto& it : std::filesystem::recursive_directory_iterator(AssetsFolderPath))
-		{
-
-			if (!it.is_regular_file())
-				continue;
-
-
-			const auto& path = it.path();
-			if (path.extension() == ".meta")
-				continue;
-
-			Path metaPath = path;
-			metaPath += ".meta";
-
-			AssetType type;
-			AssetID id;
-			Path sourcePath;
-			
-			if (std::filesystem::exists(metaPath))
-			{
-				YAML::Node data;
-				try
-				{
-					data = YAML::LoadFile(metaPath.string());
-				}
-				catch (YAML::ParserException e)
-				{
-					SNOW_CORE_ERROR("Failed to load .snpr file '{0}'\n     {1}", metaPath.string(), e.what());
-					continue;
-				}
-				if (!data["ID"] || !data["SourcePath"] || !data["AssetType"])
-					continue;
-
-
-				auto idStr = data["ID"].as<std::string>();
-				id = UUIDFromString(idStr);
-				sourcePath = data["SourcePath"].as<std::string>();
-				type = StringToAssetType(data["AssetType"].as<std::string>());
-
-
-			}
-			else
-			{
-				id = GenerateUUID();
-
-				bool success = WriteMetaFile(metaPath, path, id, &type);
-				if (!success)
-					continue;
-			}
-			AssetEntry entry;
-
-			entry.id = id;
-			entry.type = type;
-			entry.sourcePath = path;
-
-			m_AssetTable[id] = entry;
-		}
 	}
 
 	const Path AssetManager::GetScenePath(AssetID id)
@@ -189,8 +66,14 @@ namespace Snow
 			return nullptr; // TODO : return fallback texture (pink one or idk)
 
 		const AssetEntry& entry = it->second;
+		if(entry.type != AssetType::Texture2D)
+		{
+			SNOW_CORE_WARN("Tried to get a texture with uuid not bound to texture {0}", UUIDToString(id));
+			return nullptr;
+		}
 
 		TextureHandle handle = CreateTextureFromMemory(entry);
+		SNOW_CORE_TRACE("Loaded Texture2D asset from memory; ID = {0}", UUIDToString(id));
 		m_CachedTextures[id] = handle;
 
 		return handle;
@@ -222,9 +105,18 @@ namespace Snow
 			break;
 		}
 
+		Texture2DImportSettings settings = std::get<Texture2DImportSettings>(entry.settings);
+
 		TextureParameters params(format);
 
-		TextureHandle texHandle = Texture2D::Create(width, height,params);
+		params.Wrap = settings.Wrap;
+		params.MinFilter = settings.MinFilter;
+		params.MagFilter = settings.MagFilter;
+
+		TextureHandle texHandle = Texture2D::Create(width, height, params);
+
+		texHandle->SetTextureTint(settings.Tint);
+		texHandle->SetTextureOpacity(settings.Opacity);
 
 		texHandle->SetData(pixels, (uint32_t)width * height * channels);
 		
@@ -245,4 +137,60 @@ namespace Snow
 		}
 		return false;
 	}
+
+	AudioHandle AssetManager::CreateAudioHandle(const AssetEntry& entry)
+	{
+		AudioImportSettings settings = std::get<AudioImportSettings>(entry.settings);
+
+		AudioConfig config;
+		config.attenuation = settings.Attenuation;
+		config.loop = settings.Loop;
+		config.minDistance = settings.MinDistance;
+		config.maxDistance = settings.MaxDistance;
+		config.pitch = settings.Pitch;
+		config.type = settings.Type;
+		config.volume = settings.Volume;
+
+		const Path path = entry.sourcePath;
+
+		AudioHandle handle = CreateRef<AudioAsset>(path, config);
+
+		return handle;
+
+	}
+
+	AudioHandle AssetManager::GetAudioAsset(AssetID id)
+	{
+		{
+			// Look for cached texture
+			auto it = m_CachedAudio.find(id);
+			if (it != m_CachedAudio.end())
+			{
+				if (auto audio = it->second.lock())
+					return audio;
+			}
+		}
+		// if none found load it
+
+		auto it = m_AssetTable.find(id);
+		if (it == m_AssetTable.end())
+		{
+			SNOW_CORE_WARN("Couldn't find an audio asset with given ID : {0}", UUIDToString(id));
+			return nullptr;
+		}
+		const AssetEntry& entry = it->second;
+		if (entry.type != AssetType::Audio)
+		{
+			SNOW_CORE_WARN("Tried to get a audio with uuid not bound to audio {0}", UUIDToString(id));
+			return nullptr;
+		}
+
+		AudioHandle handle = CreateAudioHandle(entry);
+		SNOW_CORE_TRACE("Loaded audio asset from memory; ID = {0}", UUIDToString(id));
+		m_CachedAudio[id] = handle;
+
+		return handle;
+	}
+
+	AssetManager::AssetManager() {}
 };

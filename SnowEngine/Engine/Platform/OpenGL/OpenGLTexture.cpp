@@ -5,52 +5,87 @@
 
 namespace Snow
 {
-	GLenum GetFormatFromParams(const TextureParameters& params)
+	namespace TextureUtils
 	{
-		switch (params.Format)
+		GLenum GetGLFormatFromParams(const TextureParameters& params)
 		{
-		case TextureFormat::RGB:
-			return GL_RGB;
-			break;
-		case TextureFormat::RGBA:
-			return GL_RGBA;
-			break;
-		default:
-			return GL_RGBA;
-			break;
+			switch (params.Format)
+			{
+			case TextureFormat::RGB:
+				return GL_RGB;
+				break;
+			case TextureFormat::RGBA:
+				return GL_RGBA;
+				break;
+			default:
+				return GL_RGBA;
+				break;
+			}
 		}
-	}
-	GLenum GetInternalFormatFromParams(const TextureParameters& params)
-	{
-		switch (params.Format)
+		GLenum GetGLInternalFormatFromParams(const TextureParameters& params)
 		{
-		case TextureFormat::RGB:
-			return GL_RGB8;
-			break;
-		case TextureFormat::RGBA:
-			return GL_RGBA8;
-			break;
-		default:
-			return GL_RGBA8;
-			break;
+			switch (params.Format)
+			{
+			case TextureFormat::RGB:
+				return GL_RGB8;
+				break;
+			case TextureFormat::RGBA:
+				return GL_RGBA8;
+				break;
+			default:
+				return GL_RGBA8;
+				break;
+			}
 		}
-	}
+
+		GLenum GetGLTextureFilter(const TextureFilter& filter)
+		{
+			switch (filter)
+			{
+			case TextureFilter::Nearest:
+				return GL_NEAREST;
+				break;
+			case TextureFilter::Linear:
+				return GL_LINEAR;
+				break;
+			default:
+				return GL_NEAREST;
+				break;
+			}
+		}
+
+		GLenum GetGLTextureWrap(const TextureWrap& wrap)
+		{
+			switch (wrap)
+			{
+			case TextureWrap::Clamp:
+				return GL_CLAMP_TO_EDGE;
+				break;
+			case TextureWrap::Repeat:
+				return GL_REPEAT;
+				break;
+			default:
+				return GL_REPEAT;
+				break;
+			}
+		}
+	};
 
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, const TextureParameters& params)
 		: m_Width(width),m_Height(height)
 	{
-		m_internalFormat = GetInternalFormatFromParams(params);
-		m_dataFormat = GetFormatFromParams(params);
-
+		m_internalFormat = TextureUtils::GetGLInternalFormatFromParams(params);
+		m_dataFormat = TextureUtils::GetGLFormatFromParams(params);
+		
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_internalFormat, m_Width, m_Height);
 
 		//Really unreadable piece of crapa
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, params.MinFilter == SNOW_TEXTURE_NEAREST ? GL_NEAREST : GL_LINEAR);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, params.MagFilter == SNOW_TEXTURE_NEAREST ? GL_NEAREST : GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, TextureUtils::GetGLTextureFilter(params.MinFilter));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, TextureUtils::GetGLTextureFilter(params.MagFilter));
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, params.Wrap == SNOW_TEXTURE_REPEAT ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, params.Wrap == SNOW_TEXTURE_REPEAT ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureUtils::GetGLTextureWrap(params.Wrap));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureUtils::GetGLTextureWrap(params.Wrap));
 	}
 
 
@@ -89,11 +124,11 @@ namespace Snow
 
 	
 		//Realy unreadable piece of crap
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, params.MinFilter == SNOW_TEXTURE_NEAREST ? GL_NEAREST : GL_LINEAR); 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, params.MagFilter == SNOW_TEXTURE_NEAREST ? GL_NEAREST : GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, TextureUtils::GetGLTextureFilter(params.MinFilter));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, TextureUtils::GetGLTextureFilter(params.MagFilter));
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, params.Wrap == SNOW_TEXTURE_REPEAT ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, params.Wrap == SNOW_TEXTURE_REPEAT ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureUtils::GetGLTextureWrap(params.Wrap));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureUtils::GetGLTextureWrap(params.Wrap));
 
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_dataFormat, GL_UNSIGNED_BYTE, data);
 

@@ -94,7 +94,7 @@ set(SNOW_SOURCES
 	"Engine/Core/Asset/AssetManager.cpp"
 	"Engine/Core/Asset/AssetType.h" 
 	"Engine/Utilities/UUID.h" 
-	"Engine/Utilities/UUID.cpp")
+	"Engine/Utilities/UUID.cpp" "Engine/Core/Asset/AssetImportSettings.h" "Engine/Utilities/YAML_GLM.h" )
 
 set(THIRD_PARTY_SOURCES
 	"ThirdParty/miniaudio/miniaudio.h" 

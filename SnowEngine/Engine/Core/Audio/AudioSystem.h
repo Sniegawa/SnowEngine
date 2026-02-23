@@ -6,25 +6,11 @@
 #include "AudioAssets.h"
 #include "AudioInstance.h"
 
-#include "../Timestep.h"
+#include "Core/Asset/AssetType.h"
+#include "Core/Timestep.h"
 
 namespace Snow
 {
-	class AudioAssetLibrary
-	{
-	public:
-		Ref<AudioAsset> Load(const std::string& name, const std::string& path, AudioType type = AudioType::SFX, const AudioConfig& config = AudioConfig());
-		Ref<AudioAsset> Get(const std::string& name);
-
-		bool Unload(const std::string& name);
-
-		void Shutdown();
-
-	private:
-		void Add(const Ref<AudioAsset>& audioAsset, const std::string& name);
-		std::unordered_map<std::string, Ref<AudioAsset>> m_Assets;
-	};
-
 	//Static Api class used to controlling audio in engine
 	class AudioSystem
 	{
@@ -34,8 +20,7 @@ namespace Snow
 
 		static void Update(Timestep ts);
 		
-		static Ref<AudioInstance> PlayAudio(const Ref<AudioAsset>& audioAsset, const AudioConfig& config = AudioConfig());
-		static Ref<AudioInstance> PlayAudio(const std::string& name, const AudioConfig& config = AudioConfig());
+		static Ref<AudioInstance> PlayAudio(UUID id, const AudioConfig& config = AudioConfig());
 
 		static void Stop(Ref<AudioInstance>& audio);
 
@@ -61,7 +46,6 @@ namespace Snow
 
 	private:
 		static ma_engine s_Engine;
-		static AudioAssetLibrary s_AudioLibrary;
 		static std::vector<Ref<AudioInstance>> s_AudioInstances;
 	};
 

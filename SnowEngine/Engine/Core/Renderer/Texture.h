@@ -9,25 +9,37 @@
 namespace Snow
 {
 
-#define SNOW_TEXTURE_NEAREST 0
-#define SNOW_TEXTURE_LINEAR 1
-#define SNOW_TEXTURE_CLAMP 0
-#define SNOW_TEXTURE_REPEAT 1
-
 	enum class TextureFormat
 	{
-		RGBA,
+		RGBA = 0,
 		RGB
+	};
+
+	enum class TextureFilter
+	{
+		Nearest = 0,
+		Linear
+	};
+
+	enum class TextureWrap
+	{
+		Clamp = 0,
+		Repeat
 	};
 
 	typedef struct TextureParameters
 	{
-		int MagFilter = 0;
-		int MinFilter = 0;
-		int Wrap = 0;
-
+		TextureFilter MinFilter;
+		TextureFilter MagFilter;
 		TextureFormat Format;
-		TextureParameters(TextureFormat format,int minFilter = SNOW_TEXTURE_NEAREST,int magFilter = SNOW_TEXTURE_NEAREST,int wrap = SNOW_TEXTURE_REPEAT) : Format(format),MagFilter(magFilter),MinFilter(minFilter),Wrap(wrap){}
+		TextureWrap Wrap;
+
+		TextureParameters(
+			TextureFormat format, 
+			TextureFilter minFilter = TextureFilter::Nearest, 
+			TextureFilter magFilter = TextureFilter::Nearest, 
+			TextureWrap wrap = TextureWrap::Repeat
+		) : Format(format),MinFilter(minFilter),MagFilter(magFilter),Wrap(wrap) {}
 	} TextureParameters;
 
 

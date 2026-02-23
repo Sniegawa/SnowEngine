@@ -117,8 +117,9 @@ namespace Snow
 
 	struct AudioEmitterComponent
 	{
-		Ref<AudioAsset> Audio = nullptr;
+		AssetID Audio;
 		AudioConfig Config = AudioConfig();
+		std::string Name;
 
 		void Play()
 		{
@@ -160,8 +161,6 @@ namespace Snow
 		bool isPlaying = false;
 
 		AudioEmitterComponent()
-			: Audio(nullptr), Config(AudioConfig()) {}
-		AudioEmitterComponent(Ref<AudioAsset>& audio)
-			: Audio(audio) {}
+			: Audio(), Config(AudioConfig()) {}
 	};
 }

@@ -15,6 +15,8 @@ namespace Snow
 
 		void SaveProject(Path& LastOpenedScene);
 
+		void LoadAssets(const Path& AssetsFolderPath);
+
 		const inline Path& GetProjectPath() const { return m_ProjectPath; }
 
 		const inline Path& GetAssetsPath() const { return m_AssetsPath; }

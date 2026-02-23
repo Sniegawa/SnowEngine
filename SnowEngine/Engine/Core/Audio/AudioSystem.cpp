@@ -1,11 +1,13 @@
 #include "AudioSystem.h"
 
+#include "Core/Asset/AssetManager.h"
+
+
 namespace Snow
 {
 	//miniaudio sound engine
 	ma_engine AudioSystem::s_Engine;
-	//Libraries for containing audio assets
-	AudioAssetLibrary AudioSystem::s_AudioLibrary;
+
 	//Vectors of currently playing audio
 	std::vector<Ref<AudioInstance>> AudioSystem::s_AudioInstances;
 
@@ -33,7 +35,6 @@ namespace Snow
 	void AudioSystem::Shutdown()
 	{
 		//Clearup every audio asset before uninitializing engine
-		s_AudioLibrary.Shutdown();
 		s_AudioInstances.clear();
 		SNOW_CORE_INFO("Audio system shutdown");
 		ma_engine_uninit(&s_Engine);
@@ -53,17 +54,11 @@ namespace Snow
 		);
 	}
 
-	Ref<AudioInstance> AudioSystem::PlayAudio(const Ref<AudioAsset>& audioAsset, const AudioConfig& config)
+	Ref<AudioInstance> AudioSystem::PlayAudio(UUID id, const AudioConfig& config)
 	{
-		Ref<AudioInstance> instance = CreateRef<AudioInstance>(audioAsset,config);
-		s_AudioInstances.push_back(instance);
-		instance->Play();
-		return instance;
-	}
+		AudioHandle audioAsset = AssetManager::GetAudioAsset(id);
 
-	Ref<AudioInstance> AudioSystem::PlayAudio(const std::string& name, const AudioConfig& config)
-	{
-		Ref<AudioInstance> instance = CreateRef<AudioInstance>(s_AudioLibrary.Get(name),config);
+		Ref<AudioInstance> instance = CreateRef<AudioInstance>(audioAsset,config);
 		s_AudioInstances.push_back(instance);
 		instance->Play();
 		return instance;
@@ -152,87 +147,4 @@ namespace Snow
 		ma_engine_listener_set_position(&s_Engine, listenerID, position.x, position.y, position.z);
 	}
 
-	/*
-	======================================
-	|       API for audio library        |
-	======================================
-	*/
-
-	Ref<AudioAsset> AudioSystem::LoadAudio(const std::string& name, const std::string& path, AudioType type, const AudioConfig& config)
-	{
-		return s_AudioLibrary.Load(name, path, type, config);
-	}
-
-	Ref<AudioAsset> AudioSystem::GetAudio(const std::string& name)
-	{
-		return s_AudioLibrary.Get(name);
-	}
-
-
-	void AudioAssetLibrary::Add(const Ref<AudioAsset>& audioAsset, const std::string& name)
-	{
-		//Check if asset exists
-		if (m_Assets.find(name) != m_Assets.end())
-		{
-
-			//If it exists Error
-			SNOW_CORE_ERROR("Audio asset with given name already exists : {0}", name);
-			return;
-		}
-		//Assign asset by name
-		m_Assets[name] = audioAsset;
-	}
-
-	Ref<AudioAsset> AudioAssetLibrary::Load(const std::string& name, const std::string& path, AudioType type, const AudioConfig& config)
-	{
-		//Search for asset to return it if it exists
-		auto it = m_Assets.find(name);
-		if (it != m_Assets.end())
-		{
-			SNOW_CORE_WARN("Audio asset with given name already exists : {0}", name);
-			return it->second;
-		}
-
-		//If asset doesn't exist create Asset object with config
-		auto audioAsset = CreateRef<AudioAsset>(path,type,config);
-		//Add asset object
-		Add(audioAsset, name);
-		//Return asset handler
-		return audioAsset;
-	}
-
-	Ref<AudioAsset> AudioAssetLibrary::Get(const std::string& name)
-	{
-		//Search for asset
-		auto it = m_Assets.find(name);
-		if (it == m_Assets.end())
-		{
-			//If it doesn't exist return nullptr and error
-			SNOW_CORE_ERROR("Audio asset with given name not found : {0}", name);
-			return nullptr;
-		}
-		//If it exists return it
-		return it->second;
-	}
-
-	bool AudioAssetLibrary::Unload(const std::string& name)
-	{
-		//Search for asset
-		auto it = m_Assets.find(name);
-		if (it == m_Assets.end())
-		{
-			//If it doesn't exist return false and error
-			SNOW_CORE_WARN("No audio asset with given name found for deletion {0}", name);
-			return false;
-		}
-		//Erease asset
-		m_Assets.erase(it);
-		SNOW_CORE_INFO("Audio asset {0} deleted succesfully", name);
-		return true;
-	}
-
-	void AudioAssetLibrary::Shutdown()
-	{
-		m_Assets.clear();
-	}
 };

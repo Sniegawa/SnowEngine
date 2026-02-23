@@ -406,14 +406,13 @@ m_SelectionContext = {};
 			ImGui::Text("Audio asset");
 			ImGui::SameLine();
 
-			if (component.Audio == nullptr)
+			if (!component.Audio)
 			{
 				ImGui::Button("Empty audio asset", ImVec2(200.0f, 20.0f));
 			}
 			else
 			{
-				const auto& path = component.Audio->filePath;
-				const std::string fileName = std::filesystem::relative(path, m_AssetsPath).filename().string();
+				const auto fileName = component.Name;
 				ImGui::Button(fileName.c_str(), ImVec2(200.0f, 20.0f));
 			}
 
@@ -422,16 +421,15 @@ m_SelectionContext = {};
 				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM");
 				if (payload)
 				{
-					auto path = static_cast<const char*>(payload->Data);
-					std::filesystem::path file_path = Snow::Utils::FromUTF8String(path);
-					std::string extesion = file_path.extension().string();
-					std::string fileName = file_path.filename().string();
-					std::string fullPath = (m_AssetsPath / file_path).string();
+					auto id = *static_cast<UUID*>(payload->Data);
 
-					if (extesion == ".wav")
-						component.Audio = AudioSystem::LoadAudio(fileName, fullPath, AudioType::SFX);
-					else if (extesion == ".mp3")
-						component.Audio = AudioSystem::LoadAudio(fileName, fullPath, AudioType::Music);
+					AssetType type = AssetManager::GetAssetType(id);
+					std::string name = AssetManager::GetAssetFilename(id);
+					if (type == AssetType::Audio)
+					{
+						component.Audio = id;
+						component.Name = name;
+					}
 				}
 				ImGui::EndDragDropTarget();
 			}

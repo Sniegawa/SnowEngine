@@ -570,7 +570,7 @@ namespace Snow
 				const auto& AssetsPath = m_ProjectManager.GetAssetsPath();
 				m_HierarchyPanel.SetAssetsPath(AssetsPath);
 				m_ContentBrowserPanel.SetAssetsPath(AssetsPath);
-				AssetManager::LoadAssets(AssetsPath);
+				m_ProjectManager.LoadAssets(AssetsPath);
 				if (!SceneToOpen.empty())
 					OpenScene(SceneToOpen);
 				return true;

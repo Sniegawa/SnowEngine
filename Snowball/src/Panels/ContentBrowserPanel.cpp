@@ -11,8 +11,8 @@ namespace Snow
 	: m_CurrentDirectory() 
 	{
 		TextureParameters parameters(TextureFormat::RGBA);
-		parameters.MinFilter = SNOW_TEXTURE_LINEAR;
-		parameters.MagFilter = SNOW_TEXTURE_LINEAR;
+		parameters.MinFilter = TextureFilter::Linear;
+		parameters.MagFilter = TextureFilter::Linear;
 		
 		m_DirectoryIcon = Texture2D::Create("Resources/Icons/computer-folder-open-icon.png", parameters);
 		m_FileIcon = Texture2D::Create("Resources/Icons/file-line-icon.png", parameters);
