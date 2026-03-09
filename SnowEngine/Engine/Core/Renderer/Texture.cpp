@@ -17,7 +17,7 @@ namespace Snow
 		return nullptr;
 	}
 
-	Ref<Texture2D> Texture2D::Create(const std::string& path, TextureParameters params)
+	Ref<Texture2D> Texture2D::Create(const Path& path, TextureParameters params) // Deprecated
 	{
 		switch (Renderer::GetAPI())
 		{

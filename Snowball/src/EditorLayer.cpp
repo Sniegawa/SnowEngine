@@ -67,9 +67,6 @@ namespace Snow
 
 	void EditorLayer::OnAttach()
 	{
-		//AudioSystem::LoadAudio("Coin", "Assets/Audio/pickupCoin.wav");
-		//AudioSystem::LoadAudio("Music","Assets/Audio/musicTest.mp3",AudioType::Music);
-
 		FramebufferSpecification fbspecs;
 
 		fbspecs.Attachments = { FramebufferTextureFormat::RGBA8 , FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
@@ -90,6 +87,9 @@ namespace Snow
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 
 		Application::Get().GetWindow().SetIcon("Resources/Icons/Snowball-logo.png");
+
+		m_ContentBrowserPanel.Initialize(&m_AssetPropertiesPanel);
+		m_AssetPropertiesPanel.Initialize(&m_ProjectManager);
 	}
 
 	void EditorLayer::OnDetach()
@@ -99,6 +99,9 @@ namespace Snow
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
+		m_ProjectManager.CleanDirtyAssets();
+
+
 		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
 			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
@@ -445,9 +448,9 @@ namespace Snow
 
 		m_HierarchyPanel.OnImGuiRender();
 		m_ContentBrowserPanel.OnImGuiRender();
+		m_AssetPropertiesPanel.OnImGuiRender();
 
 		ImGui::End();
-
 	}
 
 	void EditorLayer::OnEvent(Event& e)

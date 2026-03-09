@@ -74,63 +74,36 @@ namespace Snow
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, const TextureParameters& params)
 		: m_Width(width),m_Height(height)
 	{
-		m_internalFormat = TextureUtils::GetGLInternalFormatFromParams(params);
-		m_dataFormat = TextureUtils::GetGLFormatFromParams(params);
-		
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, m_internalFormat, m_Width, m_Height);
-
-		//Really unreadable piece of crapa
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, TextureUtils::GetGLTextureFilter(params.MinFilter));
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, TextureUtils::GetGLTextureFilter(params.MagFilter));
-
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureUtils::GetGLTextureWrap(params.Wrap));
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureUtils::GetGLTextureWrap(params.Wrap));
+		m_Params = params;
+		Initialize();
 	}
 
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path,const TextureParameters& params)
-		: m_Path(path)
+	OpenGLTexture2D::OpenGLTexture2D(const Path& path, const TextureParameters& params) // Deprecated
 	{
 		int width, height,channels;
+		std::string PathString = path.string();
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels,0);
+		stbi_uc* data = stbi_load(PathString.c_str(), &width, &height, &channels, 0);
 
-		SNOW_CORE_ASSERT(data, "Failed to load image from path : " + path);
+		SNOW_CORE_ASSERT(data, "Failed to load image from path : " + PathString);
 		
 		m_Width = width;
 		m_Height = height;
 
-
-		GLenum internalFormat = GL_RGBA8, dataFormat = GL_RGBA;
-		switch (channels)
-		{
-		case 2:
-			dataFormat = GL_RG; internalFormat = GL_RG8; break;
-		case 3:
-			dataFormat = GL_RGB; internalFormat = GL_RGB8; break;
-		case 4:
-			dataFormat = GL_RGBA; internalFormat = GL_RGBA8; break;
-		default:
-			SNOW_CORE_WARN("Cannot deduce desired texture format, channels given : {0}", channels); 
-			dataFormat = GL_RGBA; break;
-		}
-
-		m_internalFormat = internalFormat;
-		m_dataFormat = dataFormat;
-
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, m_internalFormat, m_Width, m_Height);
+		glTextureStorage2D(m_RendererID, 1,TextureUtils::GetGLInternalFormatFromParams(params), m_Width, m_Height);
 
-	
-		//Realy unreadable piece of crap
+
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, TextureUtils::GetGLTextureFilter(params.MinFilter));
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, TextureUtils::GetGLTextureFilter(params.MagFilter));
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureUtils::GetGLTextureWrap(params.Wrap));
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureUtils::GetGLTextureWrap(params.Wrap));
 
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_dataFormat, GL_UNSIGNED_BYTE, data);
+
+
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, TextureUtils::GetGLFormatFromParams(m_Params), GL_UNSIGNED_BYTE, data);
 
 		stbi_image_free(data);
 	
@@ -139,7 +112,7 @@ namespace Snow
 	void OpenGLTexture2D::SetData(const void* data, uint32_t size)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_dataFormat, GL_UNSIGNED_BYTE, data);
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, TextureUtils::GetGLFormatFromParams(m_Params), GL_UNSIGNED_BYTE, data);
 	}
 
 	OpenGLTexture2D::~OpenGLTexture2D()
@@ -150,5 +123,28 @@ namespace Snow
 	void OpenGLTexture2D::Bind(uint32_t slot) const
 	{
 		glBindTextureUnit(slot, m_RendererID);
+	}
+
+	void OpenGLTexture2D::Reload(const TextureParameters& params)
+	{
+		m_Params = params;
+
+		glDeleteTextures(1, &m_RendererID);
+		Initialize();
+	}
+
+	void OpenGLTexture2D::Initialize()
+	{
+		auto internalFormat = TextureUtils::GetGLInternalFormatFromParams(m_Params);
+		auto dataFormat = TextureUtils::GetGLFormatFromParams(m_Params);
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, TextureUtils::GetGLTextureFilter(m_Params.MinFilter));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, TextureUtils::GetGLTextureFilter(m_Params.MagFilter));
+
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureUtils::GetGLTextureWrap(m_Params.Wrap));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureUtils::GetGLTextureWrap(m_Params.Wrap));
 	}
 }

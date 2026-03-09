@@ -7,8 +7,8 @@ namespace Snow
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture2D(uint32_t width, uint32_t height,const TextureParameters& params);
-		OpenGLTexture2D(const std::string& path, const TextureParameters& params);
+		OpenGLTexture2D(uint32_t width, uint32_t height, const TextureParameters& params);
+		OpenGLTexture2D(const Path& path, const TextureParameters& params);
 		virtual ~OpenGLTexture2D();
 		virtual uint32_t GetWidth() const override { return m_Width; }
 		virtual uint32_t GetHeight() const override { return m_Height; }
@@ -19,15 +19,17 @@ namespace Snow
 
 		virtual const uint32_t GetRendererID() const override { return m_RendererID; }
 
-		virtual bool operator==(const Texture2D& other) const override 
-		{ 
-			return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID;
+		virtual void Reload(const TextureParameters& params) override;
+
+		virtual bool operator==(const Texture2D& other) const
+		{
+			return m_RendererID == other.GetRendererID();
 		}
+
+		void Initialize();
 	private:
 		uint32_t m_Width;
 		uint32_t m_Height;
-		std::string m_Path;
 		uint32_t m_RendererID;
-		GLenum m_internalFormat, m_dataFormat;
 	};
 };

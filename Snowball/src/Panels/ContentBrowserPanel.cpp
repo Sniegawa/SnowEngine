@@ -19,6 +19,11 @@ namespace Snow
 		m_SceneIcon = Texture2D::Create("Resources/Icons/Snowball-logo.png", parameters);
 	}
 
+	void ContentBrowserPanel::Initialize(AssetPropertiesPanel* ASPP)
+	{
+		m_AssetPropertiesPanelPtr = ASPP;
+	}
+
 	void ContentBrowserPanel::OnImGuiRender()
 	{
 		if (m_AssetsPath.empty())
@@ -69,7 +74,14 @@ namespace Snow
 				icon = m_DirectoryIcon;
 
 
-			ImGui::ImageButton(filenameString.c_str(),(ImTextureID)icon->GetRendererID(), { thumbnailSize,thumbnailSize }, { 0,1 }, { 1,0 });
+			if(ImGui::ImageButton(filenameString.c_str(),(ImTextureID)icon->GetRendererID(), { thumbnailSize,thumbnailSize }, { 0,1 }, { 1,0 }))
+			{
+				AssetID id;
+				if(AssetManager::TryGetAssetID(path, id))
+				{
+					m_AssetPropertiesPanelPtr->SetSelectedAsset(id);
+				}
+			}
 
 			if (ImGui::BeginDragDropSource())
 			{

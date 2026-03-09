@@ -273,9 +273,9 @@ namespace Snow
 		s_Data.stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Texture2D>& texture, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Texture2D>& texture, const glm::vec4& RendererColor, int entityID)
 	{
-		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetOpacity());
+		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetTextureOpacity()) * RendererColor;
 
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
@@ -314,10 +314,10 @@ namespace Snow
 		s_Data.stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Subtexture2D>& subTexture,int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, Ref<Subtexture2D>& subTexture, const glm::vec4& RendererColor, int entityID)
 	{
 		Ref<Texture2D> texture = subTexture->GetTexture();
-		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetOpacity());
+		glm::vec4 color = glm::vec4(texture->GetTextureTint(), texture->GetTextureOpacity()) * RendererColor;
 
 		if (s_Data.QuadIndexCount + 6 > s_Data.MaxIndices)
 			Flush();
@@ -358,10 +358,11 @@ namespace Snow
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 	{
 		TextureHandle texture = AssetManager::GetTextureHandle(src.SpriteTexture);
+		glm::vec4 RendererColor = src.Color;
 		if (texture)
-			DrawQuad(transform, texture, entityID);
+			DrawQuad(transform, texture, RendererColor, entityID);
 		else
-			DrawQuad(transform, src.Color, entityID);
+			DrawQuad(transform, RendererColor, entityID);
 	}
 
 	Renderer2D::Statistics Renderer2D::GetStats()

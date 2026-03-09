@@ -12,10 +12,6 @@ Sandbox2D::Sandbox2D()
 
 	Snow::AudioConfig config;
 	config.volume = 0.15f;
-
-	Snow::AudioSystem::LoadAudio("PickupCoin", "Assets/Sounds/pickupCoin.wav");
-	Snow::AudioSystem::LoadAudio("PickupCoin2", "Assets/Sounds/pickupCoin.wav", Snow::AudioType::SFX, config);
-	Snow::AudioSystem::LoadAudio("MusicTest", "Assets/Sounds/musicTest.mp3", Snow::AudioType::Music);
 }
 
 Sandbox2D::~Sandbox2D()
@@ -29,7 +25,6 @@ void Sandbox2D::OnAttach()
 	config.pitch = 1.0f;
 	config.volume = 0.125f;
 	config.loop = true;
-	Snow::AudioSystem::PlayAudio("MusicTest",config);
 }
 
 void Sandbox2D::OnDetach()

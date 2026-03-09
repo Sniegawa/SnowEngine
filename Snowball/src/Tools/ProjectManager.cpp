@@ -4,49 +4,18 @@
 
 #include <Core/Asset/AssetType.h>
 #include <Core/Asset/AssetManager.h>
+#include <Core/Asset/AssetUtils.h>
 #include <Core/Logging/Log.h>
 #include <SnowEngineAPI.h>
 
 #include <yaml-cpp/yaml.h>
 #include "Utilities/YAML_GLM.h"
 
-
 #define ASSET_SYSTEM_VERSION 0.01
 
 namespace Snow
 {
-	namespace AssetUtils
-	{
-		AssetType StringToAssetType(const std::string& typeString)
-		{
-			if (typeString == "Texture2D")
-				return AssetType::Texture2D;
-			else if (typeString == "Audio")
-				return AssetType::Audio;
-			else if (typeString == "Scene")
-				return AssetType::Scene;
-			else
-			{
-				SNOW_ASSERT(0, "Can't resolve Asset Type");
-				return AssetType::Texture2D;
-			}
-		}
 
-		std::string AssetTypeToString(AssetType type)
-		{
-			switch (type)
-			{
-			case AssetType::Texture2D:
-				return "Texture2D";
-			case AssetType::Audio:
-				return "Audio";
-			case AssetType::Scene:
-				return "Scene";
-			default:
-				return "";
-			}
-		}
-	};
 
 	ProjectManager::ProjectManager() : m_ProjectPath(), m_ProjectName("New Project"), m_AssetsPath(), m_ProjectFilePath() {}
 
@@ -134,6 +103,7 @@ namespace Snow
 
 				if constexpr (std::is_same_v<T, Texture2DImportSettings>)
 				{
+					out KEYVAL("Format", (int)s.Format);
 					out KEYVAL("Wrap", (int)s.Wrap);
 					out KEYVAL("MinFilter", (int)s.MinFilter);
 					out KEYVAL("MagFilter", (int)s.MagFilter);
@@ -233,7 +203,7 @@ namespace Snow
 			case AssetType::Texture2D:
 			{
 				Texture2DImportSettings s;
-
+				s.Format = (TextureFormat)node["Wrap"].as<int>();
 				s.Wrap = (TextureWrap)node["Wrap"].as<int>();
 				s.MinFilter = (TextureFilter)node["MinFilter"].as<int>();
 				s.MagFilter = (TextureFilter)node["MagFilter"].as<int>();
@@ -383,4 +353,42 @@ namespace Snow
 		AssetManager::LoadAssets(AssetTable);
 	}
 
+	void SaveAssetMeta(const AssetEntry& entry)
+	{
+		Path metaPath = entry.sourcePath;
+		metaPath += ".meta";
+
+		YAML::Emitter out;
+		out MAP_START;
+		out KEYVAL("ID", UUIDToString(entry.id));
+		out KEYVAL("Version", ASSET_SYSTEM_VERSION);
+		out KEYVAL("SourcePath", entry.sourcePath.string());
+		out KEYVAL("AssetType", AssetUtils::AssetTypeToString(entry.type));
+
+		WriteAssetImportSettings(out, entry.settings);
+
+		out MAP_END;
+
+		std::ofstream fout(metaPath);
+		fout << out.c_str();
+	}
+
+	void ProjectManager::MarkAssetDirty(const AssetEntry& entry)
+	{
+		m_DirtyAssets.push_back(entry);
+	}
+
+	void ProjectManager::CleanDirtyAssets()
+	{
+		for(const auto& asset : m_DirtyAssets)
+		{
+			SaveAssetMeta(asset);
+
+			AssetManager::UpdateAssetEntry(asset);
+		}
+
+		m_DirtyAssets.clear();
+	}
+
+	
 }

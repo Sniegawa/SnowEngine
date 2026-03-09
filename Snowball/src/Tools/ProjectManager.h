@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SnowEngineAPI.h>
+#include "Core/Asset/AssetType.h"
 
 namespace Snow
 {
@@ -16,6 +17,8 @@ namespace Snow
 		void SaveProject(Path& LastOpenedScene);
 
 		void LoadAssets(const Path& AssetsFolderPath);
+		void MarkAssetDirty(const AssetEntry& entry);
+		void CleanDirtyAssets();
 
 		const inline Path& GetProjectPath() const { return m_ProjectPath; }
 
@@ -28,6 +31,10 @@ namespace Snow
 		Path m_AssetsPath;
 		Path m_ProjectFilePath;
 		// Project settings
+
+
+		// Dirty assets
+		std::vector<AssetEntry> m_DirtyAssets;
 	};
 
 

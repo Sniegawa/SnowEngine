@@ -6,6 +6,7 @@
 
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Panels/AssetPropertiesPanel.h"
 #include "Tools/ProjectManager.h"
 
 namespace Snow
@@ -52,6 +53,8 @@ namespace Snow
 		SceneHierarchyPanel m_HierarchyPanel;
 
 		ContentBrowserPanel m_ContentBrowserPanel;
+
+		AssetPropertiesPanel m_AssetPropertiesPanel;
 
 		ProjectManager m_ProjectManager;
 		std::filesystem::path m_ActiveScenePath;

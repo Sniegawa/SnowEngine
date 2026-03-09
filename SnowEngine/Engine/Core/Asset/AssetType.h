@@ -6,6 +6,7 @@
 #include "Core/Audio/AudioAssets.h"
 #include "Core/Renderer/Texture.h"
 #include "Utilities/UUID.h"
+
 namespace Snow
 {
 	using AssetID = UUID;
@@ -32,6 +33,4 @@ namespace Snow
 
 		ImportSettings settings;
 	};
-
-	
 };

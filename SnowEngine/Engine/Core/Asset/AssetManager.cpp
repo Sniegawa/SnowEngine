@@ -6,12 +6,24 @@
 #include "stb_image.h"
 #include <yaml-cpp/yaml.h>
 
+#include <Core/Asset/AssetUtils.h>
+
 #define KEY(x) << YAML::Key << x
 #define VAL(x) << YAML::Value << x
 #define KEYVAL(x, y) KEY(x) VAL(y)
 
 #define MAP_START << YAML::BeginMap
 #define MAP_END   << YAML::EndMap
+
+#define IS_CACHED_HELPER(CACHE) \
+{\
+auto it = CACHE.find(id);\
+if (it != CACHE.end())\
+{\
+	if (auto ptr = it->second.lock())\
+		return true;\
+}\
+}\
 
 
 /* TODO LIST
@@ -48,6 +60,39 @@ namespace Snow
 			return "";
 	}
 
+	bool AssetManager::IsCached(AssetID id)
+	{
+		IS_CACHED_HELPER(m_CachedTextures)
+		IS_CACHED_HELPER(m_CachedAudio)
+
+		return false;
+	}
+
+	void AssetManager::UpdateAssetEntry(AssetEntry entry)
+	{
+		AssetID id = entry.id;
+		m_AssetTable[id] = entry;
+		if (IsCached(id))
+		{
+			switch (entry.type)
+			{
+			case AssetType::Texture2D:
+			{
+				auto tex = GetTextureHandle(id);
+				auto settings = std::get<Texture2DImportSettings>(entry.settings);
+				TextureParameters params = AssetUtils::ImportSettingsToParameters(settings);
+
+				tex->Reload(params);
+
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		
+	}
+
 	TextureHandle AssetManager::GetTextureHandle(AssetID id)
 	{
 		{
@@ -79,7 +124,6 @@ namespace Snow
 		return handle;
 	}
 
-
 	TextureHandle AssetManager::CreateTextureFromMemory(const AssetEntry& entry)
 	{
 		int width, height, channels;
@@ -108,7 +152,6 @@ namespace Snow
 		Texture2DImportSettings settings = std::get<Texture2DImportSettings>(entry.settings);
 
 		TextureParameters params(format);
-
 		params.Wrap = settings.Wrap;
 		params.MinFilter = settings.MinFilter;
 		params.MagFilter = settings.MagFilter;
@@ -191,6 +234,4 @@ namespace Snow
 
 		return handle;
 	}
-
-	AssetManager::AssetManager() {}
 };

@@ -12,6 +12,7 @@ namespace Snow
 
 	struct Texture2DImportSettings
 	{
+		TextureFormat Format;
 		TextureWrap Wrap = TextureWrap::Repeat;
 		TextureFilter MinFilter = TextureFilter::Nearest;
 		TextureFilter MagFilter = TextureFilter::Nearest;
@@ -20,12 +21,13 @@ namespace Snow
 		float Opacity = 1.0f;
 
 		Texture2DImportSettings(
+			TextureFormat format = TextureFormat::RGBA,
 			TextureWrap wrap = TextureWrap::Repeat,
 			TextureFilter minFilter = TextureFilter::Nearest,
 			TextureFilter magFilter = TextureFilter::Nearest,
 			glm::vec3 tint = glm::vec3(1.0f),
 			float opacity = 1.0f
-		) : Wrap(wrap),MinFilter(minFilter),MagFilter(magFilter),Tint(tint),Opacity(opacity) {}
+		) : Format(format),Wrap(wrap),MinFilter(minFilter),MagFilter(magFilter),Tint(tint),Opacity(opacity) {}
 	};
 
 	struct SceneImportSettings

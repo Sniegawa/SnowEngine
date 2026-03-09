@@ -5,6 +5,7 @@
 
 #include <filesystem>
 
+#include "AssetPropertiesPanel.h"
 
 namespace Snow
 {
@@ -13,6 +14,7 @@ namespace Snow
 	public:
 		ContentBrowserPanel();
 		
+		void Initialize(AssetPropertiesPanel* ASPP);
 
 		void SetAssetsPath(std::filesystem::path path) { m_AssetsPath = path; m_CurrentDirectory = m_AssetsPath; }
 
@@ -24,5 +26,7 @@ namespace Snow
 
 		std::filesystem::path m_CurrentDirectory;
 		std::filesystem::path m_AssetsPath;
+
+		AssetPropertiesPanel* m_AssetPropertiesPanelPtr;
 	};
 }

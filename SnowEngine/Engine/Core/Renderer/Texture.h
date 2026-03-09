@@ -29,17 +29,22 @@ namespace Snow
 
 	typedef struct TextureParameters
 	{
-		TextureFilter MinFilter;
-		TextureFilter MagFilter;
 		TextureFormat Format;
 		TextureWrap Wrap;
+		TextureFilter MinFilter;
+		TextureFilter MagFilter;
+
+		glm::vec3 Tint = glm::vec3(1.0f);
+		float Opacity = 1.0f;
 
 		TextureParameters(
-			TextureFormat format, 
-			TextureFilter minFilter = TextureFilter::Nearest, 
-			TextureFilter magFilter = TextureFilter::Nearest, 
-			TextureWrap wrap = TextureWrap::Repeat
-		) : Format(format),MinFilter(minFilter),MagFilter(magFilter),Wrap(wrap) {}
+			TextureFormat format = TextureFormat::RGBA,
+			TextureFilter minFilter = TextureFilter::Nearest,
+			TextureFilter magFilter = TextureFilter::Nearest,
+			TextureWrap wrap = TextureWrap::Repeat,
+			glm::vec3 tint = glm::vec3(1.0f),
+			float opacity = 1.0f
+		) : Format(format),MinFilter(minFilter),MagFilter(magFilter),Wrap(wrap),Tint(tint),Opacity(opacity) {}
 	} TextureParameters;
 
 
@@ -57,22 +62,24 @@ namespace Snow
 
 		virtual const uint32_t GetRendererID() const = 0;
 
-		//Might need to move it somewhere else in the future
-		const glm::vec3& GetTextureTint() const { return m_TextureTint; }
-		void SetTextureTint(glm::vec3& tint) { m_TextureTint = tint; }
+		virtual void Reload(const TextureParameters& params) = 0;
 
-		const float& GetOpacity() const { return m_Opacity; }
-		void SetTextureOpacity(float& opacity) { m_Opacity = opacity; }
+		const inline TextureParameters& GetTextureParameters() const { return m_Params; }
 
-	private:
-		glm::vec3 m_TextureTint = glm::vec3(1.0f);
-		float m_Opacity = 1.0f;
+		const inline glm::vec3& GetTextureTint() const { return m_Params.Tint; }
+		void SetTextureTint(const glm::vec3& tint) { m_Params.Tint = tint; }
+
+		const inline float GetTextureOpacity() const { return m_Params.Opacity; }
+		void SetTextureOpacity(float opacity) { m_Params.Opacity = opacity; }
+
+	protected:
+		TextureParameters m_Params;
 	};
 
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(const std::string& path, TextureParameters params = TextureParameters(TextureFormat::RGBA));
+		static Ref<Texture2D> Create(const Path& path, TextureParameters params = TextureParameters(TextureFormat::RGBA));
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureParameters params = TextureParameters(TextureFormat::RGBA));
 		virtual bool operator==(const Texture2D& other) const = 0;
 	};
