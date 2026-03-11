@@ -7,6 +7,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <Core/Asset/AssetUtils.h>
+#include <SnowEngineAPI.h>
 
 #define KEY(x) << YAML::Key << x
 #define VAL(x) << YAML::Value << x
@@ -81,7 +82,6 @@ namespace Snow
 				auto tex = GetTextureHandle(id);
 				auto settings = std::get<Texture2DImportSettings>(entry.settings);
 				TextureParameters params = AssetUtils::ImportSettingsToParameters(settings);
-
 				tex->Reload(params);
 
 				break;

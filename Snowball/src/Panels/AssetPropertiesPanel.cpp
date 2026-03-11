@@ -68,7 +68,9 @@ namespace Snow
 	{
 		bool Dirty = false;
 
-		if (ImGui::DragFloat("Opacity", &settings.Opacity, 0.02f, 0.0f, 1.0f)) Dirty = true;
+    if(settings.Format == TextureFormat::RGBA)
+  		if (ImGui::DragFloat("Opacity", &settings.Opacity, 0.02f, 0.0f, 1.0f)) Dirty = true;
+
 		if (ImGui::DragFloat3("Tint", glm::value_ptr(settings.Tint), 0.02f, 0.0f, 1.0f)) Dirty = true;
 
 		const char* formats[] = { "RGBA", "RGB" };

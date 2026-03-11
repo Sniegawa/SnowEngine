@@ -18,6 +18,7 @@ namespace Snow
 				return GL_RGBA;
 				break;
 			default:
+        SNOW_CORE_WARN("Could not resolve GL format from texture parameters");
 				return GL_RGBA;
 				break;
 			}
@@ -33,6 +34,7 @@ namespace Snow
 				return GL_RGBA8;
 				break;
 			default:
+        SNOW_CORE_WARN("Could not resolve GL internal format from texture parameters");
 				return GL_RGBA8;
 				break;
 			}
@@ -49,6 +51,7 @@ namespace Snow
 				return GL_LINEAR;
 				break;
 			default:
+        SNOW_CORE_WARN("Could not resolve Texture filter");
 				return GL_NEAREST;
 				break;
 			}
@@ -65,6 +68,7 @@ namespace Snow
 				return GL_REPEAT;
 				break;
 			default:
+        SNOW_CORE_WARN("Could not resolve texture wrap");
 				return GL_REPEAT;
 				break;
 			}
