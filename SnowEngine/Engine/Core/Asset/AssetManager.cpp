@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <set>
 
+#include "Core/Asset/AssetImportSettings.h"
 #include "stb_image.h"
 #include <yaml-cpp/yaml.h>
 
@@ -86,6 +87,12 @@ namespace Snow
 
 				break;
 			}
+      case AssetType::Audio: // I mean i don't know if or how should i tackle this TODO
+      {
+        auto aud = GetAudioAsset(id);
+        auto settings = std::get<AudioImportSettings>(entry.settings);
+        aud->defaultConfig = AssetUtils::ImportSettingsToAudioConfig(settings); 
+      }
 			default:
 				break;
 			}
@@ -185,21 +192,13 @@ namespace Snow
 	{
 		AudioImportSettings settings = std::get<AudioImportSettings>(entry.settings);
 
-		AudioConfig config;
-		config.attenuation = settings.Attenuation;
-		config.loop = settings.Loop;
-		config.minDistance = settings.MinDistance;
-		config.maxDistance = settings.MaxDistance;
-		config.pitch = settings.Pitch;
-		config.type = settings.Type;
-		config.volume = settings.Volume;
+		AudioConfig config = AssetUtils::ImportSettingsToAudioConfig(settings);
 
 		const Path path = entry.sourcePath;
 
 		AudioHandle handle = CreateRef<AudioAsset>(path, config);
 
 		return handle;
-
 	}
 
 	AudioHandle AssetManager::GetAudioAsset(AssetID id)

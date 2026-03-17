@@ -109,6 +109,33 @@ namespace Snow
 
 	bool AssetPropertiesPanel::DisplayAudioProperties(AudioImportSettings& settings)
 	{
-		return false;
+    bool Dirty = false;
+    
+    ImGui::Text("Default config");
+    
+    bool Loop = settings.Loop;
+    if(ImGui::Checkbox("Loop", &Loop))
+    {
+      settings.Loop = Loop;
+      Dirty = true;
+    }
+    
+    float Pitch = settings.Pitch;
+    if(ImGui::DragFloat("Pitch", &Pitch,0.01f,0.01f,50.0f,"%.2f"))
+    {
+      settings.Pitch = Pitch;
+      Dirty = true;
+    }
+    
+    float Volume = settings.Volume;
+    if(ImGui::DragFloat("Volume", &Volume,0.01f,0.0f,1.0f,"%.2f")) // TODO : check if miniaudio actually lets u set volume > 1.0
+    {
+      settings.Volume = Volume;
+      Dirty = true;
+    }
+   
+    //TODO : Make other properties
+
+		return Dirty;
 	}
 };

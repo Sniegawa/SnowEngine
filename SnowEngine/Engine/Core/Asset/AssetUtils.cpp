@@ -1,4 +1,5 @@
 #include "AssetUtils.h"
+#include "Core/Audio/AudioAssets.h"
 namespace Snow
 {
 	namespace AssetUtils
@@ -37,7 +38,7 @@ namespace Snow
 				return "Error";
 			}
 		}
-
+    // TODO : Replace with proper code not this bs
 		TextureParameters ImportSettingsToParameters(const Texture2DImportSettings& settings)
 		{
 			TextureParameters params;
@@ -45,5 +46,14 @@ namespace Snow
 
 			return params;
 		}
-	};
+
+    AudioConfig ImportSettingsToAudioConfig(const AudioImportSettings& settings)
+    {
+      AudioConfig cfg;
+      cfg = *(AudioConfig*)(&settings); // also should work
+      
+      return cfg;
+    }
+
+	}; 
 };

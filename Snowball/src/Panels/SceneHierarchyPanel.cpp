@@ -1,4 +1,7 @@
 #include "SceneHierarchyPanel.h"
+#include "Core/Asset/AssetImportSettings.h"
+#include "Core/Asset/AssetType.h"
+#include "Core/Asset/AssetUtils.h"
 #include "Core/Audio/AudioAssets.h"
 #include "Core/Audio/AudioSystem.h"
 
@@ -405,7 +408,7 @@ m_SelectionContext = {};
 
 			ImGui::Text("Audio asset");
 			ImGui::SameLine();
-
+      // TODO : MAKE USER ABLE TO REMOVE AUDIO ASSET FROM COMPONENT
 			if (!component.Audio)
 			{
 				ImGui::Button("Empty audio asset", ImVec2(200.0f, 20.0f));
@@ -423,11 +426,14 @@ m_SelectionContext = {};
 				{
 					auto id = *static_cast<UUID*>(payload->Data);
 
-					AssetType type = AssetManager::GetAssetType(id);
 					std::string name = AssetManager::GetAssetFilename(id);
-					if (type == AssetType::Audio)
+          AssetEntry entry = AssetManager::GetAssetEntry(id);
+					if (entry.type == AssetType::Audio)
 					{
+            auto settings = std::get<AudioImportSettings>(entry.settings);
+
 						component.Audio = id;
+            component.Config = AssetUtils::ImportSettingsToAudioConfig(settings);
 						component.Name = name;
 					}
 				}
@@ -473,7 +479,26 @@ m_SelectionContext = {};
 			if (ImGui::Button("Stop",ImVec2(40.0,25.0)))
 				component.Stop();
 
-
+      ImGui::SameLine();
+      if (ImGui::Button("Reset config",ImVec2(100.0,25.0)))
+      {
+        if(component.Audio)
+        {
+          AssetID id = component.Audio;
+          auto entry = AssetManager::GetAssetEntry(id);
+          if(entry.type == AssetType::Audio)
+          {
+            auto settings = std::get<AudioImportSettings>(entry.settings);
+            auto cfg = AssetUtils::ImportSettingsToAudioConfig(settings);
+            component.Config = cfg;
+          }
+          else SNOW_CORE_ERROR("Audio component has an asset that isn't audio");
+        }
+        else  
+        {
+          component.Config = AudioConfig();
+        }
+      }
 		});
 	}
 

@@ -38,7 +38,6 @@ namespace Snow
 	struct AudioImportSettings
 	{
 		AudioType Type = AudioType::SFX;
-		AttenuationModel Attenuation = AttenuationModel::Linear;
 
 		bool Loop = false;
 		float Volume = 0.5f;
@@ -46,6 +45,8 @@ namespace Snow
 
 		float MinDistance = 1.0f;
 		float MaxDistance = 100.0f;
+
+		AttenuationModel Attenuation = AttenuationModel::Linear;
 
 		AudioImportSettings(
 			AudioType type = AudioType::SFX,
